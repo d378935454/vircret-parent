@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+@include("/common/_head.html") {}
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+<div id="wrapper">
+    <!--左侧导航开始-->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="nav-close"><i class="fa fa-times-circle"></i>
+        </div>
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+            <!--左侧管理员开始-->
+            @include("/common/_left_head.html") {}
+            <!--左侧管理员结束-->
+
+            <!--左侧导航菜单员开始-->
+            @include("/common/_left_menu.html") {}
+            <!--左侧导航菜单员结束-->
+            </ul>
+        </div>
+    </nav>
+    <!--左侧导航结束-->
+
+    <!--右侧开始-->
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <!--右侧顶部开始-->
+        @include("/common/_top.html") {}
+        <!--右侧顶部结束-->
+
+        <!--右侧内容开始-->
+        <div class="row J_mainContent" id="content-main">
+            ${layoutContent}
+        </div>
+        <!--右侧内容结束-->
+
+        <!--右侧footer开始-->
+        <div class="gray-bg footer">
+            <div class="pull-right">&copy; 2017-2018 上海嘉奕医学科技有限公司 </a>
+            </div>
+        </div>
+        <!--右侧footer结束-->
+    </div>
+    <!--右侧结束-->
+
+    <!--右侧边栏开始-->
+    @include("/common/_siderbar.html") {}
+    <!--右侧边栏结束-->
+</div>
+@include("/common/_foot.html") {}
+</body>
+
+</html>

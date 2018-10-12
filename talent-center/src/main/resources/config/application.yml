@@ -12,7 +12,6 @@ beetlsql:
   enabled: false
 beetl:
   suffix: html
-
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.talentcenter.entity
