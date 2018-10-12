@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+   <div>${test}</div>
+--------------------------------------------------------------------
+   <div>
+       循环开始
+       <table>
+           <thead>
+           <tr>
+               <th>id</th>
+               <th>姓名</th>
+               <th>年龄</th>
+           </tr>
+           </thead>
+           <tbody>
+           @for(demo in demos){
+           <tr>
+               <td>${demo.id}</td>
+               <td>${demo.name}</td>
+               <td>${demo.age}</td>
+           </tr>
+           @}
+           </tbody>
+       </table>
+   </div>
+</body>
+</html>
