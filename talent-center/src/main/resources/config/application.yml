@@ -22,9 +22,9 @@ mybatis:
     lazy-loading-enabled: true
     default-statement-timeout: 25000
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
-#logging:
-#  config: classpath:log4j2.xml
-#  level: info
+logging:
+  level:
+    com.talentcenter.dao: DEBUG
 mapper:
   mappers: mapper.BaseMapper
   not-empty: false
