@@ -1,0 +1,37 @@
+<li>
+    <a class="J_menuItem" href="/" data-index="4">
+        <i class="fa fa-home"></i>
+        <span class="nav-label">首页1</span>
+    </a>
+</li>
+
+@for(menu in menus){
+    @if(so.hasPermission(menu.keyName)){
+    <li>
+        @if(isEmpty(menu.childFolders)){
+        <a class="J_menuItem" href="${menu.url}">
+            <i class="fa ${menu.icoStr}"></i>
+            <span class="nav-label">${menu.folderName}</span>
+        </a>
+        @}else{
+        <a href="#">
+            <i class="fa ${menu.icoStr}"></i>
+            <span class="nav-label">${menu.folderName}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level">
+            @for(child in menu.childFolders){
+                @if(so.hasPermission(child.keyName)){
+                <li>
+                    <a class="J_menuItem" href="${child.url}">
+                        <i class="fa ${child.icoStr}"></i>
+                        ${child.folderName}
+                    </a>
+                </li>
+                @}
+            @}
+        </ul>
+        @}
+    </li>
+    @}
+@}
