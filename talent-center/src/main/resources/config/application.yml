@@ -1,0 +1,73 @@
+spring:
+  profiles:
+    active: dev
+  session:
+    store-type: none
+#  http:
+#    multipart:
+#      enabled: true
+#      max-file-size: 20MB
+#      max-request-size: 20MB
+beetlsql:
+  enabled: false
+beetl:
+  suffix: html
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.talentcenter.entity
+  configuration:
+    cache-enabled: true
+    use-generated-keys: true
+    default-executor-type: reuse
+    lazy-loading-enabled: true
+    default-statement-timeout: 25000
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+#logging:
+#  config: classpath:log4j2.xml
+#  level: info
+mapper:
+  mappers: mapper.BaseMapper
+  not-empty: false
+  identity: MYSQL
+#page-size: 10 #每页显示记录数量
+#site-title: "这是一个测试" #网站title
+---
+spring:
+    profiles: dev
+    datasource:
+       type: com.alibaba.druid.pool.DruidDataSource
+       url: jdbc:mysql://localhost:3306/talent?characterEncoding=utf-8
+       username: root
+       password:
+       driver-class-name: com.mysql.jdbc.Driver
+       # 初始化大小，最小，最大
+       druid:
+         initial-size: 5
+         min-idle: 3
+         max-active: 20
+         max-wait: 60000
+server:
+  port: 8080
+#---
+#spring:
+#    profiles: prod
+#    datasource:
+#       type: com.alibaba.druid.pool.DruidDataSource
+#       platform: mysql
+#       url: jdbc:mysql://localhost:3306/cprsim?characterEncoding=utf-8
+#       username: root
+#       password:
+#       driver-class-name: com.mysql.jdbc.Driver
+#       # 初始化大小，最小，最大
+#       druid:
+#         initial-size: 5
+#         min-idle: 3
+#         max-active: 20
+#         max-wait: 60000
+#server:
+#    port: 8081
+
+
+
+
