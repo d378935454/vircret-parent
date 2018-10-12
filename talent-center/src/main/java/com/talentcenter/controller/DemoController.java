@@ -20,6 +20,7 @@ public class DemoController {
     @RequestMapping("/demos")
     public List<Demo> demos(){
         List<Demo> demos = demoService.demos();
+        System.out.println("kekekkdkdkd");
         return demos;
     }
 }
