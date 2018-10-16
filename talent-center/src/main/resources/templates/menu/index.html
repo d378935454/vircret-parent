@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_list_layout.html"){
+        <div class="dd" id="nestable2" style="width: 60%;margin-left: 40px;">
+            <ol class="dd-list">
+                @for(menu in menus){
+                <li class="dd-item" data-id="${menu.menuId}">
+                        <span class="menu-opt-bar pull-right">
+                            <a href="${ctxPath}/menu/edit_menu.html?menuId=${menu.menuId}"><i class="glyphicon glyphicon-pencil"></i></a>
+                            &nbsp;&nbsp;
+                            <a href="${ctxPath}/menu/del_menu.html?menuId=${menu.menuId}"><i class="glyphicon glyphicon-trash"></i></a>
+                        </span>
+                    <div class="dd-handle">
+                            <span class="@if(menu.icoStr!=''){
+                                        label
+                                       @}
+                                       label-info"><i class="fa ${menu.icoStr}"></i></span>${menu.menuName}
+                    </div>
+                    @if(!isEmpty(menu.childMenus)){
+                    <ol class="dd-list">
+                        @for(child in menu.childMenus){
+                        <li class="dd-item" data-id="${child.menuId}">
+                                <span class="menu-opt-bar pull-right">
+                                    <a href="${ctxPath}/menu/edit_menu.html?menuId=${child.menuId}"><i class="glyphicon glyphicon-pencil"></i></a>
+                                &nbsp;&nbsp;
+                                    <a href="${ctxPath}/menu/del_menu.html?menuId=${child.menuId}"><i class="glyphicon glyphicon-trash"></i></a>
+                                </span>
+                            <div class="dd-handle">
+                                    <span class="@if(child.icoStr!=''){
+                                       label
+                                       @}
+                                     label-info"><i class="fa ${child.icoStr}"></i></span> ${child.menuName}
+                            </div>
+                        </li>
+                        @}
+                    </ol>
+                    @}
+                </li>
+                @}
+            </ol>
+            <a href="${ctxPath}/menu/add_menu.html" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> 添加</a>
+
+        </div>
+@}
+</body>
+<script>
+    $('#nestable2').nestable({
+        group: 1,
+        maxDepth : 2,
+    }).on('change', function(){
+        var r = $('.dd').nestable('serialize');
+        // $("#nestable2-output").html(JSON.stringify(r));    //改变排序之后的数据
+    });
+</script>
+</html>

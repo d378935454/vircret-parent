@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.talentcenter.dao.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.talentcenter.entity.Menu">
+        <id column="menu_id" jdbcType="INTEGER" property="menuId"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="key_name" jdbcType="VARCHAR" property="keyName"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="ico_str" jdbcType="INTEGER" property="icoStr"/>
+        <result column="del" jdbcType="BIT" property="del"/>
+        <result column="menu_type" jdbcType="BIT" property="menuType"/>
+        <result column="if_checked" jdbcType="BIT" property="ifChecked"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_id" jdbcType="INTEGER" property="createId"/>
+        <result column="create_name" jdbcType="VARCHAR" property="createName"/>
+        <result column="update_id" jdbcType="INTEGER" property="updateId"/>
+        <result column="update_name" jdbcType="VARCHAR" property="updateName"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    menu_id, menu_name, key_name, parent_id, sort, del, url, ico_str, menu_type, create_time, update_time,
+    create_id, create_name, update_id, update_name, memo
+  </sql>
+
+    <sql id="where">
+        <where>
+            <if test="menuId !=null and menuId != ''">
+                AND menu_id = #{menuId,jdbcType=BIGINT}
+            </if>
+            <if test="keyName != null and keyName != ''">
+                AND key_name = #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="menuName != null and menuName !=''">
+                AND menu_name = #{menuName,jdbcType=VARCHAR} OR menu_name LIKE
+                CONCAT('%',#{menuName,jdbcType=VARCHAR},'%' )
+            </if>
+            <if test="parentId != null and parentId !=null">
+                AND parent_id = #{parentId,jdbcType=BIGINT}
+            </if>
+            <if test="sort != null and sort !=null">
+                AND sort = #{sort,jdbcType=INTEGER}
+            </if>
+            <if test="del != null and del != ''">
+                AND del = #{del,jdbcType=BIT}
+            </if>
+            <if test="menuType != null and menuType != ''">
+                AND menu_type = #{menuType,jdbcType=BIT}
+            </if>
+            <if test="url != null and url != ''">
+                AND url = #{url,jdbcType=VARCHAR}
+            </if>
+
+            <!--AND status != 0-->
+        </where>
+    </sql>
+
+    <select id="selectByInfo" resultMap="BaseResultMap" parameterType="java.lang.Object">
+        select
+        <include refid="Base_Column_List"/>
+        from talent_menu
+        <include refid="where"/>
+        ORDER BY sort ASC
+    </select>
+
+    <select id="selectByParentId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM talent_menu
+        WHERE parent_id = #{parentId,jdbcType=BIGINT}
+        AND del != 0
+    </select>
+
+    <select id="selectByRoleFolders" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        SELECT
+	f1.menu_id,
+	f1.menu_name,
+	f1.key_name,
+	f1.parent_id,
+	f1.sort,
+	f1. STATUS,
+	f1.url,
+	f1.ico_str,
+	f1.menu_type,
+	f1.create_time,
+	f1.update_time,
+	f1.create_id,
+	f1.create_name,
+	f1.update_id,
+	f1.update_name,
+	f1.memo,
+	(
+		CASE
+		WHEN (
+			f2.menu_id = 0
+			OR f2.menu_id IS NULL
+		) THEN
+			'0'
+		ELSE
+			'1'
+		END
+	) "if_checked"
+FROM
+	talent_menu f1
+LEFT JOIN (
+	SELECT
+		ff.menu_id
+	FROM
+		talent_menu ff
+	WHERE
+		menu_id IN
+    <foreach collection="roleFolders" item="item" index="index" open="(" separator="," close=")">
+        #{item.menuId}
+    </foreach>
+) f2 ON f1.menu_id = f2.menu_id
+WHERE f1.parent_id = #{parentId,jdbcType=BIGINT}
+AND f1.del != 0;
+    </select>
+</mapper>

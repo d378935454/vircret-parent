@@ -46,7 +46,7 @@ public class IndexController {
             menu.setMenuType(1);
 //            List<Menu> childMenus = menuService.selectByParentId(menus.get(i).getMenuId());
             List<Menu> childMenus = menuService.select(menu);
-            if(childMenus.size()>0) menus.get(i).setChildmenus(childMenus);
+            if(childMenus.size()>0) menus.get(i).setChildMenus(childMenus);
         }
         model.addAttribute("menus",menus);
         //        menuService.select();

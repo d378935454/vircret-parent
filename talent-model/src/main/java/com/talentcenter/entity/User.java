@@ -3,37 +3,38 @@ package com.talentcenter.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
- * @author
+ * @author 
  */
 @Data
-@Table(name = "talent_menu")
-public class Menu {
+@Table(name = "talent_user")
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long menuId;
+    private Long userId;
 
     /**
-     * 权限(菜单)名称
+     * 头像
      */
-    private String menuName;
-
-    private String icoStr;
-
-    private String keyName;
+    private String headImg;
 
     /**
-     * 父ID
+     * 密码
      */
-    private Long parentId;
+    private String password;
 
     /**
-     * 排序
+     * 真实姓名
      */
-    private Integer sort;
+    private String realName;
+
+    /**
+     * 性别 1:男 2:女
+     */
+    private Integer sex;
 
     /**
      * 状态 0:删除 1:锁定 2:正常
@@ -41,9 +42,14 @@ public class Menu {
     private Integer del;
 
     /**
-     * 地址
+     * 用户名
      */
-    private String url;
+    private String userName;
+
+    /**
+     * 联系电话
+     */
+    private String userTel;
 
     /**
      * 添加时间
@@ -80,12 +86,8 @@ public class Menu {
      */
     private String memo;
 
-    private Integer menuType;
+    private Long roleId;
 
     @Transient
-    private List<Menu> childMenus;
-
-
-    @Transient
-    private int ifChecked;
+    private String nut;
 }

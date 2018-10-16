@@ -7,7 +7,7 @@
 
 @for(menu in menus){
     <li>
-        @if(isEmpty(menu.childmenus)){
+        @if(isEmpty(menu.childMenus)){
         <a class="J_menuItem" href="${menu.url}">
             <i class="fa ${menu.icoStr}"></i>
             <span class="nav-label">${menu.menuName}</span>
@@ -19,7 +19,7 @@
             <span class="fa arrow"></span>
         </a>
         <ul class="nav nav-second-level">
-            @for(child in menu.childmenus){
+            @for(child in menu.childMenus){
                 <li>
                     <a class="J_menuItem" href="${child.url}">
                         <i class="fa ${child.icoStr}"></i>
