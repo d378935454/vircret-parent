@@ -39,9 +39,7 @@ public class CertificateController extends BaseController{
 
     @RequestMapping("/ajax_index")
     public String ajaxIndex(Model model, int pageNum, int pageSize,
-                            @RequestParam(required = false) String userTrueName,
-                            @RequestParam(required = false) String examId,
-                            @RequestParam(required = false) String userSex
+                            @RequestParam(required = false) String certificateName
     ){
         //组装搜索条件
         /*Map<String,Object> map=new HashMap<>();
@@ -50,6 +48,7 @@ public class CertificateController extends BaseController{
         if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
         Certificate certificate = new Certificate();
         certificate.setDel(true);
+        if(certificateName!=null && certificateName!="") certificate.setCertificateName(certificateName);
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<Certificate> certificates = certificateService.select(certificate);
