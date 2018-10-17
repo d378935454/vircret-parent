@@ -7,7 +7,7 @@
       <foreach collection="fieldArray" item="v" separator="and">
         ${v}
       </foreach>
-      and status != 0
+      and del != 0
     </where>
   </select>
 </mapper>
