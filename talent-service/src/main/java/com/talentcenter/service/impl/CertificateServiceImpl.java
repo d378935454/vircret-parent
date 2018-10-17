@@ -76,6 +76,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public List<Certificate> selectByInfo(Map<String, Object> map) {
+        return certificateMapper.selectByInfo(map);
+    }
+
+    @Override
     public int batchDel(Map<String, Object> map) {
         return certificateMapper.batchDel(map);
     }

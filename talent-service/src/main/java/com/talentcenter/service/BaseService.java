@@ -83,4 +83,6 @@ public interface BaseService<T> {
 
 
     int deleteByPrimaryKey(Long id);
+
+    List<T> selectByInfo(Map<String,Object> map);
 }

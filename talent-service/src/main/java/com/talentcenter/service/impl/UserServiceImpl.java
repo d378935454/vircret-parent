@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service("UserService")
 public class UserServiceImpl implements UserService {
@@ -72,5 +73,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int deleteByPrimaryKey(Long id) {
         return 0;
+    }
+
+    @Override
+    public List<User> selectByInfo(Map<String, Object> map) {
+        return userMapper.selectByInfo(map);
     }
 }
