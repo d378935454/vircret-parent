@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<style>
+    .m1{
+        position: relative;
+        min-height: 1px;
+        padding-right: 4px;
+        padding-left: 15px;
+    }
+    .hr-line-solid-m{
+        margin-top: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #092620;
+        background-color: rgba(0,0,0,0);
+        height: 1px;
+    }
+    .content-m{
+        text-align: center;
+    }
+    .sub-title{
+        text-align: left;
+    }
+    .sub-content{
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    .hr-line-solid-m{
+        margin-top: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #092620;
+        background-color: rgba(0,0,0,0);
+        height: 1px;
+    }
+</style>
+@layout("/layout/_form_layout.html"){
+<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+<div class="row">
+    <div>
+        <div class="ibox float-e-margins">
+            <div class="ibox-content" style="padding-left: 60px;">
+                <form class="form-horizontal m-t" id="viladate_form">
+
+                    <div class="content-m">
+                        <h1>奉贤区青年创业开办费补贴</h1>
+
+                        <h4 class="sub-title">一、政策依据</h4>
+                        <div class="sub-content">《上海市风选取人民政府关于进一步做好新形势下本区就业创业工作的意见》（沪奉付[2016]22号）</div>
+
+                        <h4 class="sub-title">二、申请条件</h4>
+                        <div class="sub-content">
+                            1、 2016年1月1日以后参加区人力资源保障局组织的各类创业培训、创业活动、创业实践的36周岁以下(含)创业青年<br />
+                            2、 在本区成功开办小微企业(不包括老吴派遣公司)、民办非企业单位、个体工商户、农民专业合作社等创业组织，注册期在三年内。
+                        </div>
+
+                        <h4 class="sub-title">三、补贴标准</h4>
+                        <div class="sub-content">
+                           每户3000元
+                        </div>
+
+                        <h4 class="sub-title">四、补贴期限</h4>
+                        <div class="sub-content">
+                            一次性补贴
+                        </div>
+
+                        <h4 class="sub-title">五、申请流程</h4>
+                        <div class="sub-content">
+                            1、 符合条件的小微企业在注册三年之内先向注册所在地的街镇事务受理中心递交材料，街镇事务受理中心收下申请人提交的材料，核对上交的材料是否完全；<br />
+                            2、 就促中心创业指导业务员接受各街镇上交的人员材料，同时进行初步审核。再交由中心业务负责人及分管领导同意签字后上交人社局审批。
+                        </div>
+
+                        <h4 class="sub-title">五、申请材料</h4>
+                        <div class="sub-content">
+                            1、 《奉贤区青年创业开办费补贴申请表》一式三份，加盖公章；<br />
+                            2、 创业者身份证或户口簿复印件一份；<br />
+                            3、 创业组织工商营业执照副本或民办非企业单位登记证书副本复印件一份。
+                        </div>
+                    </div>
+
+                    <div class="hr-line-solid-m"></div>
+
+                    <div class="form-group">
+                        <label class="control-label">创业者身份证或者户口簿扫描件：</label>
+                        <div style="margin-top: 20px;">
+                            <img src="/img/info/card-all.jpg" width="500">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">营业执照或非企业单位登记证书：</label>
+                        <div style="margin-top: 20px;">
+                            <img src="/img/info/yingye.jpg" width="500">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            <button class="btn btn-primary" type="submit">提交</button>
+                            <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@}
+</body>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script type="text/javascript">
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    laydate.render({
+        elem: '#train_begin_time'
+    });
+
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        }, success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        }, errorElement: "span", errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent())
+        }, errorClass: "help-block m-b-none", validClass: "help-block m-b-none"
+    }), $().ready(function () {
+        // $("#commentForm").validate();
+        $(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#viladate_form").validate({
+            rules: {
+                certificateName: {
+                    required: true
+                }
+            },
+            messages: {
+                certificateName: {
+                    required: e + "请输入练考计划名称"
+                }
+            },
+            submitHandler: function() {
+                $.ajax({
+                    type : "POST",
+                    url:"${ctxPath}/user/add",
+                    data : $('#viladate_form').serialize(),
+                    success: function(data){
+                        if(data['status']==1){
+                            toastr.success(data['body']);
+                            setTimeout('window.location.href="/user/index.html"',900);
+                        }else{
+                            toastr.success(data['body']);
+                        }
+                    }
+                });
+            }
+        }),$('input[required]').parent().prev().append(
+            '<span style="color:red">*</span>'
+        );
+    });
+
+</script>
+</html>

@@ -22,7 +22,7 @@
 
     <sql id="where">
         <where>
-            <if test="mId !=null and mId != ''">
+            <if test="certificateId !=null and certificateId != ''">
                 AND certificate_id = #{certificateId,jdbcType=BIGINT}
             </if>
             <if test="certificateName != null and certificateName !=''">

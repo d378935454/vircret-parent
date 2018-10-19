@@ -32,10 +32,12 @@ public class IndexController {
         Menu m = new Menu();
         m.setParentId((long)0);
         m.setMenuType(1);
-        map.put("parentId","0");
+        m.setDel(1);
+        /*map.put("parentId","0");
         map.put("menuType",1);
-//        map.put('status',);
-//        List<Menu> menus=menuService.selectByParentId(0);
+        map.put("del",1);
+        map.put('status',);
+        List<Menu> menus=menuService.selectByParentId(0);*/
         List<Menu> menus = menuService.select(m);
         /*for (Menu menu : menus) {
             
@@ -44,6 +46,7 @@ public class IndexController {
             Menu menu = new Menu();
             menu.setParentId(menus.get(i).getMenuId());
             menu.setMenuType(1);
+            menu.setDel(1);
 //            List<Menu> childMenus = menuService.selectByParentId(menus.get(i).getMenuId());
             List<Menu> childMenus = menuService.select(menu);
             if(childMenus.size()>0) menus.get(i).setChildMenus(childMenus);

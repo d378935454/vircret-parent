@@ -82,6 +82,15 @@ public class User implements Serializable {
     private String updateName;
 
     /**
+     * 用户分类 0:超级管理员 1:管理员 2:窗口服务人员
+     */
+    private Integer userType;
+
+    /**
+     * 用户性质 0:平台用户  1:企业管理员  2:街道管理员  3:普通用户
+     */
+    private Integer userNature;
+    /**
      * 备注
      */
     private String memo;
