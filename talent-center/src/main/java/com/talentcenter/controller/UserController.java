@@ -3,21 +3,20 @@ package com.talentcenter.controller;
 import RSTFul.RSTFulBody;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.talentcenter.common.UserLogic;
-import com.talentcenter.entity.Certificate;
-import com.talentcenter.entity.Menu;
 import com.talentcenter.entity.User;
-import com.talentcenter.service.MenuService;
 import com.talentcenter.service.UserService;
+import com.talentcenter.util.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -34,7 +33,7 @@ public class UserController extends BaseController{
     @RequestMapping("/index.html")
     public String index(Model model){
         User user = new User();
-        user.setDel(1);
+        user.setDel(true);
         user.setUserNature(0);
         List<User> users = userService.select(user);
         model.addAttribute("users",users);
@@ -49,6 +48,7 @@ public class UserController extends BaseController{
     ){
         //组装搜索条件
         User user = new User();
+        user.setDel(true);
         if(userName!=null && userName!="") user.setUserName(userName);
         if(realName!=null && realName!="") user.setRealName(realName);
         if(userTel!=null && userTel!="") user.setUserTel(userTel);
@@ -69,41 +69,58 @@ public class UserController extends BaseController{
         return "/user/add.html";
     }
 
-    @RequestMapping("add_info.html")
-    public String addUI1() {
-        return "/user/add_info.html";
-    }
-
-    @RequestMapping("accept.html")
-    public String accept() {
-        return "/user/accept.html";
-    }
-
-    @RequestMapping("zhengce.html")
-    public String zhengCe() {
-        return "/user/zhengce.html";
-    }
-
-    @RequestMapping("accept_info.html")
-    public String accept_info() {
-        return "/user/accept_info.html";
-    }
-
-    @RequestMapping("data.html")
-    public String data() {
-        return "/user/data.html";
-    }
-
     @ResponseBody
     @RequestMapping("add")
     public RSTFulBody add(User user) {
         User sessionUser = getSessionUser();
         user.setCreateName(sessionUser.getUserName());
         user.setCreateId(sessionUser.getUserId());
+        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.insertSelective(user);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("添加成功！");
         else rstFulBody.fail("添加失败！");
+        return rstFulBody;
+    }
+
+    @RequestMapping("edit.html")
+    public String editUI(Model model, String primaryKey) {
+        User user = userService.selectByPrimaryKey((long)Integer.parseInt(primaryKey));
+        model.addAttribute("obj",user);
+        return "/user/edit.html";
+    }
+
+    @ResponseBody
+    @RequestMapping("edit")
+    public RSTFulBody edit(User user) {
+        User sessionUser = getSessionUser();
+        user.setUpdateId(sessionUser.getUserId());
+        user.setUpdateName(sessionUser.getUserName());
+        user.setUpdateTime(DateHelper.getCurrentDate());
+        int res = userService.updateByPrimaryKeySelective(user);
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if (res > 0) rstFulBody.success("修改成功！");
+        else rstFulBody.fail("修改失败！");
+        return rstFulBody;
+    }
+
+    @RequestMapping("del.html")
+    public String delUser(User user){
+        user.setDel(false);
+        int res = userService.updateByPrimaryKeySelective(user);
+        return "redirect:/user/index.html";
+    }
+
+    @ResponseBody
+    @RequestMapping("batch_del")
+    public RSTFulBody batchDel(@RequestParam(required = true) String ids){
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("ids",ids);
+        int res = userService.batchDel(map);
+        RSTFulBody rstFulBody=new RSTFulBody();
+        if(res>0) rstFulBody.success(res);
+        else  rstFulBody.fail("删除失败！");
         return rstFulBody;
     }
 }

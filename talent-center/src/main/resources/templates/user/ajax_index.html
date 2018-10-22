@@ -17,7 +17,10 @@
     <tbody>
     @for(list in page_info.list){
     <tr>
-        <td><input type="checkbox" class="i-checks" name="input[]" value="${list.userId}"></td>
+        <td>@if(list.userName!='admin'){
+            <input type="checkbox" class="i-checks" name="input[]" value="${list.userId}">
+            @}
+        </td>
         <td>${list.userName}</td>
         <td>${list.realName}</td>
         <td>${list.userTel}</td>
@@ -36,8 +39,10 @@
         <td>${list.updateName}</td>
         <td>${list.updateTime,"yyyy-MM-dd"}</td>
         <td>
-            <a href="${ctxPath}/certificate/edit.html?userId=${list.userId}"><i class="glyphicon glyphicon-pencil"></i></a>
-            <a href="${ctxPath}/certificate/del.html?userId=${list.userId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+            @if(list.userName!='admin'){
+            <a href="${ctxPath}/user/edit.html?primaryKey=${list.userId}"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="${ctxPath}/user/del.html?userId=${list.userId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+            @}
         </td>
     </tr>
     @}

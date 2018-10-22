@@ -39,7 +39,7 @@ public class User implements Serializable {
     /**
      * 状态 0:删除 1:锁定 2:正常
      */
-    private Integer del;
+    private Boolean del;
 
     /**
      * 用户名
@@ -85,6 +85,12 @@ public class User implements Serializable {
      * 用户分类 0:超级管理员 1:管理员 2:窗口服务人员
      */
     private Integer userType;
+
+    private String userCode;
+
+    private String userJob;
+
+    private String userEmail;
 
     /**
      * 用户性质 0:平台用户  1:企业管理员  2:街道管理员  3:普通用户

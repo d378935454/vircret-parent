@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.talentcenter.mapper.UserMapper">
+<mapper namespace="com.talentcenter.dao.UserMapper">
   <resultMap id="BaseResultMap" type="com.talentcenter.entity.User">
     <id column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
@@ -58,4 +58,8 @@
     from talent_user
     <include refid="where"/>
   </select>
+
+  <delete id="batchDel" parameterType="Map">
+    UPDATE talent_user SET del=0 WHERE user_id IN (${ids});
+  </delete>
 </mapper>

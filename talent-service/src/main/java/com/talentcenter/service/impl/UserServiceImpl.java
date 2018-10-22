@@ -79,4 +79,9 @@ public class UserServiceImpl implements UserService {
     public List<User> selectByInfo(Map<String, Object> map) {
         return userMapper.selectByInfo(map);
     }
+
+    @Override
+    public int batchDel(Map<String, Object> map) {
+        return userMapper.batchDel(map);
+    }
 }
