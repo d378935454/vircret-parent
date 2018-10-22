@@ -132,16 +132,31 @@
         var e = "<i class='fa fa-times-circle'></i> ";
         $("#viladate_form").validate({
             rules: {
-                certificateName: {
-                    required: true
+                userName: {
+                    required: true,
+                    remote: {
+                        url: "${ctxPath}/checkUnique",
+                        data:{
+                            user_name:function(){
+                                return $("#user_name").val();
+                            },
+                            table:function(){
+                                return "cpr_user";
+                            },
+                            id:function () {
+                                return "user_id !="+$("#user_id").val();
+                            }
+                        }
+                    }
                 },
                 comfirmPassword:{
                     equalTo: "#password"
                 }
             },
             messages: {
-                certificateName: {
-                    required: e + "请输入练考计划名称"
+                userName: {
+                    required: e + "请输入用户名",
+                    remote: e + "该用户名已存在"
                 },
                 comfirmPassword:{
                     equalTo: e + "两次密码不一致"

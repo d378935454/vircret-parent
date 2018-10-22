@@ -107,7 +107,7 @@
     }
 
     laydate.render({
-        elem: '#certificate_begin_time'
+        elem: '#street_begin_time'
     });
 
     $.validator.setDefaults({
@@ -124,8 +124,19 @@
         var e = "<i class='fa fa-times-circle'></i> ";
         $("#viladate_form").validate({
             rules: {
-                certificateName: {
-                    required: true
+                streetName: {
+                    required: true,
+                    remote: {
+                        url: "${ctxPath}/checkUnique",
+                        data:{
+                            user_name:function(){
+                                return $("#user_name").val();
+                            },
+                            table:function(){
+                                return "talent_user";
+                            }
+                        }
+                    }
                 },
                 password:{
                     required: true
@@ -136,8 +147,9 @@
                 }
             },
             messages: {
-                certificateName: {
-                    required: e + "请输入练考计划名称"
+                streetName: {
+                    required: e + "请输入练考计划名称",
+                    remote: e + "该用户名已存在"
                 },
                 password:{
                     required: e + "请输入用户密码"

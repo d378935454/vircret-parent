@@ -8,14 +8,20 @@
             <div class="ibox-content">
                 <form class="form-horizontal m-t" id="viladate_form">
                     <div class="form-group">
-                        <label for="certificate_name" class="col-sm-3 control-label">证书/证件名称：</label>
+                        <label for="street_name" class="col-sm-3 control-label">街道名称：</label>
                         <div class="col-sm-8">
-                            <input id="certificate_name" placeholder="请输入证书/证件名称" name="certificateName" class="form-control" type="text" required>
+                            <input id="street_name" placeholder="请输入街道名称" name="streetName" class="form-control" type="text" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="certificate_name" class="col-sm-3 control-label">备注：</label>
+                        <label for="street_address" class="col-sm-3 control-label">详细地址：</label>
+                        <div class="col-sm-8">
+                            <input id="street_address" placeholder="请输入街道详细地址" name="streetAddress" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="memo" class="col-sm-3 control-label">备注：</label>
                         <div class="col-sm-8">
                             <textarea name="memo" class="form-control" id="memo" rows="5" cols="70"></textarea>
                         </div>
@@ -68,16 +74,16 @@
         var e = "<i class='fa fa-times-circle'></i> ";
         $("#viladate_form").validate({
             rules: {
-                certificateName: {
+                streetName: {
                     required: true,
                     remote: {
                         url: "${ctxPath}/checkUnique",
                         data:{
-                            certificate_name:function(){
-                                return $("#certificate_name").val();
+                            street_name:function(){
+                                return $("#street_name").val();
                             },
                             table:function(){
-                                return "talent_certificate";
+                                return "talent_street";
                             }
                         }
                     }
@@ -86,13 +92,13 @@
             messages: {
                 certificateName: {
                     required: e + "请输入练考计划名称",
-                    remote: e + "该名称已存在"
+                    remote: e + "该街道名已存在"
                 }
             },
             submitHandler: function() {
                 $.ajax({
                     type : "POST",
-                    url:"${ctxPath}/certificate/add",
+                    url:"${ctxPath}/street/add",
                     data : $('#viladate_form').serialize(),
                     success: function(data){
                         if(data['status']==1){

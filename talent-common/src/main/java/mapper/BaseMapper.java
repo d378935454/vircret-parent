@@ -8,8 +8,8 @@ import java.util.Map;
 
 public interface BaseMapper<T> extends Mapper<T>, MySqlMapper<T> {
 
-    List<T> selectByInfo(T t);
+    List<T> selectByInfo(Object o);
 
-    List<T> selectByInfo(Map<String,Object> map);
+    int batchDel(Map<String, Object> map);
 
 }

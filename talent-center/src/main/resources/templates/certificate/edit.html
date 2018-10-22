@@ -22,7 +22,7 @@
 
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
-                            <input type="hidden" name="certificateId" value="${obj.certificateId}">
+                            <input type="hidden" name="certificateId" id="certificate_id" value="${obj.certificateId}">
                             <button class="btn btn-primary" type="submit">提交</button>
                             <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                         </div>
@@ -70,12 +70,27 @@
         $("#viladate_form").validate({
             rules: {
                 certificateName: {
-                    required: true
+                    required: true,
+                    remote: {
+                        url: "${ctxPath}/checkUnique",
+                        data:{
+                            certificate_name:function(){
+                                return $("#certificate_name").val();
+                            },
+                            table:function(){
+                                return "talent_certificate";
+                            },
+                            id:function () {
+                                return "certificate_id !="+$("#certificate_id").val();
+                            }
+                        }
+                    }
                 }
             },
             messages: {
                 certificateName: {
-                    required: e + "请输入练考计划名称"
+                    required: e + "请输入练考计划名称",
+                    remote: e + "该名称已经存在"
                 }
             },
             submitHandler: function() {
