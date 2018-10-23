@@ -139,7 +139,7 @@ public class StreetController extends BaseController{
                             @RequestParam(required = false) String userName,
                             @RequestParam(required = false) String realName,
                             @RequestParam(required = false) String userTel,
-                            @RequestParam(required = false) String streetId
+                            @RequestParam(required = false) long streetId
     ){
         //组装搜索条件
         User user = new User();
@@ -147,7 +147,7 @@ public class StreetController extends BaseController{
         if(userName!=null && userName!="") user.setUserName(userName);
         if(realName!=null && realName!="") user.setRealName(realName);
         if(userTel!=null && userTel!="") user.setUserTel(userTel);
-        user.setStreetId((long)Integer.parseInt(streetId));
+        user.setStreetId(streetId);
 //        user.setStreetId((long)Integer.parseInt(streetId));
 
         //分页查询
@@ -188,7 +188,7 @@ public class StreetController extends BaseController{
 //        User user = userService.selectByPrimaryKey((long)Integer.parseInt(primaryKey));
         User user = userService.selectByPrimaryKey(primaryKey);
         model.addAttribute("obj",user);
-        return "/user/edit.html";
+        return "/street/edit_user.html";
     }
 
     @ResponseBody
@@ -198,8 +198,10 @@ public class StreetController extends BaseController{
         user.setUpdateId(sessionUser.getUserId());
         user.setUpdateName(sessionUser.getUserName());
         user.setUpdateTime(DateHelper.getCurrentDate());
+        if(user.getPassword()!=null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.updateByPrimaryKeySelective(user);
         RSTFulBody rstFulBody = new RSTFulBody();
+        rstFulBody.data(user.getStreetId()+"");
         if (res > 0) rstFulBody.success("修改成功！");
         else rstFulBody.fail("修改失败！");
         return rstFulBody;
@@ -214,12 +216,13 @@ public class StreetController extends BaseController{
 
     @ResponseBody
     @RequestMapping("batch_del_user")
-    public RSTFulBody batchDelUser(@RequestParam(required = true) String ids){
+    public RSTFulBody batchDelUser(@RequestParam(required = true) String ids,String streetId){
 
         Map<String, Object> map = new HashMap<>();
         map.put("ids",ids);
         int res = userService.batchDel(map);
         RSTFulBody rstFulBody=new RSTFulBody();
+        rstFulBody.data(streetId);
         if(res>0) rstFulBody.success(res);
         else  rstFulBody.fail("删除失败！");
         return rstFulBody;

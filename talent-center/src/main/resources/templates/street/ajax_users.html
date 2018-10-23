@@ -40,8 +40,8 @@
         <td>${list.updateTime,"yyyy-MM-dd"}</td>
         <td>
             @if(list.userName!='admin'){
-            <a href="${ctxPath}/user/edit.html?primaryKey=${list.userId}&streetId=${list.streetId}"><i class="glyphicon glyphicon-pencil"></i></a>
-            <a href="${ctxPath}/user/del.html?userId=${list.userId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+            <a href="${ctxPath}/street/edit_user.html?primaryKey=${list.userId}&streetId=${list.streetId}"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="${ctxPath}/street/del_user.html?userId=${list.userId}&streetId=${list.streetId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
             @}
         </td>
     </tr>
