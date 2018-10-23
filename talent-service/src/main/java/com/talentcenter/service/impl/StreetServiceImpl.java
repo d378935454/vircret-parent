@@ -83,4 +83,9 @@ public class StreetServiceImpl implements StreetService {
     public int batchDel(Map<String, Object> map) {
         return streetMapper.batchDel(map);
     }
+
+    @Override
+    public int delStreetUser(Map<String, Object> map) {
+        return streetMapper.delStreetUser(map);
+    }
 }

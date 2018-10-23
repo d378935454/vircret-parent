@@ -2,7 +2,10 @@
     <thead>
     <tr>
         <th><input type="checkbox" id="check_all"></th>
-        <th>街道名称</th>
+        <th>用户名</th>
+        <th>真实姓名</th>
+        <th>联系电话</th>
+        <th>角色</th>
         <th>备注</th>
         <th>添加人</th>
         <th>添加时间</th>
@@ -14,17 +17,32 @@
     <tbody>
     @for(list in page_info.list){
     <tr>
-        <td><input type="checkbox" class="i-checks" name="input[]" value="${list.streetId}"></td>
-        <td>${list.streetName}</td>
+        <td>@if(list.userName!='admin'){
+            <input type="checkbox" class="i-checks" name="input[]" value="${list.userId}">
+            @}
+        </td>
+        <td>${list.userName}</td>
+        <td>${list.realName}</td>
+        <td>${list.userTel}</td>
+        <td>
+            @if(list.userType==0){
+            超级管理员
+            @}else if(list.userType==1){
+            管理员
+            @}else{
+            窗口服务人员
+            @}
+        </td>
         <td>${list.memo}</td>
         <td>${list.createName}</td>
         <td>${list.createTime,"yyyy-MM-dd"}</td>
         <td>${list.updateName}</td>
         <td>${list.updateTime,"yyyy-MM-dd"}</td>
         <td>
-            <a href="${ctxPath}/street/users.html?streetId=${list.streetId}" title="管理员"><i class="glyphicon glyphicon-user"></i></a>&nbsp;&nbsp;&nbsp;
-            <a href="${ctxPath}/street/edit.html?streetId=${list.streetId}" title="编辑"><i class="glyphicon glyphicon-pencil"></i></a>&nbsp;&nbsp;&nbsp;
-            <a href="${ctxPath}/street/del.html?streetId=${list.streetId}"  title="删除" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+            @if(list.userName!='admin'){
+            <a href="${ctxPath}/user/edit.html?primaryKey=${list.userId}&streetId=${list.streetId}"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="${ctxPath}/user/del.html?userId=${list.userId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+            @}
         </td>
     </tr>
     @}

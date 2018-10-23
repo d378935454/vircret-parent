@@ -42,4 +42,7 @@
     <delete id="batchDel" parameterType="Map">
     UPDATE talent_street SET del=0 WHERE street_id IN (${ids});
   </delete>
+    <delete id="delStreetUser" parameterType="Map">
+    UPDATE talent_user SET del=0 WHERE street_id IN (${ids});
+  </delete>
 </mapper>

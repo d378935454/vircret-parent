@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.persistence.Table;
 
-@Data
 @Table(name="talent_demo")
 public class Demo {
     private Long id;
@@ -12,4 +11,28 @@ public class Demo {
     private String name;
 
     private Integer age;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 }

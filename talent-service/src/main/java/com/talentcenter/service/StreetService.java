@@ -10,4 +10,6 @@ public interface StreetService extends BaseService<Street> {
 
     int batchDel(Map<String, Object> map);
 
+    int delStreetUser(Map<String,Object> map);
+
 }
