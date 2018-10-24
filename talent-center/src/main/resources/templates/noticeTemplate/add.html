@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 @layout("/layout/_form_layout.html"){
-<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+<link href="/css/plugins/simditor/simditor.css" rel="stylesheet">
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-10">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
                 <form class="form-horizontal m-t" id="viladate_form">
                     <div class="form-group">
-                        <label for="notice_template_name" class="col-sm-3 control-label">模板名称：</label>
-                        <div class="col-sm-8">
+                        <label for="notice_template_name" class="col-sm-2 control-label">模板名称：</label>
+                        <div class="col-sm-10">
                             <input id="notice_template_name" placeholder="请输入模板名称" name="noticeTemplateName" class="form-control" type="text" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="notice_template_name" class="col-sm-3 control-label">公告内容：</label>
-                        <div class="col-sm-8">
-                            <textarea name="noticeTemplateContent" class="form-control" id="notice_template_content" rows="5" cols="70"></textarea>
+                        <label for="notice_template_name" class="col-sm-2 control-label">模板内容：<span style="color:red">*</span></label>
+                        <div class="col-sm-10">
+                            <textarea id="editor" name="noticeTemplateContent" required placeholder="请输入模板内容" autofocus></textarea>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="notice_template_name" class="col-sm-3 control-label">备注：</label>
-                        <div class="col-sm-8">
+                        <label for="notice_template_name" class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-10">
                             <textarea name="memo" class="form-control" id="memo" rows="5" cols="70"></textarea>
                         </div>
                     </div>
@@ -38,8 +38,24 @@
 </div>
 @}
 </body>
-<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script type="text/javascript" src="/js/plugins/simditor/module.js"></script>
+<script type="text/javascript" src="/js/plugins/simditor/hotkeys.js"></script>
+<script type="text/javascript" src="/js/plugins/simditor/simditor.js"></script>
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        var editor = new Simditor({
+            textarea: $('#editor'),
+            upload: false,
+            toolbar: [
+                'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale',
+                'color', 'ol', 'ul', 'blockquote', 'table', 'link', 'hr', 'indent',
+                'outdent', 'alignment'
+            ]
+            //optional options
+        });
+    });
+
     toastr.options = {
         "closeButton": true,
         "debug": true,
@@ -55,10 +71,6 @@
         "hideMethod": "fadeOut"
     }
 
-    laydate.render({
-        elem: '#notice_template_begin_time'
-    });
-
     $.validator.setDefaults({
         highlight: function (e) {
             $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
@@ -69,35 +81,47 @@
         }, errorClass: "help-block m-b-none", validClass: "help-block m-b-none"
     }), $().ready(function () {
         // $("#commentForm").validate();
-        $(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});
+        $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
         var e = "<i class='fa fa-times-circle'></i> ";
         $("#viladate_form").validate({
             rules: {
-                notice_templateName: {
-                    required: true
+                noticeTemplateName: {
+                    required: true,
+                    remote: {
+                        url: "${ctxPath}/checkUnique",
+                        data:{
+                            notice_template_name:function(){
+                                return $("#notice_template_name").val();
+                            },
+                            table:function(){
+                                return "talent_notice_template";
+                            }
+                        }
+                    }
                 }
             },
             messages: {
-                notice_templateName: {
-                    required: e + "请输入公告模板名称"
+                noticeTemplateName: {
+                    required: e + "请输入公告模板名称",
+                    remote: e + "该模板名称已存在"
                 }
             },
-            submitHandler: function() {
+            submitHandler: function () {
                 $.ajax({
-                    type : "POST",
-                    url:"${ctxPath}/noticeTemplate/add",
-                    data : $('#viladate_form').serialize(),
-                    success: function(data){
-                        if(data['status']==1){
+                    type: "POST",
+                    url: "${ctxPath}/noticeTemplate/add",
+                    data: $('#viladate_form').serialize(),
+                    success: function (data) {
+                        if (data['status'] == 1) {
                             toastr.success(data['body']);
-                            setTimeout('window.location.href="/noticeTemplate/index.html"',900);
-                        }else{
+                            setTimeout('window.location.href="/noticeTemplate/index.html"', 900);
+                        } else {
                             toastr.success(data['body']);
                         }
                     }
                 });
             }
-        }),$('input[required]').parent().prev().append(
+        }), $('input[required]').parent().prev().append(
             '<span style="color:red">*</span>'
         );
     });
