@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static util.HtmlUtil.delHTMLTag;
+
 @Controller
 @RequestMapping("/noticeTemplate")
 public class NoticeTemplateController extends BaseController{
@@ -52,6 +54,10 @@ public class NoticeTemplateController extends BaseController{
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<NoticeTemplate> noticeTemplates = noticeTemplateService.select(noticeTemplate);
+
+        for (NoticeTemplate nt: noticeTemplates) {
+            nt.setNoticeTemplateContent(delHTMLTag(nt.getNoticeTemplateContent()));
+        }
 
         PageInfo<NoticeTemplate> pageInfo= new PageInfo<>(noticeTemplates);
         String pageStr = makePageHtml(pageInfo);
