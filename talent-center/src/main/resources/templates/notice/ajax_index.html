@@ -3,7 +3,6 @@
     <tr>
         <th><input type="checkbox" id="check_all"></th>
         <th>公告名称</th>
-        <th>公告分类</th>
         <th>公告内容</th>
         <th>强制阅读</th>
         <th>公告分类</th>
@@ -20,10 +19,22 @@
     <tr>
         <td><input type="checkbox" class="i-checks" name="input[]" value="${list.noticeId}"></td>
         <td>${list.noticeName}</td>
-        <td>${list.noticeType}</td>
         <td>${list.noticeContent}</td>
-        <td>${list.noticeReadeType}</td>
-        <td>${list.noticeType}</td>
+        <td>
+            @if(list.noticeReadeType==0){
+            否
+            @}else{
+            是
+            @}
+        </td>
+        <td>  @if(list.noticeType==0){
+            企业
+            @}else if(list.noticeType==1){
+            个人
+            @}else{
+            所有人
+            @}
+        </td>
         <td>${list.memo}</td>
         <td>${list.createName}</td>
         <td>${list.createTime,"yyyy-MM-dd"}</td>

@@ -111,9 +111,9 @@ public class NoticeController extends BaseController{
         notice.setUpdateId(sessionUser.getUserId());
         notice.setUpdateName(sessionUser.getUserName());
         notice.setUpdateTime(DateHelper.getCurrentDate());
-        NoticeTemplate noticeTemplate = noticeTemplateService.selectByPrimaryKey(notice.getNoticeType());
+       /* NoticeTemplate noticeTemplate = noticeTemplateService.selectByPrimaryKey(notice.getNoticeType());
         long str = Long.parseLong(noticeTemplate.getNoticeTemplateName());
-        notice.setNoticeType(str);
+        notice.setNoticeType(str);*/
         int res = noticeService.updateByPrimaryKeySelective(notice);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");
