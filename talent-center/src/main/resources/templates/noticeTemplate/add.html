@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_form_layout.html"){
+<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+<div class="row">
+    <div class="col-sm-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="viladate_form">
+                    <div class="form-group">
+                        <label for="notice_template_name" class="col-sm-3 control-label">模板名称：</label>
+                        <div class="col-sm-8">
+                            <input id="notice_template_name" placeholder="请输入模板名称" name="noticeTemplateName" class="form-control" type="text" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notice_template_name" class="col-sm-3 control-label">公告内容：</label>
+                        <div class="col-sm-8">
+                            <textarea name="noticeTemplateContent" class="form-control" id="notice_template_content" rows="5" cols="70"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notice_template_name" class="col-sm-3 control-label">备注：</label>
+                        <div class="col-sm-8">
+                            <textarea name="memo" class="form-control" id="memo" rows="5" cols="70"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-3">
+                            <button class="btn btn-primary" type="submit">提交</button>
+                            <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@}
+</body>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script type="text/javascript">
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    laydate.render({
+        elem: '#notice_template_begin_time'
+    });
+
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        }, success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        }, errorElement: "span", errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent())
+        }, errorClass: "help-block m-b-none", validClass: "help-block m-b-none"
+    }), $().ready(function () {
+        // $("#commentForm").validate();
+        $(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#viladate_form").validate({
+            rules: {
+                notice_templateName: {
+                    required: true
+                }
+            },
+            messages: {
+                notice_templateName: {
+                    required: e + "请输入公告模板名称"
+                }
+            },
+            submitHandler: function() {
+                $.ajax({
+                    type : "POST",
+                    url:"${ctxPath}/noticeTemplate/add",
+                    data : $('#viladate_form').serialize(),
+                    success: function(data){
+                        if(data['status']==1){
+                            toastr.success(data['body']);
+                            setTimeout('window.location.href="/noticeTemplate/index.html"',900);
+                        }else{
+                            toastr.success(data['body']);
+                        }
+                    }
+                });
+            }
+        }),$('input[required]').parent().prev().append(
+            '<span style="color:red">*</span>'
+        );
+    });
+
+</script>
+</html>

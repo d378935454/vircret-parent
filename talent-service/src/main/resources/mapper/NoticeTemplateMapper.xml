@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.talentcenter.dao.NoticeTemplateMapper">
+    <delete id="batchDel" parameterType="Map">
+    UPDATE talent_notice_template SET del=0 WHERE notice_template_id IN (${ids});
+  </delete>
+</mapper>
