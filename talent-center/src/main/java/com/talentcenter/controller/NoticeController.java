@@ -78,9 +78,9 @@ public class NoticeController extends BaseController{
         User sessionUser = getSessionUser();
         notice.setCreateName(sessionUser.getUserName());
         notice.setCreateId(sessionUser.getUserId());
-        NoticeTemplate noticeTemplate = noticeTemplateService.selectByPrimaryKey(notice.getNoticeType());
+        /*NoticeTemplate noticeTemplate = noticeTemplateService.selectByPrimaryKey(notice.getNoticeType());
          long str = Long.parseLong(noticeTemplate.getNoticeTemplateName());
-        notice.setNoticeType(str);
+        notice.setNoticeType(str);*/
         int res = noticeService.insertSelective(notice);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("添加成功！");
