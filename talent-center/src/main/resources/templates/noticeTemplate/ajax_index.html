@@ -3,7 +3,7 @@
     <tr>
         <th><input type="checkbox" id="check_all"></th>
         <th>模板名称</th>
-        <th>内容</th>
+        <th style="max-width: 300px;">内容</th>
         <th>备注</th>
         <th>添加人</th>
         <th>添加时间</th>
@@ -17,7 +17,7 @@
     <tr>
         <td><input type="checkbox" class="i-checks" name="input[]" value="${list.noticeTemplateId}"></td>
         <td>${list.noticeTemplateName}</td>
-        <td>${list.noticeTemplateContent}</td>
+        <td><div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;max-width: 300px;">${list.noticeTemplateContent}adjlsjslkdjaldjaljds;ajdsl;asjdflasjdf;ajd;adjlasdjfaljdlasjlakjla</div></td>
         <td>${list.memo}</td>
         <td>${list.createName}</td>
         <td>${list.createTime,"yyyy-MM-dd"}</td>
