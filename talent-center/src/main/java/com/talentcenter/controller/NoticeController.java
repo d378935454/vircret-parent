@@ -79,7 +79,7 @@ public class NoticeController extends BaseController{
         notice.setCreateName(sessionUser.getUserName());
         notice.setCreateId(sessionUser.getUserId());
         NoticeTemplate noticeTemplate = noticeTemplateService.selectByPrimaryKey(notice.getNoticeType());
-        long str = Long.parseLong(noticeTemplate.getNoticeTemplateName());
+         long str = Long.parseLong(noticeTemplate.getNoticeTemplateName());
         notice.setNoticeType(str);
         int res = noticeService.insertSelective(notice);
         RSTFulBody rstFulBody = new RSTFulBody();
