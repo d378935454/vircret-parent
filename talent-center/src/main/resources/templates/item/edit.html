@@ -25,7 +25,10 @@
                             <select  name="itemTypeId" id="item_type_id" class="form-control"type="text">
                                 <option selected="selected" value="0">--请选择--</option>
                                 @for(list in itemTypes){
-                                <option value="${list.itemTypeId}">${list.itemTypeName}</option>
+                                <option @if(obj.itemTypeId==list.itemTypeId){
+                                        selected
+                                        @}
+                                        value="${list.itemTypeId}">${list.itemTypeName}</option>
                                 @}
                             </select>
                         </div>
