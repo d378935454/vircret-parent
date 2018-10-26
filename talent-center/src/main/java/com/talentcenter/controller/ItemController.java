@@ -4,11 +4,12 @@ import RSTFul.RSTFulBody;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.talentcenter.entity.Item;
+import com.talentcenter.entity.ItemConfig;
 import com.talentcenter.entity.ItemType;
 import com.talentcenter.entity.User;
+import com.talentcenter.service.ItemConfigService;
 import com.talentcenter.service.ItemService;
 import com.talentcenter.service.ItemTypeService;
-import util.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,15 +23,13 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/item")
-public class ItemController extends BaseController{
+public class ItemController extends BaseController {
     @Autowired
     private ItemService itemService;
     @Autowired
     private ItemTypeService itemTypeService;
-
-    public ItemController(ItemTypeService itemTypeService) {
-        this.itemTypeService = itemTypeService;
-    }
+    @Autowired
+    private ItemConfigService itemConfigService;
 
    /* @Autowired
     private RoleItemService roleItemService;*/
@@ -40,38 +39,39 @@ public class ItemController extends BaseController{
      * @param model
      * @return
      */
+
     @RequestMapping("/index.html")
-    public String index(Model model){
+    public String index(Model model) {
         return "/item/index.html";
     }
 
     @RequestMapping("/ajax_index")
     public String ajaxIndex(Model model, int pageNum, int pageSize,
                             @RequestParam(required = false) String itemName
-    ){
+    ) {
         //组装搜索条件
         /*Map<String,Object> map=new HashMap<>();
-        if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
+        if(configTrueName!=null && configTrueName!="") map.put("configTrueName",configTrueName);
         if(examId!=null && examId!="") map.put("examId",examId);
-        if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
+        if(configSex!=null && configSex!="") map.put("configSex",configSex);*/
         Item item = new Item();
         item.setDel(true);
-        if(itemName!=null && itemName!="") item.setItemName(itemName);
+        if (itemName != null && itemName != "") item.setItemName(itemName);
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<Item> items = itemService.select(item);
 
-        PageInfo<Item> pageInfo= new PageInfo<>(items);
+        PageInfo<Item> pageInfo = new PageInfo<>(items);
         String pageStr = makePageHtml(pageInfo);
-        model.addAttribute("page_info",pageInfo);
-        model.addAttribute("pages",pageStr);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
         return "/item/ajax_index.html";
     }
 
     @RequestMapping("add.html")
     public String addUI(Model model) {
-        List<ItemType> itemTypes= itemTypeService.selectAll();
-        model.addAttribute("itemTypes",itemTypes);
+        List<ItemType> itemTypes = itemTypeService.selectAll();
+        model.addAttribute("itemTypes", itemTypes);
         return "/item/add.html";
     }
 
@@ -93,10 +93,10 @@ public class ItemController extends BaseController{
     @RequestMapping("edit.html")
     public String editUI(Model model, String itemId) {
         Item item = itemService.selectByPrimaryKey((long) Integer.parseInt(itemId));
-        model.addAttribute("itemId",itemId);
-        model.addAttribute("obj",item);
-        List<ItemType> itemTypes= itemTypeService.selectAll();
-        model.addAttribute("itemTypes",itemTypes);
+        model.addAttribute("itemId", itemId);
+        model.addAttribute("obj", item);
+        List<ItemType> itemTypes = itemTypeService.selectAll();
+        model.addAttribute("itemTypes", itemTypes);
         return "/item/edit.html";
     }
 
@@ -106,7 +106,6 @@ public class ItemController extends BaseController{
         User sessionUser = getSessionUser();
         item.setUpdateId(sessionUser.getUserId());
         item.setUpdateName(sessionUser.getUserName());
-        item.setUpdateTime(DateHelper.getCurrentDate());
         ItemType itemType = itemTypeService.selectByPrimaryKey(item.getItemTypeId());
         item.setItemTypeName(itemType.getItemTypeName());
         int res = itemService.updateByPrimaryKeySelective(item);
@@ -117,7 +116,7 @@ public class ItemController extends BaseController{
     }
 
     @RequestMapping("del.html")
-    public String delUser(Item item){
+    public String delConfig(Item item) {
         item.setDel(false);
         int res = itemService.updateByPrimaryKeySelective(item);
         return "redirect:/item/index.html";
@@ -125,18 +124,105 @@ public class ItemController extends BaseController{
 
     @ResponseBody
     @RequestMapping("batch_del")
-    public RSTFulBody batchDel(@RequestParam(required = true) String ids){
+    public RSTFulBody batchDel(@RequestParam(required = true) String ids) {
 
         Map<String, Object> map = new HashMap<>();
-        map.put("ids",ids);
+        map.put("ids", ids);
         int res = itemService.batchDel(map);
-        RSTFulBody rstFulBody=new RSTFulBody();
-        if(res>0) rstFulBody.success(res);
-        else  rstFulBody.fail("删除失败！");
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if (res > 0) rstFulBody.success(res);
+        else rstFulBody.fail("删除失败！");
+        return rstFulBody;
+
+    }
+
+    @RequestMapping("config.html")
+    public String config(Model model,Integer itemId){
+        model.addAttribute("itemId",itemId);
+        return "/item/config.html";
+    }
+
+    @RequestMapping("/ajax_config")
+    public String ajaxConfigs(Model model, int pageNum, int pageSize,
+                              @RequestParam(required = false) String configName,
+                              @RequestParam(required = false) String realName,
+                              @RequestParam(required = false) String itemId
+
+    ) {
+
+
+        //分页查询
+        PageHelper.startPage(pageNum, pageSize);
+        List<ItemConfig> config = itemConfigService.selectAll();
+        PageInfo<ItemConfig> pageInfo = new PageInfo<>(config);
+        String pageStr = makePageHtml(pageInfo);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
+        return "/item/ajax_config.html";
+    }
+
+    @RequestMapping("add_config.html")
+    public String addConfig(Model model, String itemId) {
+        model.addAttribute("itemId", itemId);
+        return "/item/add_config.html";
+    }
+
+    @ResponseBody
+    @RequestMapping("add_config")
+    public RSTFulBody addConfig(ItemConfig config) {
+   /*     ItemConfig sessionConfig = getSessionItemConfig();
+        config.setCreateName(sessionConfig.get);
+        config.setCreateId(sessionConfig.getConfigId());
+        config.setPassword(DigestUtils.md5DigestAsHex(config.getPassword().getBytes()));
+        config.setConfigNature(2);*/
+//        config.setAcceptBegin();
+        int res = itemConfigService.insertSelective(config);
+        RSTFulBody rstFulBody = new RSTFulBody();
+        rstFulBody.data(config.getItemId() + "");
+        if (res > 0) rstFulBody.success("添加成功！");
+        else rstFulBody.fail("添加失败！");
         return rstFulBody;
     }
 
-    public void setItemTypeService(ItemTypeService itemTypeService) {
-        this.itemTypeService = itemTypeService;
+    @RequestMapping("edit_config.html")
+    public String editConfig(Model model, long primaryKey) {
+//        Config config = configService.selectByPrimaryKey((long)Integer.parseInt(primaryKey));
+        ItemConfig config = itemConfigService.selectByPrimaryKey(primaryKey);
+        model.addAttribute("obj", config);
+        return "/item/edit_config.html";
     }
+
+    @ResponseBody
+    @RequestMapping("edit_config")
+    public RSTFulBody editConfig(ItemConfig config) {
+
+        int res = itemConfigService.updateByPrimaryKeySelective(config);
+        RSTFulBody rstFulBody = new RSTFulBody();
+        rstFulBody.data(config.getItemId() + "");
+        if (res > 0) rstFulBody.success("修改成功！");
+        else rstFulBody.fail("修改失败！");
+        return rstFulBody;
+    }
+
+    @RequestMapping("del_config.html")
+    public String del(ItemConfig config, String itemId) {
+        config.setDel(false);
+        int res = itemConfigService.updateByPrimaryKeySelective(config);
+        return "redirect:/item/config.html?itemId=" + itemId;
+    }
+
+    @ResponseBody
+    @RequestMapping("batch_del_config")
+    public RSTFulBody batchDelConfig(@RequestParam(required = true) String ids, String itemId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("ids", ids);
+        int res = itemConfigService.batchDel(map);
+        RSTFulBody rstFulBody = new RSTFulBody();
+        rstFulBody.data(itemId);
+        if (res > 0) rstFulBody.success(res);
+        else rstFulBody.fail("删除失败！");
+        return rstFulBody;
+    }
+
 }

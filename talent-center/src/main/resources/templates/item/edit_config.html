@@ -197,19 +197,19 @@
         var e = "<i class='fa fa-times-circle'></i> ";
         $("#viladate_form").validate({
             rules: {
-                userName: {
+                itemConfigId: {
                     required: true,
                     remote: {
                         url: "${ctxPath}/checkUnique",
                         data:{
-                            user_name:function(){
-                                return $("#user_name").val();
+                            item_config_id:function(){
+                                return $("#item_config_id").val();
                             },
                             table:function(){
-                                return "talent_user";
+                                return "talent_item_config";
                             },
                             id:function () {
-                                return "user_id !="+$("#user_id").val();
+                                return "item_config_id !="+$("#item_config_id").val();
                             }
                         }
                     }
