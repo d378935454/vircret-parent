@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.talentcenter.dao.ItemConfigMapper">
+
+    <resultMap id="BaseResultMap" type="com.talentcenter.entity.ItemConfig">
+        <id column="item_config_id" jdbcType="INTEGER" property="item_configId" />
+        <result column="del" jdbcType="BIT" property="del" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="create_id" jdbcType="INTEGER" property="createId" />
+        <result column="create_name" jdbcType="VARCHAR" property="createName" />
+        <result column="update_id" jdbcType="INTEGER" property="updateId" />
+        <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+        <result column="memo" jdbcType="VARCHAR" property="memo" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        item_config_id, del, create_time, update_time, create_id, create_name,
+        update_id, update_name, memo
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="item_configId !=null and item_configId != ''">
+                AND item_config_id = #{item_configId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectByInfo" resultMap="BaseResultMap" parameterType="java.lang.Object">
+        select
+        <include refid="Base_Column_List"/>
+        from talent_item_config
+        <include refid="where"/>
+    </select>
+
+    <delete id="batchDel" parameterType="Map">
+    UPDATE talent_item_config SET del=0 WHERE item_config_id IN (${ids});
+  </delete>
+</mapper>

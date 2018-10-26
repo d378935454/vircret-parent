@@ -1,0 +1,95 @@
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th><input type="checkbox" id="check_all"></th>
+        <th>受理开始时间</th>
+        <th>受理结束时间</th>
+        <th>生效时间</th>
+        <th>窗口办理</th>
+        <th>补助方式</th>
+        <th>总补助金额</th>
+        <th>每份补助金额</th>
+        <th>补助发放方式</th>
+        <th>发放频率</th>
+        <th>服务描述</th>
+        <th>备注</th>
+        <th>添加人</th>
+        <th>添加时间</th>
+        <th>编辑人</th>
+        <th>编辑时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(list in page_info.list){
+    </tr>
+    <td></td>
+        <td>${list.itemConfigAcceptBegin,"yyyy-MM-dd"}</td>
+        <td>${list.itemConfigAcceptEnd,"yyyy-MM-dd"}</td>
+        <td>${list.itemConfigEffect,"yyyy-MM-dd"}</td>
+        <td>
+            @if(list.itemConfigFace==0){
+            否
+            @}else{
+            是
+            @}
+        </td>
+        <td>
+            @if(list.itemConfigType==0){
+            服务
+            @}else{
+            现金
+            @}
+        </td>
+        <td>${list.itemConfigAmountTotal}</td>
+        <td>${list.itemConfigAmountPer}</td>
+        <td>
+            @if(list.itemConfigSendType==0){
+            一次性
+            @}else if(list.itemConfigSendType==1){
+            月
+            @}else{
+            年
+            @}
+        </td>
+        <td>${list.itemConfigSendRate}</td>
+        <td>${list.itemConfigService}</td>
+        <td>${list.memo}</td>
+        <td>${list.createName}</td>
+        <td>${list.createTime,"yyyy-MM-dd"}</td>
+        <td>${list.updateName}</td>
+        <td>${list.updateTime,"yyyy-MM-dd"}</td>
+        <td>
+            <a href="${ctxPath}/item/edit_config.html?primaryKey=${list.itemConfigId}&itemId=${list.itemId}"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="${ctxPath}/item/del_config.html?itemConfigId=${list.itemConfigId}&itemId=${list.itemId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+        </td>
+    </tr>
+    @}
+    </tbody>
+</table>
+<div class="col-sm-8 pull-right text-right">${pages}</div>
+<script>
+    $(".pagination  a").click(function(){
+        var page = this.attributes["data-p"].nodeValue;
+        ajax_get_table('search-form',page);
+       /*console.log(this.attributes["data-p"].nodeValue);
+       console.log(this.attr('data-p'));*/
+    });
+
+    $("#check_all").click(function () {
+        if($('#check_all').is(':checked')) {
+            $(".i-checks").prop("checked", "checked");
+            // $(".i-checks").
+        }else {
+            $(".i-checks").removeAttr("checked");
+        }
+    });
+
+    $(".i-checks").click(function () {
+        if($("input[class='i-checks']:checked").length<10){
+            $("#check_all").prop("checked", false);
+        }else {
+            $("#check_all").prop("checked", true);
+        }
+    });
+</script>

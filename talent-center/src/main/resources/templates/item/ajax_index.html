@@ -26,8 +26,9 @@
         <td>${list.updateName}</td>
         <td>${list.updateTime,"yyyy-MM-dd"}</td>
         <td>
-            <a href="${ctxPath}/item/edit.html?itemId=${list.itemId}"><i class="glyphicon glyphicon-pencil"></i></a>
-            <a href="${ctxPath}/item/del.html?itemId=${list.itemId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+            <a href="${ctxPath}/item/config.html?itemId=${list.itemId}" title="政策配置"><i class="glyphicon glyphicon-user"></i></a>&nbsp;&nbsp;&nbsp;
+            <a href="${ctxPath}/item/edit.html?itemId=${list.itemId}"title="编辑"><i class="glyphicon glyphicon-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+            <a href="${ctxPath}/item/del.html?itemId=${list.itemId}" title="删除"onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
         </td>
     </tr>
     @}
