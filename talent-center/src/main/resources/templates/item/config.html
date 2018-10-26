@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<style>
+    .control-label{
+        margin-top: 5px;
+    }
+</style>
+@layout("/layout/_list_layout.html"){
+<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+    <body class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="ibox float-e-margins">
+                <div class="">
+                    <form id="search-form">
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-lg-3 pull-left">
+                                    <div class="input-group">
+                                        <input type="text" name="itemConfigEffect" id="item_config_effect" placeholder="生效时间" class="date-time input-sm form-control">
+                                    </div>
+
+                                </div>
+                                <a onclick="ajax_get_table('search-form',1)" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> 搜索</a>
+
+
+                                <div class="col-lg-2 pull-right text-right">
+                                    <a href="${ctxPath}/item/add_config.html?itemId=${itemId}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></a>
+                                    <span id="batch_del" class="btn btn-sm btn-primary"><i class="fa fa-trash-o"></i></span>
+                                </div>
+                            </div>
+                            <div class="table-responsive" id="ajax_return">
+
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+@}
+</body>
+<script type="text/javascript">
+
+
+        laydate.render({
+            elem: '#item_config_effect'
+            ,range: true
+        });
+
+
+    var cur_page=1;
+    $(document).ready(function(){
+        ajax_get_table('search-form',1);
+    });
+
+    function ajax_get_table(tab,page){
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type : "POST",
+            url:"${ctxPath}/item/ajax_config?pageNum="+page+"&pageSize=20&itemId=${itemId}",//+tab,
+            data : $('#'+tab).serialize(),// 你的formid
+            success: function(data){
+                $("#ajax_return").html('');
+                $("#ajax_return").append(data);
+            }
+        });
+    }
+
+    $("#batch_del").click(function () {
+        var num = $("input[class='i-checks']:checked").length;
+        if(num==0){
+            swal({type: "warning", title: "", text: "请正确选择要删除的项目。"})
+        }else {
+            swal({
+                title: "您确定要删除这 "+num+" 条信息吗",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "删除",
+                closeOnConfirm: false
+            }, function () {
+                var delIds = "";
+                $("input[class='i-checks']:checked").each(function(i){
+                    if(0==i){
+                        delIds = $(this).val();
+                    }else{
+                        delIds += (","+$(this).val());
+                    }
+                });
+
+                $.ajax({
+                    type : "POST",
+                    url:"${ctxPath}/item/batch_del_config",//+tab,
+                    data : {
+                        ids: delIds
+                    },
+                    success: function(data){
+                        if(data['status']==1){
+                            swal("成功删除"+data['body']+"条数据", "", "success")
+                            setTimeout('window.location.href="/item/config.html?itemId=${itemId}"',900);
+                            ajax_get_table('search-form',cur_page);
+                        }else{
+                            swal({type: "warning", title: "", text: data['body']})
+                        }
+                    }
+                });
+            })
+        }
+    });
+</script>
+</html>
