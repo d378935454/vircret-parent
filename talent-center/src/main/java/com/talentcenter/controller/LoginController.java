@@ -1,20 +1,25 @@
 package com.talentcenter.controller;
 
 import com.talentcenter.entity.User;
+import com.talentcenter.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class LoginController extends BaseController {
 
+    @Autowired
+    UserService userService;
+
     @RequestMapping("/login_check.html")
     public String loginCheck(User user){
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), user.getPassword());
-        String username = user.getUserName();
         try {
             //在调用了login方法后,SecurityManager会收到AuthenticationToken,并将其发送给已配置的Realm执行必须的认证检查
             //每个Realm都能在必要时对提交的AuthenticationTokens作出反应

@@ -35,6 +35,11 @@ public class Menu {
      */
     private Integer sort;
 
+
+    private Integer menuType;
+
+    private Integer menuNature;
+
     /**
      * 状态 0:删除 1:锁定 2:正常
      */
@@ -75,12 +80,12 @@ public class Menu {
      */
     private String updateName;
 
+
     /**
      * 备注
      */
     private String memo;
 
-    private Integer menuType;
 
     @Transient
     private List<Menu> childMenus;

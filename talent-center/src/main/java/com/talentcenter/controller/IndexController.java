@@ -1,6 +1,7 @@
 package com.talentcenter.controller;
 
 import com.talentcenter.entity.Menu;
+import com.talentcenter.entity.User;
 import com.talentcenter.service.CommonService;
 import com.talentcenter.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.*;
  * Created by dell on 2017/11/21.
  */
 @Controller
-public class IndexController {
+public class IndexController extends BaseController {
 
     @Autowired
     private MenuService menuService;
@@ -27,11 +28,13 @@ public class IndexController {
     @RequestMapping("/")
     public  String index(Model model){
 
+        User sessionUser = getSessionUser();
         //获取所有顶级菜单
         Map<String,Object> map = new HashMap<>();
         Menu m = new Menu();
         m.setParentId((long)0);
         m.setMenuType(1);
+        m.setMenuNature(sessionUser.getUserNature());
         m.setDel(1);
         /*map.put("parentId","0");
         map.put("menuType",1);
@@ -45,7 +48,6 @@ public class IndexController {
         for (int i = 0; i < menus.size(); i++) {
             Menu menu = new Menu();
             menu.setParentId(menus.get(i).getMenuId());
-            menu.setMenuType(1);
             menu.setDel(1);
 //            List<Menu> childMenus = menuService.selectByParentId(menus.get(i).getMenuId());
             List<Menu> childMenus = menuService.select(menu);

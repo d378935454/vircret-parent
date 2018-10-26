@@ -8,7 +8,7 @@ import com.talentcenter.entity.ItemType;
 import com.talentcenter.entity.User;
 import com.talentcenter.service.ItemService;
 import com.talentcenter.service.ItemTypeService;
-import com.talentcenter.util.DateHelper;
+import util.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

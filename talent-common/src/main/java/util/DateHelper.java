@@ -1,6 +1,6 @@
-package com.talentcenter.util;
+package util;
 
-import com.github.pagehelper.util.StringUtil;
+import tk.mybatis.mapper.util.StringUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
