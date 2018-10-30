@@ -3,13 +3,8 @@ package com.talentcenter.controller;
 import RSTFul.RSTFulBody;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.talentcenter.entity.Item;
-import com.talentcenter.entity.ItemConfig;
-import com.talentcenter.entity.ItemType;
-import com.talentcenter.entity.User;
-import com.talentcenter.service.ItemConfigService;
-import com.talentcenter.service.ItemService;
-import com.talentcenter.service.ItemTypeService;
+import com.talentcenter.entity.*;
+import com.talentcenter.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +26,11 @@ public class ItemController extends BaseController {
     private ItemTypeService itemTypeService;
     @Autowired
     private ItemConfigService itemConfigService;
+    @Autowired
+    private CertificateService certificateService;
+
+    @Autowired
+    private ItemCertificateService itemCertificateService;
 
    /* @Autowired
     private RoleItemService roleItemService;*/
@@ -163,20 +164,33 @@ public class ItemController extends BaseController {
 
     @RequestMapping("add_config.html")
     public String addConfig(Model model, String itemId) {
+        Item item = itemService.selectByPrimaryKey((long)Integer.parseInt(itemId));
+        Certificate certificate = new Certificate();
+        certificate.setDel(true);
+        List<Certificate> certificates = certificateService.select(certificate);
+        model.addAttribute("item_length",item.getItemLength());
         model.addAttribute("itemId", itemId);
+        model.addAttribute("certificates", certificates);
         return "/item/add_config.html";
     }
 
     @ResponseBody
     @RequestMapping("add_config")
-    public RSTFulBody addConfig(ItemConfig config) {
-   /*     ItemConfig sessionConfig = getSessionItemConfig();
-        config.setCreateName(sessionConfig.get);
-        config.setCreateId(sessionConfig.getConfigId());
-        config.setPassword(DigestUtils.md5DigestAsHex(config.getPassword().getBytes()));
-        config.setConfigNature(2);*/
-//        config.setAcceptBegin();
+    public RSTFulBody addConfig(
+                                ItemConfig config,
+                                @RequestParam(value = "certificates[]") String[] certificates) {
+        
         int res = itemConfigService.insertSelective(config);
+        ArrayList<ItemCertificate> cs = new ArrayList<>();
+        for (String c: certificates) {
+            ItemCertificate itemCertificate = new ItemCertificate();
+            itemCertificate.setItemConfigId(config.getItemConfigId());
+            itemCertificate.setCertificateId((long)Integer.parseInt(c));
+            Certificate certificate = certificateService.selectByPrimaryKey((long)Integer.parseInt(c));
+            itemCertificate.setCertificateName(certificate.getCertificateName());
+            cs.add(itemCertificate);
+        }
+        int num = itemCertificateService.insertList(cs);
         RSTFulBody rstFulBody = new RSTFulBody();
         rstFulBody.data(config.getItemId() + "");
         if (res > 0) rstFulBody.success("添加成功！");
