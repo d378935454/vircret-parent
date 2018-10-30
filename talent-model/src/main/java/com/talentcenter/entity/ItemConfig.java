@@ -26,12 +26,12 @@ public class ItemConfig {
     /**
      *受理开始时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "MM-dd")
     private Date itemConfigAcceptBegin;
     /**
      *受理结束时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "MM-dd")
     private Date itemConfigAcceptEnd;
     /**
      * 生效时间

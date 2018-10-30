@@ -3,11 +3,11 @@ spring:
     active: dev
   session:
     store-type: none
-#  http:
-#    multipart:
-#      enabled: true
-#      max-file-size: 20MB
-#      max-request-size: 20MB
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 150mb
+      max-request-size: 150mb
 beetlsql:
   enabled: false
 beetl:

@@ -9,9 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+
+import static com.talentcenter.util.Upload.upload;
 
 /**
  * Created by dell on 2017/11/21.
@@ -85,24 +87,10 @@ public class IndexController extends BaseController {
         return result;
     }
 
-    /**
-     * 获取用户列表
-     * @param
-     * @return
-     */
-   /* @ApiOperation(value="获取用户列表", notes="分页获取用户列表")
-    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
-    @RequestMapping("getAllUser")
-    public void getAllUser(){
-        PageHelper.startPage(1, 5);
-        *//*List<User> users=userService.getAllUser();
-//        PageInfo
-        System.out.println("-----------"+users);*//*
-    }*/
-
-    @RequestMapping("beetl.html")
-    public String beetlTest(Model model){
-        model.addAttribute("name","hello,world");
-        return "/beetl.html";
+    @ResponseBody
+    @RequestMapping("upload_item")
+    public Map<String,Object> uploadItem(MultipartFile file){
+        Map<String,Object> map = upload(file,0);
+        return map;
     }
 }
