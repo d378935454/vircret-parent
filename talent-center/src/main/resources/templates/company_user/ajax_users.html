@@ -1,0 +1,64 @@
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th><input type="checkbox" id="check_all"></th>
+        <th>用户名</th>
+        <th>真实姓名</th>
+        <th>联系电话</th>
+        <th>备注</th>
+        <th>添加人</th>
+        <th>添加时间</th>
+        <th>编辑人</th>
+        <th>编辑时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(list in page_info.list){
+    <tr>
+        <td>@if(list.userName!='c_user'){
+            <input type="checkbox" class="i-checks" name="input[]" value="${list.userId}">
+            @}
+        </td>
+        <td>${list.userName}</td>
+        <td>${list.realName}</td>
+        <td>${list.userTel}</td>
+        <td>${list.memo}</td>
+        <td>${list.createName}</td>
+        <td>${list.createTime,"yyyy-MM-dd"}</td>
+        <td>${list.updateName}</td>
+        <td>${list.updateTime,"yyyy-MM-dd"}</td>
+        <td>
+            <a href="${ctxPath}/company_user/edit_user.html?userId=${list.userId}"title="编辑"><i class="glyphicon glyphicon-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+            <a href="${ctxPath}/company_user/del_user.html?userId=${list.userId}" title="删除"onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+        </td>
+    </tr>
+    @}
+    </tbody>
+</table>
+<div class="col-sm-8 pull-right text-right">${pages}</div>
+<script>
+    $(".pagination  a").click(function(){
+        var page = this.attributes["data-p"].nodeValue;
+        ajax_get_table('search-form',page);
+       /*console.log(this.attributes["data-p"].nodeValue);
+       console.log(this.attr('data-p'));*/
+    });
+
+    $("#check_all").click(function () {
+        if($('#check_all').is(':checked')) {
+            $(".i-checks").prop("checked", "checked");
+            // $(".i-checks").
+        }else {
+            $(".i-checks").removeAttr("checked");
+        }
+    });
+
+    $(".i-checks").click(function () {
+        if($("input[class='i-checks']:checked").length<10){
+            $("#check_all").prop("checked", false);
+        }else {
+            $("#check_all").prop("checked", true);
+        }
+    });
+</script>

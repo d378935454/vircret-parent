@@ -94,6 +94,7 @@ public class User implements Serializable {
 
     private Long streetId;
 
+    private Long companyId;
     /**
      * 用户性质 0:平台用户  1:企业管理员  2:街道管理员  3:普通用户
      */

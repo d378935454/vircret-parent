@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html>
-<style>
-    .control-label{
-        margin-top: 5px;
-    }
-</style>
 @layout("/layout/_list_layout.html"){
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
     <body class="wrapper wrapper-content animated fadeInRight">
@@ -14,31 +9,21 @@
                 <form id="search-form">
                     <div class="ibox-content">
                         <div class="row">
-                            <div class="col-sm-2">
-                                <label for="user_name" class="control-label pull-left">用户名：</label>
-                                <div class="input-group">
-                                    <input type="text" name="userName" id="user_name" placeholder="用户名" class="input-sm form-control">
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <label for="real_name" class="control-label pull-left">姓名：</label>
+                            <div class="col-lg-2 pull-left">
                                 <div class="input-group">
                                     <input type="text" name="realName" id="real_name" placeholder="姓名" class="input-sm form-control">
                                 </div>
                             </div>
-
-                            <div class="col-sm-2">
-                                <label for="user_tel" class="control-label pull-left">电话：</label>
+                            <div class="col-lg-2 pull-left">
                                 <div class="input-group">
-                                    <input type="text" name="userTel" id="user_tel" placeholder="电话" class="input-sm form-control">
+                                    <input type="text" name="userTel" id="user_tel" placeholder="手机" class="input-sm form-control">
                                 </div>
                             </div>
-
                             <a onclick="ajax_get_table('search-form',1)" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> 搜索</a>
 
 
                             <div class="col-lg-2 pull-right text-right">
-                                <a href="${ctxPath}/street/add_user.html?streetId=${streetId}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></a>
+                                <a href="${ctxPath}/company_user/add_user.html" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></a>
                                 <span id="batch_del" class="btn btn-sm btn-primary"><i class="fa fa-trash-o"></i></span>
                             </div>
                         </div>
@@ -53,17 +38,23 @@
         </div>
 @}
 </body>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
 <script type="text/javascript">
     var cur_page=1;
     $(document).ready(function(){
         ajax_get_table('search-form',1);
     });
 
+    laydate.render({
+        elem: '#exam_time'
+        ,range: true
+    });
+
     function ajax_get_table(tab,page){
         cur_page = page; //当前页面 保存为全局变量
         $.ajax({
             type : "POST",
-            url:"${ctxPath}/street/ajax_users?pageNum="+page+"&pageSize=20&streetId=${streetId}",//+tab,
+            url:"${ctxPath}/company_user/ajax_users?pageNum="+page+"&pageSize=20",//+tab,
             data : $('#'+tab).serialize(),// 你的formid
             success: function(data){
                 $("#ajax_return").html('');
@@ -97,14 +88,14 @@
 
                 $.ajax({
                     type : "POST",
-                    url:"${ctxPath}/street/batch_del_user",//+tab,
+                    url:"${ctxPath}/company_user/batch_del",//+tab,
                     data : {
                         ids: delIds
                     },
                     success: function(data){
                         if(data['status']==1){
                             swal("成功删除"+data['body']+"条数据", "", "success")
-                            setTimeout('window.location.href="/street/users.html?streetId=${streetId}"',900);
+                            // setTimeout('window.location.href="/user/index.html"',900);
                             ajax_get_table('search-form',cur_page);
                         }else{
                             swal({type: "warning", title: "", text: data['body']})
