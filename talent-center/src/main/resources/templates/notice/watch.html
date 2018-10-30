@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_form_layout.html"){
+<link href="/css/plugins/simditor/simditor.css" rel="stylesheet">
+<div class="row">
+    <div class="col-sm-10">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="viladate_form">
+                    <div class="form-group">
+                        <label for="notice_name" class="col-sm-2 control-label">公告名称：</label>
+                        <div class="col-sm-10">
+                            <input id="notice_name" disabled="disabled" name="noticeName" value="${obj.noticeName}" class="form-control" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">公告内容：</label>
+                        <div class="col-sm-10">
+                           ${obj.noticeContent}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">
+                            <input type="hidden" name="noticeId" value="${obj.noticeId}">
+                            <div class="btn btn-white" onclick="window.history.go(-1)">返回</div>
+                        </div>
+                    </div>
+
+                    @for(type in noticeTemplateTypes){
+                    <div id="type-content-${type.noticeTemplateId}" class="hidden">
+                        ${type.noticeTemplateContent}
+                    </div>
+                    @}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@}
+</body>
+<script type="text/javascript" src="/js/plugins/simditor/module.js"></script>
+<script type="text/javascript" src="/js/plugins/simditor/hotkeys.js"></script>
+<script type="text/javascript" src="/js/plugins/simditor/simditor.js"></script>
+<script type="text/javascript">
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    $(document).ready(function () {
+        var editor = new Simditor({
+            textarea: $('#editor'),
+            upload: false,
+            toolbar: [
+                'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale',
+                'color', 'ol', 'ul', 'blockquote', 'table', 'link', 'hr', 'indent',
+                'outdent', 'alignment'
+            ]
+            //optional options
+        });
+
+        $('#notice_template').change(function () {
+            if($(this).val()!=""){
+                editor.setValue($("#type-content-"+$(this).val()).html());
+            }
+        })
+    });
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        }, success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        }, errorElement: "span", errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent())
+        }, errorClass: "help-block m-b-none", validClass: "help-block m-b-none"
+    }), $().ready(function () {
+        // $("#commentForm").validate();
+        $(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#viladate_form").validate({
+            rules: {
+                noticeName: {
+                    required: true
+                }
+            },
+            messages: {
+                noticeName: {
+                    required: e + "请输入练考计划名称"
+                }
+            },
+            submitHandler: function() {
+                $.ajax({
+                    type : "POST",
+                    url:"${ctxPath}/notice/edit",
+                    data : $('#viladate_form').serialize(),
+                    success: function(data){
+                        if(data['status']==1){
+                            toastr.success(data['body']);
+                            setTimeout('window.location.href="/notice/index.html"',900);
+                        }else{
+                            toastr.success(data['body']);
+                        }
+                    }
+                });
+            }
+        }),$('input[required]').parent().prev().append(
+            '<span style="color:red">*</span>'
+        );
+    });
+
+</script>
+</html>
