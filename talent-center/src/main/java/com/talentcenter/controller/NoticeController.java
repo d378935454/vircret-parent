@@ -140,4 +140,45 @@ public class NoticeController extends BaseController{
         else  rstFulBody.fail("删除失败！");
         return rstFulBody;
     }
+
+    @RequestMapping("/company.html")
+    public String company(Model model){
+        return "/notice/company.html";
+    }
+
+    @RequestMapping("/ajax_company")
+    public String ajaxCompany(Model model, int pageNum, int pageSize,
+                            @RequestParam(required = false) String noticeName
+    ){
+        //组装搜索条件
+        /*Map<String,Object> map=new HashMap<>();
+        if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
+        if(examId!=null && examId!="") map.put("examId",examId);
+        if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
+        Notice notice = new Notice();
+        notice.setDel(true);
+        if(noticeName!=null && noticeName!="") notice.setNoticeName(noticeName);
+        //分页查询
+        PageHelper.startPage(pageNum, pageSize);
+        List<Notice> notices = noticeService.select(notice);
+
+        for (Notice n: notices) {
+            n.setNoticeContent(delHTMLTag(n.getNoticeContent()));
+        }
+
+        PageInfo<Notice> pageInfo= new PageInfo<>(notices);
+        String pageStr = makePageHtml(pageInfo);
+        model.addAttribute("page_info",pageInfo);
+        model.addAttribute("pages",pageStr);
+        return "/notice/ajax_company.html";
+    }
+    @RequestMapping("watch.html")
+    public String watchUI(Model model, String noticeId) {
+        Notice notice = noticeService.selectByPrimaryKey((long) Integer.parseInt(noticeId));
+        model.addAttribute("noticeId",noticeId);
+        model.addAttribute("obj",notice);
+        List<NoticeTemplate> noticeTemplateTypes= noticeTemplateService.selectAll();
+        model.addAttribute("noticeTemplateTypes",noticeTemplateTypes);
+        return "/notice/watch.html";
+    }
 }

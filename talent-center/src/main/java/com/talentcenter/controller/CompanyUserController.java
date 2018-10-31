@@ -12,6 +12,7 @@ import com.talentcenter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,7 +30,6 @@ public class CompanyUserController extends BaseController{
     private ItemService itemService;
     @Autowired
     private UserService userService;
-
     @Autowired
     private CompanyUserItemService companyUserItemService;
 
@@ -82,13 +82,14 @@ public class CompanyUserController extends BaseController{
 
     @ResponseBody
     @RequestMapping("add_user")
-    public RSTFulBody add(User companyUser, @RequestParam(value = "itemId[]") String[] itemId) {
+    public RSTFulBody add(User user, @RequestParam(value = "itemId[]") String[] itemId) {
         User sessionUser = getSessionUser();
-        companyUser.setCreateName(sessionUser.getUserName());
-        companyUser.setCreateId(sessionUser.getUserId());
-        companyUser.setUserNature(3);
-        companyUser.setCompanyId(getSessionUser().getUserId());
-        int res = userService.insertSelective(companyUser);
+        user.setCreateName(sessionUser.getUserName());
+        user.setCreateId(sessionUser.getUserId());
+        user.setUserNature(3);
+        user.setCompanyId(getSessionUser().getUserId());
+        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        int res = userService.insertSelective(user);
 
     /*    ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
         //itemId = [1,2];
@@ -105,16 +106,16 @@ public class CompanyUserController extends BaseController{
         CompanyUserItem companyUserItem = new CompanyUserItem();
         companyUserItem.setItemId((long)Integer.parseInt(itemId[i]));
     }*/
-    ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
-    for(String item:itemId){
-        CompanyUserItem companyUserItem = new CompanyUserItem();
-        companyUserItem.setItemId((long)Integer.parseInt(item));
-        companyUserItem.setUserId(companyUser.getUserId());
-        Item i = itemService.selectByPrimaryKey((long)Integer.parseInt(item));
-        companyUserItem.setItemName(i.getItemName());
-        companyUserItems.add(companyUserItem);
-    }
-    int num = companyUserItemService.insertList(companyUserItems);
+        ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
+        for (String item : itemId) {
+            CompanyUserItem companyUserItem = new CompanyUserItem();
+            companyUserItem.setItemId((long) Integer.parseInt(item));
+            companyUserItem.setUserId(user.getUserId());
+            Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
+            companyUserItem.setItemName(i.getItemName());
+            companyUserItems.add(companyUserItem);
+        }
+        int num = companyUserItemService.insertList(companyUserItems);
 
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("添加成功！");
@@ -125,22 +126,31 @@ public class CompanyUserController extends BaseController{
     @RequestMapping("edit_user.html")
     public String editUI(Model model, String userId) {
         User user = userService.selectByPrimaryKey((long)Integer.parseInt(userId));
-        model.addAttribute("companyUserId",userId);
-        model.addAttribute("obj",user);
+        CompanyUserItem companyUserItem = new CompanyUserItem();
+        companyUserItem.setUserId((long)Integer.parseInt(userId));
+        List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
         List<Item> items= itemService.selectAll();
+
+            for (CompanyUserItem cui: companyUserItems) {
+                for (Item i: items) {
+                if(i.getItemId() == cui.getItemId()) i.setChecked(true);
+                else i.setChecked(false);
+            }
+        }
+        model.addAttribute("obj",user);
         model.addAttribute("items", items);
         return "/company_user/edit_user.html";
     }
 
     @ResponseBody
     @RequestMapping("edit_user")
-    public RSTFulBody edit(User companyUser) {
+    public RSTFulBody edit(User user) {
         User sessionUser = getSessionUser();
-        companyUser.setUpdateId(sessionUser.getUserId());
-        companyUser.setUpdateName(sessionUser.getUserName());
-        companyUser.setUpdateTime(DateHelper.getCurrentDate());
-
-        int res = userService.updateByPrimaryKeySelective(companyUser);
+        user.setUpdateId(sessionUser.getUserId());
+        user.setUpdateName(sessionUser.getUserName());
+        user.setUpdateTime(DateHelper.getCurrentDate());
+        if(user.getPassword()!=null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        int res = userService.updateByPrimaryKeySelective(user);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");
         else rstFulBody.fail("修改失败！");
@@ -148,9 +158,9 @@ public class CompanyUserController extends BaseController{
     }
 
     @RequestMapping("del_user.html")
-    public String delUser(User companyUser){
-        companyUser.setDel(false);
-        int res = userService.updateByPrimaryKeySelective(companyUser);
+    public String delUser(User user){
+        user.setDel(false);
+        int res = userService.updateByPrimaryKeySelective(user);
         return "redirect:/company_user/index.html";
     }
 
