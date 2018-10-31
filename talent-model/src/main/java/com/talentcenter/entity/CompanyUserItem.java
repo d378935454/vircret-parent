@@ -2,10 +2,7 @@ package com.talentcenter.entity;
 
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -54,5 +51,7 @@ public class CompanyUserItem {
      * 人才中心审核状态 0:不通过 1:退回 2:通过 3:已提交
      */
     private Integer centerChecked;
+
+
 
 }
