@@ -4,6 +4,7 @@
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
 <link href="/css/plugins/simditor/simditor.css" rel="stylesheet">
 <link href="/css/plugins/webuploader/webuploader.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.css">
 <style>
     #u-file{
         padding-top: 2px;
@@ -11,28 +12,37 @@
     }
 </style>
 <div class="row">
-    <div class="col-sm-10">
+    <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
                 <form class="form-horizontal m-t" id="viladate_form">
 
                     <div class="form-group">
                         <label for="item_config_accept_begin" class="col-sm-2 control-label">受理时间：</label>
-                        <div class="col-sm-10">
-                            <input id="item_config_accept_begin" placeholder="请选择受理开始时间" name="itemConfigAcceptBegin"
+                        <div class="col-sm-3">
+                            <input id="item_config_accept_begin" placeholder="请选择受理时间" name="itemConfigAccept"
                                    class="form-control" type="text" required>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="item_config_accept_begin" class="col-sm-2 control-label">审核时间：</label>
+                        <div class="col-sm-3">
+                            <input id="item_config_check_time" placeholder="请选择审核时间" name="itemConfigCheckTime"
+                                   class="form-control" type="text" required>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="item_config_effect" class="col-sm-2 control-label">生效时间：</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-3">
                             <input id="item_config_effect" placeholder="请输入生效时间" name="itemConfigEffect"
                                    class="date-time form-control" type="text" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top: 2px;">窗口办理：</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-3">
                             <div class="i-checks">
                                 <label>
                                     <input type="radio" value="0" checked name="itemConfigFace"> <i></i> 否</label>&nbsp;&nbsp;
@@ -43,7 +53,7 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top: 2px;">补助方式：</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-3">
                             <div class="i-checks">
                                 <label>
                                     <input type="radio" value="1" checked name="itemConfigType"> <i></i> 现金</label>&nbsp;&nbsp;
@@ -55,7 +65,7 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top: 2px;">补助发放方式：</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-3">
                             <div class="i-checks">
                                 <label>
                                     <input type="radio" value="0" checked name="itemConfigSendType"> <i></i> 一次性
@@ -70,23 +80,23 @@
 
                     <div class="form-group">
                         <label for="item_config_send_rate" class="col-sm-2 control-label">发放频率：</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-3">
                             <input id="item_config_send_rate" placeholder="请输入发放频率(例：0.5月发放一次)"
                                    name="itemConfigSendRate" class="form-control" type="number" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="item_config_amount_total" class="col-sm-2 control-label">总补助金额：</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-3">
                             <input id="item_config_amount_total" placeholder="请输入总补助金额" name="itemConfigAmountTotal"
                                    class="form-control" type="number">
                         </div>
-                    </div>
+                    </div>-->
 
                     <div class="form-group">
                         <label for="item_config_amount_per" class="col-sm-2 control-label">每份补助金额：</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-3">
                             <input id="item_config_amount_per" placeholder="请输入每份补助金额" name="itemConfigAmountPer"
                                    class="form-control" type="number">
                         </div>
@@ -176,6 +186,59 @@
                             <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                         </div>
                     </div>
+                    <div id="date-table" style="position: absolute;height: 368px; top:20px;left:43.666668%;" class="col-sm-6">
+
+                        <table data-toggle="table" data-height="368">
+                            <thead>
+                            <tr>
+                                <th>受理时间</th>
+                                <th>政策</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>02-01 至 03-31</td>
+                                <td>购房补贴</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </form>
             </div>
         </div>
@@ -187,7 +250,11 @@
 <script type="text/javascript" src="/js/plugins/simditor/module.js"></script>
 <script type="text/javascript" src="/js/plugins/simditor/hotkeys.js"></script>
 <script type="text/javascript" src="/js/plugins/simditor/simditor.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
 
+<!-- Latest compiled and minified Locales -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/locale/bootstrap-table-zh-CN.min.js"></script>
 <script src="/js/plugins/webuploader/webuploader.js"></script>
 <script type="text/javascript">
     toastr.options = {
@@ -273,12 +340,13 @@
         });
 
         uploader.on("uploadAccept", function( file, data){
-            // debugger
             var res = true;
             if ( data.status=="0") {
                 //data即为服务器返回的信息
                 // 通过return false来告诉组件，此文件上传有错。
                 res = false;
+            }else {
+                $("#item_config_conetent_attachment").val(data.fileInfo);
             }
             return res;
         });
@@ -336,7 +404,13 @@
 
     laydate.render({
         elem: '#item_config_accept_begin',
-        range: '-',
+        range: '至',
+        format: 'MM-dd'
+    });
+
+    laydate.render({
+        elem: '#item_config_check_time',
+        range: '至',
         format: 'MM-dd'
     });
 
@@ -420,7 +494,7 @@
             }
         });
 
-        //方法方式change 设置必填项
+        //发放方式change 设置必填项
         $("input:radio[name='itemConfigSendType']").on('ifChecked', function (event) {
             if ($(this).val() == 1) {
                 $('#item_config_send_rate').removeAttr("readonly");
@@ -524,7 +598,6 @@
                     url: "${ctxPath}/item/add_config",
                     data: $('#viladate_form').serialize(),
                     success: function (data) {
-                        debugger;
                         if (data['status'] == 1) {
                             toastr.success(data['body']);
                             setTimeout('window.location.href="/item/config.html?itemId=' + data["data"] + '"', 900);
