@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/company_user")
-public class CompanyUserController extends BaseController{
+public class CompanyUserController extends BaseController {
     @Autowired
     private ItemService itemService;
     @Autowired
@@ -38,18 +38,19 @@ public class CompanyUserController extends BaseController{
 
     /**
      * 证书列表页
+     *
      * @param model
      * @return
      */
     @RequestMapping("/index.html")
-    public String index(Model model){
+    public String index(Model model) {
         return "/company_user/index.html";
     }
 
     @RequestMapping("/ajax_users")
     public String ajaxIndex(Model model, int pageNum, int pageSize,
                             @RequestParam(required = false) String companyUserName
-    ){
+    ) {
         //组装搜索条件
         /*Map<String,Object> map=new HashMap<>();
         if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
@@ -61,21 +62,21 @@ public class CompanyUserController extends BaseController{
         companyUser.setCompanyId(getSessionUser().getUserId());
 
 
-        if(companyUserName!=null && companyUserName!="") companyUser.setUserName(companyUserName);
+        if (companyUserName != null && companyUserName != "") companyUser.setUserName(companyUserName);
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<User> companyUsers = userService.select(companyUser);
 
-        PageInfo<User> pageInfo= new PageInfo<>(companyUsers);
+        PageInfo<User> pageInfo = new PageInfo<>(companyUsers);
         String pageStr = makePageHtml(pageInfo);
-        model.addAttribute("page_info",pageInfo);
-        model.addAttribute("pages",pageStr);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
         return "/company_user/ajax_users.html";
     }
 
     @RequestMapping("add_user.html")
     public String addUI(Model model) {
-        List<Item> items= itemService.selectAll();
+        List<Item> items = itemService.selectAll();
         model.addAttribute("items", items);
         return "/company_user/add_user.html";
     }
@@ -125,19 +126,23 @@ public class CompanyUserController extends BaseController{
 
     @RequestMapping("edit_user.html")
     public String editUI(Model model, String userId) {
-        User user = userService.selectByPrimaryKey((long)Integer.parseInt(userId));
+        User user = userService.selectByPrimaryKey((long) Integer.parseInt(userId));
         CompanyUserItem companyUserItem = new CompanyUserItem();
-        companyUserItem.setUserId((long)Integer.parseInt(userId));
+        companyUserItem.setUserId((long) Integer.parseInt(userId));
         List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
-        List<Item> items= itemService.selectAll();
+        List<Item> items = itemService.selectAll();
 
-            for (CompanyUserItem cui: companyUserItems) {
-                for (Item i: items) {
-                if(i.getItemId() == cui.getItemId()) i.setChecked(true);
-                else i.setChecked(false);
+
+        for (Item i : items) {
+            i.setChecked(false);
+            for (CompanyUserItem cui : companyUserItems) {
+                if (i.getItemId() == cui.getItemId()) {
+                    i.setChecked(true);
+                    continue;
+                }
             }
         }
-        model.addAttribute("obj",user);
+        model.addAttribute("obj", user);
         model.addAttribute("items", items);
         return "/company_user/edit_user.html";
     }
@@ -149,7 +154,7 @@ public class CompanyUserController extends BaseController{
         user.setUpdateId(sessionUser.getUserId());
         user.setUpdateName(sessionUser.getUserName());
         user.setUpdateTime(DateHelper.getCurrentDate());
-        if(user.getPassword()!=null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        if (user.getPassword() != null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.updateByPrimaryKeySelective(user);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");
@@ -158,7 +163,7 @@ public class CompanyUserController extends BaseController{
     }
 
     @RequestMapping("del_user.html")
-    public String delUser(User user){
+    public String delUser(User user) {
         user.setDel(false);
         int res = userService.updateByPrimaryKeySelective(user);
         return "redirect:/company_user/index.html";
@@ -166,15 +171,15 @@ public class CompanyUserController extends BaseController{
 
     @ResponseBody
     @RequestMapping("batch_del")
-    public RSTFulBody batchDel(@RequestParam(required = true) String ids){
+    public RSTFulBody batchDel(@RequestParam(required = true) String ids) {
 
 
         Map<String, Object> map = new HashMap<>();
-        map.put("ids",ids);
+        map.put("ids", ids);
         int res = userService.batchDel(map);
-        RSTFulBody rstFulBody=new RSTFulBody();
-        if(res>0) rstFulBody.success(res);
-        else  rstFulBody.fail("删除失败！");
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if (res > 0) rstFulBody.success(res);
+        else rstFulBody.fail("删除失败！");
         return rstFulBody;
     }
 }
