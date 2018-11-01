@@ -33,6 +33,7 @@ public class CompanyUserController extends BaseController {
     @Autowired
     private CompanyUserItemService companyUserItemService;
 
+
    /* @Autowired
     private RoleCompanyUserService roleCompanyUserService;*/
 
@@ -132,7 +133,6 @@ public class CompanyUserController extends BaseController {
         List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
         List<Item> items = itemService.selectAll();
 
-
         for (Item i : items) {
             i.setChecked(false);
             for (CompanyUserItem cui : companyUserItems) {
@@ -149,13 +149,26 @@ public class CompanyUserController extends BaseController {
 
     @ResponseBody
     @RequestMapping("edit_user")
-    public RSTFulBody edit(User user) {
+    public RSTFulBody edit(User user, @RequestParam(value = "itemId[]") String[] itemId) {
         User sessionUser = getSessionUser();
         user.setUpdateId(sessionUser.getUserId());
         user.setUpdateName(sessionUser.getUserName());
         user.setUpdateTime(DateHelper.getCurrentDate());
         if (user.getPassword() != null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.updateByPrimaryKeySelective(user);
+
+        ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
+        for (String item : itemId) {
+            CompanyUserItem companyUserItem = new CompanyUserItem();
+            companyUserItem.setItemId((long) Integer.parseInt(item));
+            companyUserItem.setUserId(user.getUserId());
+            Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
+            companyUserItem.setItemName(i.getItemName());
+            companyUserItems.add(companyUserItem);
+
+        }
+
+
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");
         else rstFulBody.fail("修改失败！");
