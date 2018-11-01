@@ -20,7 +20,12 @@
                             <input id="street_address" placeholder="请输入街道详细地址" name="streetAddress" value="${obj.streetAddress}" class="form-control" type="text" required>
                         </div>
                     </div>
-
+                    <div class="form-group">
+                        <label for="memo" class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-10">
+                            <textarea name="memo" class="form-control" id="memo" rows="5" cols="70">${obj.memo}</textarea>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
                             <input type="hidden" name="streetId" id="street_id" value="${obj.streetId}">
@@ -79,7 +84,7 @@
                                 return $("#street_name").val();
                             },
                             table:function(){
-                                return "cpr_street";
+                                return "talent_street";
                             },
                             id:function () {
                                 return "street_id !="+$("#street_id").val();
