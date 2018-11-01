@@ -82,7 +82,6 @@ public class TalentTypeController extends BaseController{
     @RequestMapping("edit.html")
     public String editUI(Model model, String talentTypeId) {
         TalentType talentType = talentTypeService.selectByPrimaryKey((long) Integer.parseInt(talentTypeId));
-        model.addAttribute("talentTypeId",talentTypeId);
         model.addAttribute("obj",talentType);
         return "/talent_type/edit.html";
     }
