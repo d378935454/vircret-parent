@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.talentcenter.dao.CompanyUserItemMapper">
+    <delete id="delByUserId" parameterType="java.lang.Long">
+    DELETE from talent_company_user_item  WHERE user_id = #{userId,jdbcType=BIGINT};
+  </delete>
+</mapper>

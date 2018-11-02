@@ -10,5 +10,6 @@ import java.util.Map;
 public interface CompanyUserItemMapper extends BaseMapper<CompanyUserItem> {
 
     int batchDel(Map<String, Object> map);
+    int delByUserId(Long userId);
 
 }
