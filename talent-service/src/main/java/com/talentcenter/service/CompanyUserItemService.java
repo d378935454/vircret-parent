@@ -11,4 +11,6 @@ public interface CompanyUserItemService extends BaseService<CompanyUserItem> {
 
     int batchDel(Map<String, Object> map);
 
+    int delByUserId(Long userId);
+
 }

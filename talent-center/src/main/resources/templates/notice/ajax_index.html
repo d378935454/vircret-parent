@@ -41,8 +41,8 @@
         <td>${list.updateName}</td>
         <td>${list.updateTime,"yyyy-MM-dd"}</td>
         <td>
-            <a href="${ctxPath}/notice/edit.html?noticeId=${list.noticeId}"><i class="glyphicon glyphicon-pencil"></i></a>
-            <a href="${ctxPath}/notice/del.html?noticeId=${list.noticeId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
+            <a href="${ctxPath}/notice/edit.html?noticeId=${list.noticeId}"title="添加"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="${ctxPath}/notice/del.html?noticeId=${list.noticeId}" title="删除"onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>
         </td>
     </tr>
     @}

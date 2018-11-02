@@ -84,4 +84,8 @@ public class CompanyUserItemServiceImpl implements CompanyUserItemService {
     public int batchDel(Map<String, Object> map) {
         return companyUserItemMapper.batchDel(map);
     }
+    @Override
+    public int delByUserId(Long userId){
+        return companyUserItemMapper.delByUserId(userId);
+    }
 }

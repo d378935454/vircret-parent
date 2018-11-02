@@ -156,7 +156,8 @@ public class CompanyUserController extends BaseController {
         user.setUpdateTime(DateHelper.getCurrentDate());
         if (user.getPassword() != null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.updateByPrimaryKeySelective(user);
-
+ 
+        int del  = companyUserItemService.delByUserId(user.getUserId());
         ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
         for (String item : itemId) {
             CompanyUserItem companyUserItem = new CompanyUserItem();
@@ -167,7 +168,7 @@ public class CompanyUserController extends BaseController {
             companyUserItems.add(companyUserItem);
 
         }
-
+        int num = companyUserItemService.insertList(companyUserItems);
 
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");

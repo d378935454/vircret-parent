@@ -9,16 +9,26 @@
                 <form id="search-form">
                     <div class="ibox-content">
                         <div class="row">
-                            <div class="col-lg-2 pull-left">
+                            <div class="col-sm-2">
+                                <label for="user_name" class="control-label pull-left">用户名：</label>
+                                <div class="input-group">
+                                    <input type="text" name="userName" id="user_name" placeholder="用户名" class="input-sm form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="user_name" class="control-label pull-left">姓名：</label>
                                 <div class="input-group">
                                     <input type="text" name="realName" id="real_name" placeholder="姓名" class="input-sm form-control">
                                 </div>
                             </div>
-                            <div class="col-lg-2 pull-left">
+
+                            <div class="col-sm-2">
+                                <label for="user_tel" class="control-label pull-left">电话：</label>
                                 <div class="input-group">
-                                    <input type="text" name="userTel" id="user_tel" placeholder="手机" class="input-sm form-control">
+                                    <input type="text" name="userTel" id="user_tel" placeholder="电话" class="input-sm form-control">
                                 </div>
                             </div>
+
                             <a onclick="ajax_get_table('search-form',1)" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> 搜索</a>
 
 
