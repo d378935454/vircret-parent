@@ -4,8 +4,10 @@ import RSTFul.RSTFulBody;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.talentcenter.entity.TalentType;
+import com.talentcenter.entity.TypeCategory;
 import com.talentcenter.entity.User;
 import com.talentcenter.service.TalentTypeService;
+import com.talentcenter.service.TypeCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +26,8 @@ public class TalentTypeController extends BaseController{
     @Autowired
     private TalentTypeService talentTypeService;
 
-   /* @Autowired
-    private RoleTalentTypeService roleTalentTypeService;*/
+    @Autowired
+    private TypeCategoryService typeCategoryService;
 
     /**
      * 人才分类列表页
@@ -62,6 +64,8 @@ public class TalentTypeController extends BaseController{
 
     @RequestMapping("add.html")
     public String addUI(Model model) {
+        List<TypeCategory> categories = typeCategoryService.selectAll();
+        model.addAttribute("categories",categories);
         return "/talent_type/add.html";
     }
 
@@ -71,7 +75,8 @@ public class TalentTypeController extends BaseController{
         User sessionUser = getSessionUser();
         talentType.setCreateName(sessionUser.getUserName());
         talentType.setCreateId(sessionUser.getUserId());
-
+        TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(talentType.getTypeCategoryId());
+        talentType.setTypeCategoryName(typeCategory.getTypeCategoryName());
         int res = talentTypeService.insertSelective(talentType);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("添加成功！");
@@ -82,6 +87,8 @@ public class TalentTypeController extends BaseController{
     @RequestMapping("edit.html")
     public String editUI(Model model, String talentTypeId) {
         TalentType talentType = talentTypeService.selectByPrimaryKey((long) Integer.parseInt(talentTypeId));
+        List<TypeCategory> categories = typeCategoryService.selectAll();
+        model.addAttribute("categories",categories);
         model.addAttribute("obj",talentType);
         return "/talent_type/edit.html";
     }
@@ -93,6 +100,8 @@ public class TalentTypeController extends BaseController{
         talentType.setUpdateId(sessionUser.getUserId());
         talentType.setUpdateName(sessionUser.getUserName());
         talentType.setUpdateTime(DateHelper.getCurrentDate());
+        TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(talentType.getTypeCategoryId());
+        talentType.setTypeCategoryName(typeCategory.getTypeCategoryName());
         int res = talentTypeService.updateByPrimaryKeySelective(talentType);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");

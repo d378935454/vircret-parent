@@ -22,10 +22,20 @@ public class TalentType {
      * 证件名称
      */
     private String talentTypeName;
-/**
- * 分类符合条件
- */
+    /**
+     * 分类符合条件
+     */
     private String talentTypeInfo;
+
+    /**
+     * 分类类型ID
+     */
+    private Long typeCategoryId;
+
+    /**
+     * 分类类型名称
+     */
+    private String typeCategoryName;
     /**
      * 状态 0:删除 1:正常
      */

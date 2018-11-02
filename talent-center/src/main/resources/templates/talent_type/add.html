@@ -10,13 +10,27 @@
                     <div class="form-group">
                         <label for="talent_type_name" class="col-sm-3 control-label">人才分类名称：</label>
                         <div class="col-sm-8">
-                            <input id="talent_type_name" placeholder="请输入人才分类名称" name="talentTypeName" class="form-control" type="text" required>
+                            <input id="talent_type_name" placeholder="请输入人才分类名称" name="talentTypeName"
+                                   class="form-control" type="text" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="editor" class="col-sm-3 control-label">分类符合条件：<span style="color:red">*</span></label>
+                        <label for="talent_type_name" class="col-sm-3 control-label">类型名称：<span
+                                style="color:red">*</span></label>
                         <div class="col-sm-8">
-                            <textarea id="editor" name="talentTypeInfo"  placeholder="请输入分类符合条件" autofocus></textarea>
+                            <select name="typeCategoryId" id="type_category_id" class="form-control" required>
+                                <option selected="selected" value="">--请选择--</option>
+                                @for(categorie in categories){
+                                <option value="${categorie.typeCategoryId}">${categorie.typeCategoryName}</option>
+                                @}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editor" class="col-sm-3 control-label">分类符合条件：</label>
+                        <div class="col-sm-8">
+                            <textarea id="editor" name="talentTypeInfo" placeholder="请输入分类符合条件" autofocus></textarea>
                         </div>
                     </div>
 
@@ -93,11 +107,11 @@
                     required: true,
                     remote: {
                         url: "${ctxPath}/checkUnique",
-                        data:{
-                            talent_type_name:function(){
+                        data: {
+                            talent_type_name: function () {
                                 return $("#talent_type_name").val();
                             },
-                            table:function(){
+                            table: function () {
                                 return "talent_t_type";
                             }
                         }

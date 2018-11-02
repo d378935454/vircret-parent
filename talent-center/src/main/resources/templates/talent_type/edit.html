@@ -14,7 +14,23 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="editor" class="col-sm-3 control-label">分类符合条件：<span style="color:red">*</span></label>
+                        <label for="talent_type_name" class="col-sm-3 control-label">类型名称：<span
+                                style="color:red">*</span></label>
+                        <div class="col-sm-8">
+                            <select name="typeCategoryId" id="type_category_id" class="form-control" required>
+                                <option selected="selected" value="">--请选择--</option>
+                                @for(categorie in categories){
+                                <option @if(obj.typeCategoryId==categorie.typeCategoryId){
+                                        selected
+                                        @}
+                                        value="${categorie.typeCategoryId}">${categorie.typeCategoryName}</option>
+                                @}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editor" class="col-sm-3 control-label">分类符合条件：</label>
                         <div class="col-sm-8">
                             <textarea id="editor" placeholder="请输入分类符合条件" name="talentTypeInfo" autofocus>${obj.talentTypeInfo}</textarea>
                         </div>
@@ -43,7 +59,6 @@
 <script type="text/javascript" src="/js/plugins/simditor/module.js"></script>
 <script type="text/javascript" src="/js/plugins/simditor/hotkeys.js"></script>
 <script type="text/javascript" src="/js/plugins/simditor/simditor.js"></script>
-<script src="/js/plugins/layer/laydate/laydate.js"></script>
 <script type="text/javascript">
     toastr.options = {
         "closeButton": true,
@@ -71,10 +86,6 @@
             ]
             //optional options
         });
-    });
-
-    laydate.render({
-        elem: '#talentType_begin_time'
     });
 
     $.validator.setDefaults({
