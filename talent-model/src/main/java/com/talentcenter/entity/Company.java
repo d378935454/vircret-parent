@@ -45,12 +45,16 @@ public class Company {
     /**
      * 企业性质
      */
-    private Integer companyNature;
+    private Long companyNatureId;
+    /**
+     * 企业性质名称
+     */
+    private String companyNatureName;
 
     /**
      *企业类型
      */
-    private Integer companyType;
+    private Long companyTypeId;
     /**
      * 企业类型名称
      */
@@ -58,7 +62,11 @@ public class Company {
     /**
      * 所属街道ID
      */
-    private Integer companyStreetId;
+    private Long streetId;
+    /**
+     *所属街道名
+     */
+    private String streetName;
     /**
      * 企业详细地址
      */

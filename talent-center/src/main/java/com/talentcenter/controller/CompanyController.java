@@ -100,6 +100,10 @@ public class CompanyController extends BaseController{
         Company company = companyService.selectByPrimaryKey((long) Integer.parseInt(companyId));
         model.addAttribute("companyId",companyId);
         model.addAttribute("obj",company);
+        List<CompanyNature> companyNatures = companyNatureService.selectAll();
+        model.addAttribute("companyNatures",companyNatures);
+        List<CompanyType> companyTypes = companyTypeService.selectAll();
+        model.addAttribute("companyTypes",companyTypes);
         return "/company/edit.html";
     }
 
