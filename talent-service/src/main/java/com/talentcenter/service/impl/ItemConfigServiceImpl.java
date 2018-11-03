@@ -84,4 +84,6 @@ public class ItemConfigServiceImpl implements ItemConfigService {
     public int batchDel(Map<String, Object> map) {
         return itemConfigMapper.batchDel(map);
     }
+
+
 }

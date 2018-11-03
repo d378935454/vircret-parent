@@ -111,7 +111,6 @@ public class CertificateController extends BaseController{
     @ResponseBody
     @RequestMapping("batch_del")
     public RSTFulBody batchDel(@RequestParam(required = true) String ids){
-
         Map<String, Object> map = new HashMap<>();
         map.put("ids",ids);
         int res = certificateService.batchDel(map);

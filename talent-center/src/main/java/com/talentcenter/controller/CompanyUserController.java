@@ -156,7 +156,7 @@ public class CompanyUserController extends BaseController {
         user.setUpdateTime(DateHelper.getCurrentDate());
         if (user.getPassword() != null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.updateByPrimaryKeySelective(user);
- 
+
         int del  = companyUserItemService.delByUserId(user.getUserId());
         ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
         for (String item : itemId) {
@@ -195,5 +195,10 @@ public class CompanyUserController extends BaseController {
         if (res > 0) rstFulBody.success(res);
         else rstFulBody.fail("删除失败！");
         return rstFulBody;
+
+    }
+    @RequestMapping("/info.html")
+    public String info(Model model) {
+        return "/company_user/info.html";
     }
 }
