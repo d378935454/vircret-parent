@@ -56,7 +56,7 @@ public class StreetController extends BaseController{
         if(streetName!=null && streetName!="") street.setStreetName(streetName);
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
-        List<Street> streets = streetService.selectByInfo(street);
+        List<Street> streets = streetService.select(street);
 
         PageInfo<Street> pageInfo= new PageInfo<>(streets);
         String pageStr = makePageHtml(pageInfo);

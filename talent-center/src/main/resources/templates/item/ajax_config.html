@@ -2,8 +2,7 @@
     <thead>
     <tr>
         <th><input type="checkbox" id="check_all"></th>
-        <th>受理开始时间</th>
-        <th>受理结束时间</th>
+        <th>受理时间</th>
         <th>生效时间</th>
         <th>窗口办理</th>
         <th>补助方式</th>
@@ -13,20 +12,19 @@
         <th>发放频率</th>
         <th>服务描述</th>
         <th>备注</th>
-        <th>添加人</th>
+        <!--<th>添加人</th>
         <th>添加时间</th>
         <th>编辑人</th>
-        <th>编辑时间</th>
+        <th>编辑时间</th>-->
         <th>操作</th>
     </tr>
     </thead>
     <tbody>
     @for(list in page_info.list){
     </tr>
-    <td><input type="checkbox" class="i-checks" name="input[]" value="${list.itemId}"></td>
-    <td>${list.itemConfigAcceptBegin,"yyyy-MM-dd"}</td>
-    <td>${list.itemConfigAcceptEnd,"yyyy-MM-dd"}</td>
-    <td>${list.itemConfigEffect,"yyyy-MM-dd"}</td>
+    <td></td>
+        <td>${list.itemConfigAcceptBegin,"MM-dd"} 至 ${list.itemConfigAcceptEnd,"MM-dd"}</td>
+        <td>${list.itemConfigEffect,"yyyy-MM-dd"}</td>
         <td>
             @if(list.itemConfigFace==0){
             否
@@ -55,10 +53,10 @@
         <td>${list.itemConfigSendRate}</td>
         <td>${list.itemConfigService}</td>
         <td>${list.memo}</td>
-        <td>${list.createName}</td>
+        <!--<td>${list.createName}</td>
         <td>${list.createTime,"yyyy-MM-dd"}</td>
         <td>${list.updateName}</td>
-        <td>${list.updateTime,"yyyy-MM-dd"}</td>
+        <td>${list.updateTime,"yyyy-MM-dd"}</td>-->
         <td>
             <a href="${ctxPath}/item/edit_config.html?primaryKey=${list.itemConfigId}&itemId=${list.itemId}"><i class="glyphicon glyphicon-pencil"></i></a>
             <a href="${ctxPath}/item/del_config.html?itemConfigId=${list.itemConfigId}&itemId=${list.itemId}" onclick="return confirm('删除后不可恢复, 确定删除?')"><i class="glyphicon glyphicon-trash"></i></a>

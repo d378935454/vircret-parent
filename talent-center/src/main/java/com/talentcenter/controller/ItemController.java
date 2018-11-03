@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static util.DateHelper.getDate4StrDate;
+
 @Controller
 @RequestMapping("/item")
 public class ItemController extends BaseController {
@@ -32,6 +34,11 @@ public class ItemController extends BaseController {
     @Autowired
     private ItemCertificateService itemCertificateService;
 
+    @Autowired
+    private TalentTypeService talentTypeService;
+
+    @Autowired
+    private TypeCategoryService typeCategoryService;
    /* @Autowired
     private RoleItemService roleItemService;*/
 
@@ -150,8 +157,6 @@ public class ItemController extends BaseController {
                               @RequestParam(required = false) String itemId
 
     ) {
-
-
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<ItemConfig> config = itemConfigService.selectAll();
@@ -168,9 +173,11 @@ public class ItemController extends BaseController {
         Certificate certificate = new Certificate();
         certificate.setDel(true);
         List<Certificate> certificates = certificateService.select(certificate);
+        List<TypeCategory> typeCategories = typeCategoryService.selectAll();
         model.addAttribute("item_length",item.getItemLength());
         model.addAttribute("itemId", itemId);
         model.addAttribute("certificates", certificates);
+        model.addAttribute("typeCategories", typeCategories);
         return "/item/add_config.html";
     }
 
@@ -178,8 +185,16 @@ public class ItemController extends BaseController {
     @RequestMapping("add_config")
     public RSTFulBody addConfig(
                                 ItemConfig config,
-                                @RequestParam(value = "certificates[]") String[] certificates) {
-        
+                                @RequestParam(value = "certificates[]") String[] certificates,
+                                @RequestParam(required = false) String itemConfigAccept) {
+
+        String[] times = itemConfigAccept.split("至");
+        config.setItemConfigAcceptBegin(getDate4StrDate(times[0],"MM-dd"));
+        config.setItemConfigAcceptEnd(getDate4StrDate(times[1],"MM-dd"));
+
+        User sessionUser = getSessionUser();
+        config.setCreateName(sessionUser.getUserName());
+        config.setCreateId(sessionUser.getUserId());
         int res = itemConfigService.insertSelective(config);
         ArrayList<ItemCertificate> cs = new ArrayList<>();
         for (String c: certificates) {
@@ -239,4 +254,11 @@ public class ItemController extends BaseController {
         return rstFulBody;
     }
 
+    @ResponseBody
+    @RequestMapping("talent_type")
+    public List<TalentType> talentTypes(TalentType talentType){
+
+        List<TalentType> talentTypes = talentTypeService.select(talentType);
+        return talentTypes;
+    }
 }

@@ -2,11 +2,13 @@ package com.talentcenter.entity;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -49,11 +51,13 @@ public class ItemConfig {
     /**
      * 总补助金额
      */
-    private Float itemConfigAmountTotal;
+    @NumberFormat(pattern = "#,###,###,###.##")
+    private BigDecimal itemConfigAmountTotal;
     /**
      * 每份补助金额
      */
-    private Float itemConfigAmountPer;
+    @NumberFormat(pattern = "#,###,###,###.##")
+    private BigDecimal  itemConfigAmountPer;
     /**
      * 补助发放方式
      */
