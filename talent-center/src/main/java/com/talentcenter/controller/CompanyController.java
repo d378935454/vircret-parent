@@ -3,13 +3,11 @@ package com.talentcenter.controller;
 import RSTFul.RSTFulBody;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.talentcenter.entity.Company;
-import com.talentcenter.entity.CompanyNature;
-import com.talentcenter.entity.CompanyType;
-import com.talentcenter.entity.User;
+import com.talentcenter.entity.*;
 import com.talentcenter.service.CompanyNatureService;
 import com.talentcenter.service.CompanyService;
 import com.talentcenter.service.CompanyTypeService;
+import com.talentcenter.service.StreetService;
 import util.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +31,9 @@ public class CompanyController extends BaseController{
 
     @Autowired
     private CompanyTypeService companyTypeService;
+
+    @Autowired
+    private StreetService streetService;
 
    /* @Autowired
     private RoleCompanyService roleCompanyService;*/
@@ -77,6 +78,8 @@ public class CompanyController extends BaseController{
         model.addAttribute("companyNatures",companyNatures);
         List<CompanyType> companyTypes = companyTypeService.selectAll();
         model.addAttribute("companyTypes",companyTypes);
+        List<Street> streets = streetService.selectAll();
+        model.addAttribute("streets",streets);
 
         return "/company/add.html";
     }
@@ -87,7 +90,12 @@ public class CompanyController extends BaseController{
         User sessionUser = getSessionUser();
         company.setCreateName(sessionUser.getUserName());
         company.setCreateId(sessionUser.getUserId());
-
+        CompanyNature companyNature = companyNatureService.selectByPrimaryKey(company.getCompanyNatureId());
+        company.setCompanyNatureName(companyNature.getCompanyNatureName());
+        CompanyType companyType = companyTypeService.selectByPrimaryKey(company.getCompanyTypeId());
+        company.setCompanyTypeName(companyType.getCompanyTypeName());
+        Street street = streetService.selectByPrimaryKey(company.getStreetId());
+        company.setStreetName(street.getStreetName());
         int res = companyService.insertSelective(company);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("添加成功！");
@@ -104,6 +112,8 @@ public class CompanyController extends BaseController{
         model.addAttribute("companyNatures",companyNatures);
         List<CompanyType> companyTypes = companyTypeService.selectAll();
         model.addAttribute("companyTypes",companyTypes);
+        List<Street> streets = streetService.selectAll();
+        model.addAttribute("streets",streets);
         return "/company/edit.html";
     }
 
@@ -114,6 +124,14 @@ public class CompanyController extends BaseController{
         company.setUpdateId(sessionUser.getUserId());
         company.setUpdateName(sessionUser.getUserName());
         company.setUpdateTime(DateHelper.getCurrentDate());
+
+        CompanyNature companyNature = companyNatureService.selectByPrimaryKey(company.getCompanyNatureId());
+        company.setCompanyNatureName(companyNature.getCompanyNatureName());
+        CompanyType companyType = companyTypeService.selectByPrimaryKey(company.getCompanyTypeId());
+        company.setCompanyTypeName(companyType.getCompanyTypeName());
+        Street street = streetService.selectByPrimaryKey(company.getStreetId());
+        company.setStreetName(street.getStreetName());
+
         int res = companyService.updateByPrimaryKeySelective(company);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");
