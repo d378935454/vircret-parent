@@ -4,10 +4,7 @@ import RSTFul.RSTFulBody;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.talentcenter.entity.*;
-import com.talentcenter.service.CompanyNatureService;
-import com.talentcenter.service.CompanyService;
-import com.talentcenter.service.CompanyTypeService;
-import com.talentcenter.service.StreetService;
+import com.talentcenter.service.*;
 import util.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,14 @@ public class CompanyController extends BaseController{
 
     @Autowired
     private StreetService streetService;
+
+    @Autowired
+    private ItemService itemService;
+
+    @Autowired
+    private CompanyItemService companyItemService;
+
+
 
    /* @Autowired
     private RoleCompanyService roleCompanyService;*/
@@ -80,13 +86,15 @@ public class CompanyController extends BaseController{
         model.addAttribute("companyTypes",companyTypes);
         List<Street> streets = streetService.selectAll();
         model.addAttribute("streets",streets);
+        List<Item> items = itemService.selectAll();
+        model.addAttribute("items", items);
 
         return "/company/add.html";
     }
 
     @ResponseBody
     @RequestMapping("add")
-    public RSTFulBody add(Company company) {
+    public RSTFulBody add(Company company, @RequestParam(value = "itemId[]") String[] itemId) {
         User sessionUser = getSessionUser();
         company.setCreateName(sessionUser.getUserName());
         company.setCreateId(sessionUser.getUserId());
@@ -97,6 +105,20 @@ public class CompanyController extends BaseController{
         Street street = streetService.selectByPrimaryKey(company.getStreetId());
         company.setStreetName(street.getStreetName());
         int res = companyService.insertSelective(company);
+/**
+ * 政策添加
+ */
+        ArrayList<CompanyItem> companyItems = new ArrayList<>();
+        for (String item : itemId) {
+            CompanyItem companyItem = new CompanyItem();
+            companyItem.setItemId((long) Integer.parseInt(item));
+            companyItem.setCompanyId(company.getCompanyId());
+            Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
+            companyItem.setItemName(i.getItemName());
+            companyItems.add(companyItem);
+        }
+        int num = companyItemService.insertList(companyItems);
+
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("添加成功！");
         else rstFulBody.fail("添加失败！");
@@ -114,12 +136,29 @@ public class CompanyController extends BaseController{
         model.addAttribute("companyTypes",companyTypes);
         List<Street> streets = streetService.selectAll();
         model.addAttribute("streets",streets);
+
+        CompanyItem companyItem = new CompanyItem();
+        companyItem.setCompanyId((long) Integer.parseInt(companyId));
+        List<CompanyItem> companyItems = companyItemService.select(companyItem);
+        List<Item> items = itemService.selectAll();
+
+        for (Item i : items) {
+            i.setChecked(false);
+            for (CompanyItem cui : companyItems) {
+                if (i.getItemId() == cui.getItemId()) {
+                    i.setChecked(true);
+                    continue;
+                }
+            }
+        }
+        model.addAttribute("obj", company);
+        model.addAttribute("items", items);
         return "/company/edit.html";
     }
 
     @ResponseBody
     @RequestMapping("edit")
-    public RSTFulBody edit(Company company) {
+    public RSTFulBody edit(Company company,@RequestParam(value = "itemId[]") String[] itemId) {
         User sessionUser = getSessionUser();
         company.setUpdateId(sessionUser.getUserId());
         company.setUpdateName(sessionUser.getUserName());
@@ -132,6 +171,20 @@ public class CompanyController extends BaseController{
         Street street = streetService.selectByPrimaryKey(company.getStreetId());
         company.setStreetName(street.getStreetName());
 
+        int del  = companyItemService.delByCompanyId(company.getCompanyId());
+        /**
+         * 政策编辑
+         */
+        ArrayList<CompanyItem> companyItems = new ArrayList<>();
+        for (String item : itemId) {
+            CompanyItem companyItem = new CompanyItem();
+            companyItem.setItemId((long) Integer.parseInt(item));
+            companyItem.setCompanyId(company.getCompanyId());
+            Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
+            companyItem.setItemName(i.getItemName());
+            companyItems.add(companyItem);
+        }
+        companyItemService.insertList(companyItems);
         int res = companyService.updateByPrimaryKeySelective(company);
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");
@@ -211,7 +264,6 @@ public class CompanyController extends BaseController{
     @RequestMapping("edit_nature.html")
     public String editNature(Model model, String companyNatureId) {
         CompanyNature companyNature = companyNatureService.selectByPrimaryKey((long) Integer.parseInt(companyNatureId));
-        model.addAttribute("companyNatureId",companyNatureId);
         model.addAttribute("obj",companyNature);
         return "/company/edit_nature.html";
     }
@@ -288,7 +340,6 @@ public class CompanyController extends BaseController{
     @RequestMapping("edit_type.html")
     public String editType(Model model, String companyTypeId) {
         CompanyType companyType = companyTypeService.selectByPrimaryKey((long) Integer.parseInt(companyTypeId));
-        model.addAttribute("companyTypeId",companyTypeId);
         model.addAttribute("obj",companyType);
         return "/company/edit_type.html";
     }
