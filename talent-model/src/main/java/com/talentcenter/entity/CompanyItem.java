@@ -2,10 +2,7 @@ package com.talentcenter.entity;
 
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * talent_company_item
@@ -29,6 +26,9 @@ public class CompanyItem {
 
 
     private Long companyId;
+
+    @Transient
+    private Boolean checked;
 
 
 }

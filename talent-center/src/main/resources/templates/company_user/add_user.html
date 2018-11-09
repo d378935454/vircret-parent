@@ -41,7 +41,7 @@
                         <label  class="col-sm-4 control-label" style="padding-top: 2px;">享受政策：</label>
                         <div class="col-sm-8">
                             <div class="i-checks">
-                                @for(list in items){
+                                @for(list in companyItems){
                                 <label>
                                     <input type="checkbox" name="itemId[]" value="${list.itemId}" /><i></i>${list.itemName}</label>
                                 @}
