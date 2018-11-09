@@ -40,12 +40,12 @@
                     <div class="form-group">
                         <label  class="col-sm-4 control-label" style="padding-top: 2px;">享受政策：</label>
                         <div class="col-sm-8">
-                            <div class="i-checks">
-                                @for(list in companyItems){
-                                <label>
-                                    <input type="checkbox" name="itemId[]" value="${list.itemId}" /><i></i>${list.itemName}</label>
-                                @}
+                            @for(companyItem in companyItems){
+                            <div class="checkbox checkbox-inline">
+                                <input type="checkbox" id="c_${companyItem.companyItemId}" name="itemId[]" value="${companyItem.itemId}">
+                                <label for="c_${companyItem.companyItemId}"> ${companyItem.itemName} </label>
                             </div>
+                            @}
                         </div>
                     </div>
                     <div class="form-group">

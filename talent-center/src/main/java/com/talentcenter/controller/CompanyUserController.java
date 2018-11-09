@@ -3,10 +3,7 @@ package com.talentcenter.controller;
 import RSTFul.RSTFulBody;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.talentcenter.entity.CompanyItem;
-import com.talentcenter.entity.CompanyUserItem;
-import com.talentcenter.entity.Item;
-import com.talentcenter.entity.User;
+import com.talentcenter.entity.*;
 import com.talentcenter.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -81,7 +78,12 @@ public class CompanyUserController extends BaseController {
     @RequestMapping("add_user.html")
     public String addUI(Model model) {
         CompanyItem companyItem = new CompanyItem();
-        companyItem.setCompanyId(getSessionUser().getUserId());
+
+        Company c = new Company();
+        c.setUserId(getSessionUser().getUserId());
+        Company company = companyService.selectOne(c);
+
+        companyItem.setCompanyId(company.getCompanyId());
 
         List<CompanyItem> companyItems =  companyItemService.select(companyItem);
         model.addAttribute("companyItems", companyItems);
@@ -95,25 +97,10 @@ public class CompanyUserController extends BaseController {
         user.setCreateName(sessionUser.getUserName());
         user.setCreateId(sessionUser.getUserId());
         user.setUserNature(3);
-        user.setCompanyId(getSessionUser().getCompanyId());
+        user.setCompanyId(getSessionUser().getUserId());
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.insertSelective(user);
 
-    /*    ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
-        //itemId = [1,2];
-        for (String item: itemId) {
-            CompanyUserItem companyUserItem = new CompanyUserItem();
-            companyUserItem.setItemId((long)Integer.parseInt(item));
-            companyUserItem.setItemName("");
-            companyUserItem.setUserId(companyUser.getUserId());
-            companyUserItems.add(companyUserItem);
-        }
-        int num = companyUserItemService.insertList(companyUserItems);*/
-    /*
-    for(int i=0;i<itemId.length;i++){
-        CompanyUserItem companyUserItem = new CompanyUserItem();
-        companyUserItem.setItemId((long)Integer.parseInt(itemId[i]));
-    }*/
         ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
         for (String item : itemId) {
             CompanyUserItem companyUserItem = new CompanyUserItem();
@@ -136,22 +123,30 @@ public class CompanyUserController extends BaseController {
     public String editUI(Model model, String userId) {
         User user = userService.selectByPrimaryKey((long) Integer.parseInt(userId));
         CompanyItem companyItem = new CompanyItem();
-        companyItem.setCompanyId(getSessionUser().getUserId());
+
+        Company c = new Company();
+        c.setUserId(getSessionUser().getUserId());
+        Company company = companyService.selectOne(c);
+
+        companyItem.setCompanyId(company.getCompanyId());
+
         List<CompanyItem> companyItems =  companyItemService.select(companyItem);
-        model.addAttribute("companyItems", companyItems);
 
-        companyItem.setCompanyId((long) Integer.parseInt(userId));
-
+        CompanyUserItem companyUserItem = new CompanyUserItem();
+        companyUserItem.setUserId((long) Integer.parseInt(userId));
+        List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
 
         for (CompanyItem i : companyItems) {
             i.setChecked(false);
-            for (CompanyItem cui : companyItems) {
-                if (i.getCompanyItemId() == cui.getItemId()) {
+            for (CompanyUserItem cui : companyUserItems) {
+                if (i.getItemId() == cui.getItemId()) {
                     i.setChecked(true);
                     continue;
                 }
             }
         }
+
+        model.addAttribute("companyItems", companyItems);
         model.addAttribute("obj", user);
 
         return "/company_user/edit_user.html";
@@ -167,7 +162,7 @@ public class CompanyUserController extends BaseController {
         if (user.getPassword() != null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.updateByPrimaryKeySelective(user);
 
-        int del  = companyItemService.delByCompanyId(user.getCompanyId());
+        int del  = companyUserItemService.delByUserId(user.getUserId());
 
         ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
         for (String item : itemId) {

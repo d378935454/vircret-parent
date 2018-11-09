@@ -40,15 +40,15 @@
                     <div class="form-group">
                         <label for="user_tel" class="col-sm-4 control-label">享受政策：</label>
                         <div class="col-sm-8">
-                            <div class="i-checks">
-                            @for(list in companyItems){
-                            <label>
-                                <input type="checkbox" @if(list.checked){
+                            @for(companyItem in companyItems){
+                            <div class="checkbox checkbox-inline">
+                                <input type="checkbox" id="c_${companyItem.companyItemId}" @if(companyItem.checked){
                                        checked
                                        @}
-                                       value ="${list.itemId}" name="itemId[]" /><i></i>${list.itemName}</label>
-                            @}
+                                       name="itemId[]" value="${companyItem.itemId}">
+                                <label for="c_${companyItem.companyItemId}"> ${companyItem.itemName} </label>
                             </div>
+                            @}
                         </div>
                     </div>
 
