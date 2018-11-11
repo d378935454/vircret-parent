@@ -4,6 +4,7 @@
         <th><input type="checkbox" id="check_all"></th>
         <th>政策名称</th>
         <th>共补助时间(月)</th>
+        <th>政策类型</th>
         <th>政策分类</th>
         <th>备注</th>
         <th>添加人</th>
@@ -19,6 +20,13 @@
         <td><input type="checkbox" class="i-checks" name="input[]" value="${list.itemId}"></td>
         <td>${list.itemName}</td>
         <td>${list.itemLength}</td>
+        <td>
+            @if(list.itemCategory==0){
+                普通政策
+            @}else if(list.itemCategory==1){
+                卓越人才政策
+            @}
+        </td>
         <td>${list.itemTypeName}</td>
         <td>${list.memo}</td>
         <td>${list.createName}</td>

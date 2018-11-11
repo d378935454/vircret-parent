@@ -152,14 +152,14 @@ public class ItemController extends BaseController {
 
     @RequestMapping("/ajax_config")
     public String ajaxConfigs(Model model, int pageNum, int pageSize,
-                              @RequestParam(required = false) String configName,
-                              @RequestParam(required = false) String realName,
                               @RequestParam(required = false) String itemId
 
     ) {
         //分页查询
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.setItemId((long)Integer.parseInt(itemId));
         PageHelper.startPage(pageNum, pageSize);
-        List<ItemConfig> config = itemConfigService.selectAll();
+        List<ItemConfig> config = itemConfigService.select(itemConfig);
         PageInfo<ItemConfig> pageInfo = new PageInfo<>(config);
         String pageStr = makePageHtml(pageInfo);
         model.addAttribute("page_info", pageInfo);

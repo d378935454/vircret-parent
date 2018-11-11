@@ -90,9 +90,13 @@ public class ItemConfig {
      *是否需要平台审核
      */
     private Boolean itemConfigCenterCheck;
+
     /**
      * 状态 0:删除 1:正常
      */
+    private Integer itemConfigTarget;
+
+
     private Boolean del;
 
     /**

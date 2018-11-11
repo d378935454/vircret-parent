@@ -45,6 +45,11 @@ public class Item {
     private Date createTime;
 
     /**
+     * 政策栏目 0:普通 1:卓越人才
+     */
+    private Integer itemCategory;
+
+    /**
      * 更新时间
      */
     private Date updateTime;
