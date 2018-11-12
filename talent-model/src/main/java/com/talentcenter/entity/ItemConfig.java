@@ -35,6 +35,18 @@ public class ItemConfig {
      */
     @DateTimeFormat(pattern = "MM-dd")
     private Date itemConfigAcceptEnd;
+
+    /**
+     *审核开始时间
+     */
+    @DateTimeFormat(pattern = "MM-dd")
+    private Date itemConfigCheckBegin;
+    /**
+     *审核结束时间
+     */
+    @DateTimeFormat(pattern = "MM-dd")
+    private Date itemConfigCheckEnd;
+
     /**
      * 生效时间
      */

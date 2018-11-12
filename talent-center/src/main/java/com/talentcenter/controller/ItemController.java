@@ -185,27 +185,37 @@ public class ItemController extends BaseController {
     @RequestMapping("add_config")
     public RSTFulBody addConfig(
                                 ItemConfig config,
-                                @RequestParam(value = "certificates[]") String[] certificates,
-                                @RequestParam(required = false) String itemConfigAccept) {
+                                @RequestParam(required = false) String[] certificates,
+                                @RequestParam(required = false) String itemConfigAccept,
+                                @RequestParam(required = false) String itemConfigCheckTime
+    ) {
 
-        String[] times = itemConfigAccept.split("至");
-        config.setItemConfigAcceptBegin(getDate4StrDate(times[0],"MM-dd"));
-        config.setItemConfigAcceptEnd(getDate4StrDate(times[1],"MM-dd"));
+        String[] acceptTimes = itemConfigAccept.split("至");
+        String[] checkTimes = itemConfigCheckTime.split("至");
+        config.setItemConfigAcceptBegin(getDate4StrDate(acceptTimes[0],"MM-dd"));
+        config.setItemConfigAcceptEnd(getDate4StrDate(acceptTimes[1],"MM-dd"));
+
+        config.setItemConfigCheckBegin(getDate4StrDate(checkTimes[0],"MM-dd"));
+        config.setItemConfigCheckEnd(getDate4StrDate(checkTimes[1],"MM-dd"));
 
         User sessionUser = getSessionUser();
         config.setCreateName(sessionUser.getUserName());
         config.setCreateId(sessionUser.getUserId());
         int res = itemConfigService.insertSelective(config);
-        ArrayList<ItemCertificate> cs = new ArrayList<>();
-        for (String c: certificates) {
-            ItemCertificate itemCertificate = new ItemCertificate();
-            itemCertificate.setItemConfigId(config.getItemConfigId());
-            itemCertificate.setCertificateId((long)Integer.parseInt(c));
-            Certificate certificate = certificateService.selectByPrimaryKey((long)Integer.parseInt(c));
-            itemCertificate.setCertificateName(certificate.getCertificateName());
-            cs.add(itemCertificate);
+
+        if(certificates!=null){
+            ArrayList<ItemCertificate> cs = new ArrayList<>();
+            for (String c: certificates) {
+                ItemCertificate itemCertificate = new ItemCertificate();
+                itemCertificate.setItemConfigId(config.getItemConfigId());
+                itemCertificate.setCertificateId((long)Integer.parseInt(c));
+                Certificate certificate = certificateService.selectByPrimaryKey((long)Integer.parseInt(c));
+                itemCertificate.setCertificateName(certificate.getCertificateName());
+                cs.add(itemCertificate);
+            }
+            int num = itemCertificateService.insertList(cs);
         }
-        int num = itemCertificateService.insertList(cs);
+
         RSTFulBody rstFulBody = new RSTFulBody();
         rstFulBody.data(config.getItemId() + "");
         if (res > 0) rstFulBody.success("添加成功！");
@@ -217,6 +227,13 @@ public class ItemController extends BaseController {
     public String editConfig(Model model, long primaryKey) {
 //        Config config = configService.selectByPrimaryKey((long)Integer.parseInt(primaryKey));
         ItemConfig config = itemConfigService.selectByPrimaryKey(primaryKey);
+        Certificate certificate = new Certificate();
+        certificate.setDel(true);
+        List<Certificate> certificates = certificateService.select(certificate);
+        List<TypeCategory> typeCategories = typeCategoryService.selectAll();
+        model.addAttribute("itemId", config.getItemId());
+        model.addAttribute("certificates", certificates);
+        model.addAttribute("typeCategories", typeCategories);
         model.addAttribute("obj", config);
         return "/item/edit_config.html";
     }
