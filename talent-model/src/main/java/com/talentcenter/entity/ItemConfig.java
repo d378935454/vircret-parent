@@ -83,6 +83,7 @@ public class ItemConfig {
      * 服务描述
      */
     private String itemConfigService;
+
     /**
      * 政策详情
      */
@@ -92,6 +93,11 @@ public class ItemConfig {
      * 政策详情附件
      */
     private String itemConfigConetentAttachment;
+
+    /**
+     * 附件名称
+     */
+    private String attachmentName;
 
     /**
      *是否需要企业审核

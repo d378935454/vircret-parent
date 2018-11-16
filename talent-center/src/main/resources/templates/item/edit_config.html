@@ -6,14 +6,16 @@
 <link href="/css/plugins/webuploader/webuploader.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.css">
 <style>
-    #u-file{
+    #u-file {
         padding-top: 2px;
         margin-right: 10px;
     }
-    .pt5{
+
+    .pt5 {
         padding-bottom: 5px;
     }
-    .mw{
+
+    .mw {
         min-width: 70px;
         padding-top: 7px;
         margin-bottom: 0;
@@ -30,7 +32,9 @@
                         <label for="item_config_accept_begin" class="col-sm-2 control-label">申请受理时间：</label>
                         <div class="col-sm-3">
                             <input id="item_config_accept_begin" placeholder="请选择受理时间" name="itemConfigAccept"
-                                   class="form-control" type="text" value='${obj.itemConfigAcceptBegin,"MM-dd"} 至 ${obj.itemConfigAcceptEnd,"MM-dd"}' required>
+                                   class="form-control" type="text"
+                                   value='${obj.itemConfigAcceptBegin,"MM-dd"} 至 ${obj.itemConfigAcceptEnd,"MM-dd"}'
+                                   required>
                         </div>
                     </div>
 
@@ -38,7 +42,9 @@
                         <label for="item_config_accept_begin" class="col-sm-2 control-label">审核时间：</label>
                         <div class="col-sm-3">
                             <input id="item_config_check_time" placeholder="请选择审核时间" name="itemConfigCheckTime"
-                                   class="form-control" type="text" value='${obj.itemConfigCheckBegin,"MM-dd"} 至 ${obj.itemConfigCheckEnd,"MM-dd"}' required>
+                                   class="form-control" type="text"
+                                   value='${obj.itemConfigCheckBegin,"MM-dd"} 至 ${obj.itemConfigCheckEnd,"MM-dd"}'
+                                   required>
                         </div>
                     </div>
 
@@ -46,12 +52,13 @@
                         <label for="item_config_effect" class="col-sm-2 control-label">生效时间：</label>
                         <div class="col-sm-3">
                             <input id="item_config_effect" placeholder="请输入生效时间" name="itemConfigEffect"
-                                   class="date-time form-control" type="text" value='${obj.itemConfigEffect,"yyyy-MM-dd"}' required>
+                                   class="date-time form-control" type="text"
+                                   value='${obj.itemConfigEffect,"yyyy-MM-dd"}' required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label  class="col-sm-2 control-label">审核机构：</label>
+                        <label class="col-sm-2 control-label">审核机构：</label>
                         <div class="col-sm-10">
                             <div class="checkbox checkbox-inline">
                                 <input type="checkbox" @if(obj.itemConfigCompanyCheck==1){
@@ -189,7 +196,8 @@
                         <label for="item_config_send_rate" class="col-sm-2 control-label">发放频率：</label>
                         <div class="col-sm-3">
                             <input id="item_config_send_rate" placeholder="请输入发放频率(例:0.5月发放一次)"
-                                   name="itemConfigSendRate" class="form-control" value="${obj.itemConfigSendRate}" type="number" readonly>
+                                   name="itemConfigSendRate" class="form-control" value="${obj.itemConfigSendRate}"
+                                   type="number" readonly>
                         </div>
                     </div>
 
@@ -212,15 +220,16 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">人才分类类型：</label>
                         <div class="col-sm-3">
-                                <select name="typeCategoryId" id="type_category_id" class="form-control">
-                                    <option>--请选择--</option>
-                                    @for(tc in typeCategories){
-                                    <option @if(tc.typeCategoryId == obj.typeCategoryId){
-                                            selected
-                                            @}
-                                            value="${tc.typeCategoryId}">${tc.typeCategoryName}</option>
-                                    @}
-                                </select>
+                            <select name="typeCategoryId" id="type_category_id" class="form-control">
+                                <option>--请选择--</option>
+                                @for(tc in typeCategories){
+                                <option @if(tc.typeCategoryId== obj.typeCategoryId){
+                                        selected
+                                        @}
+                                        value="${tc.typeCategoryId}">${tc.typeCategoryName}
+                                </option>
+                                @}
+                            </select>
                         </div>
                     </div>
 
@@ -242,14 +251,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label  class="col-sm-2 control-label">需要上传证件：</label>
+                        <label class="col-sm-2 control-label">需要上传证件：</label>
                         <div class="col-sm-10">
                             @for(certificate in certificates){
                             <div class="checkbox checkbox-inline">
                                 <input type="checkbox" @if(certificate.checked){
-                                        checked
+                                       checked
                                        @}
-                                       id="c_${certificate.certificateId}" name="certificates[]" value="${certificate.certificateId}">
+                                       id="c_${certificate.certificateId}" name="certificates[]"
+                                       value="${certificate.certificateId}">
                                 <label for="c_${certificate.certificateId}"> ${certificate.certificateName} </label>
                             </div>
                             @}
@@ -259,17 +269,26 @@
                     <div class="form-group">
                         <label for="item_config_content" class="col-sm-2 control-label">政策详情：</label>
                         <div class="col-sm-10">
-                            <textarea id="editor" name="itemConfigContent" id="item_config_content" placeholder="政策详情" autofocus> ${obj.itemConfigContent}</textarea>
+                            <textarea id="editor" name="itemConfigContent" id="item_config_content" placeholder="政策详情"
+                                      autofocus> ${obj.itemConfigContent}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">政策详情附件：</label>
                         <div class="col-sm-10">
-                            <div id="u-file"></div>
+                            <div id="u-file">
+                                @if(obj.attachmentName!=null){
+                                <div class="info">
+                                    <i class="fa fa-file-pdf-o" style="font-size: 20px; margin-right: 2px; padding-top: 5px;"></i>${obj.attachmentName}
+                                </div>
+                                @}
+                            </div>
                             <div class="btns" style="margin-top: 15px;">
                                 <div id="picker">选择文件</div>
                             </div>
-                            <input type="hidden" name="itemConfigConetentAttachment" id="item_config_conetent_attachment">
+                            <input type="hidden" name="itemConfigConetentAttachment"
+                                   id="item_config_conetent_attachment">
+                            <input type="hidden" name="attachmentName" id="attachment-name">
                         </div>
 
                     </div>
@@ -310,7 +329,8 @@
                     <div class="form-group">
                         <label for="memo" class="col-sm-2 control-label">备注：</label>
                         <div class="col-sm-10">
-                            <textarea name="memo" class="form-control" id="memo" rows="5" cols="70">${obj.memo}</textarea>
+                            <textarea name="memo" class="form-control" id="memo" rows="5"
+                                      cols="70">${obj.memo}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -323,7 +343,8 @@
                             <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                         </div>
                     </div>
-                    <div id="date-table" style="position: absolute;height: 460px; top:20px;left:43.666668%;" class="col-sm-6">
+                    <div id="date-table" style="position: absolute;height: 460px; top:20px;left:43.666668%;"
+                         class="col-sm-6">
 
                         <table data-toggle="table" data-height="460">
                             <thead>
@@ -418,7 +439,7 @@
     });
 
     // 文件上传
-    jQuery(function() {
+    jQuery(function () {
         var $ = jQuery,
             state = 'pending',
             uploader;
@@ -450,20 +471,21 @@
         });
 
         // 当有文件添加进来的时候
-        uploader.on( 'fileQueued', function( file ) {
+        uploader.on('fileQueued', function (file) {
 
         });
 
-        uploader.on( 'uploadSuccess', function( file,response ) {
-            var icon="";
-            if(file.ext=="doc"){
+        uploader.on('uploadSuccess', function (file, response) {
+            var icon = "";
+            if (file.ext == "doc") {
                 icon = '<i class="fa fa-file-word-o" style="font-size: 20px; margin-right: 2px; padding-top: 5px;"></i>';
-            }else{
+            } else {
                 icon = '<i class="fa fa-file-pdf-o" style="font-size: 20px; margin-right: 2px; padding-top: 5px;"></i>';
             }
 
             $("#u-file").html('<div class="info">' + icon + file.name + '</div>');
-            $( ".webuploader-pick" ).html('重新上传');
+            $("#attachment-name").val(file.name);
+            $(".webuploader-pick").html('重新上传');
         });
 
         uploader.on('uploadFinished', function () {
@@ -471,19 +493,19 @@
             uploader.reset();
         });
 
-        uploader.on( 'uploadError', function( file ) {
+        uploader.on('uploadError', function (file) {
             var error_str = '<span>上传失败，请重新上传或联系系统管理员</span>';
             $("#item_config_conetent_attachment").val("");
             $("#u-file").html(error_str);
         });
 
-        uploader.on("uploadAccept", function( file, data){
+        uploader.on("uploadAccept", function (file, data) {
             var res = true;
-            if ( data.status=="0") {
+            if (data.status == "0") {
                 //data即为服务器返回的信息
                 // 通过return false来告诉组件，此文件上传有错。
                 res = false;
-            }else {
+            } else {
                 $("#item_config_conetent_attachment").val(data.fileInfo);
             }
             return res;
@@ -505,23 +527,23 @@
     $(document).ready(function () {
 
         $("#type_category_id").change(function () {
-            if($(this).val() == $("#t_type_id").val()){
+            if ($(this).val() == $("#t_type_id").val()) {
                 $('#type_amount').html($('#record').html());
-            }else{
+            } else {
                 $.ajax({
                     type: "GET",
-                    url: "${ctxPath}/item/talent_type?typeCategoryId="+$(this).val(),
+                    url: "${ctxPath}/item/talent_type?typeCategoryId=" + $(this).val(),
                     success: function (data) {
                         var htmlStr = "";
-                        $.each(data,function(i,t){
-                            htmlStr+= '<div class="col-sm-3 pt5">';
-                            htmlStr+= '<label class="pull-left mw">'+t.talentTypeName+'：</label>';
-                            htmlStr+= '<div class="pull-left">'
-                            htmlStr+= '<input name="talentTypeIds[]" value="'+t.talentTypeId+'" class="form-control talent-type" type="hidden">';
-                            htmlStr+= '<input name="talentTypeNames[]" value="'+t.talentTypeName+'" class="form-control talent-type" type="hidden">';
-                            htmlStr+= '<input placeholder="请输入金额或半分比" name="talentTypes[]" class="form-control talent-type" type="text">';
-                            htmlStr+= '</div>';
-                            htmlStr+= '</div>';
+                        $.each(data, function (i, t) {
+                            htmlStr += '<div class="col-sm-3 pt5">';
+                            htmlStr += '<label class="pull-left mw">' + t.talentTypeName + '：</label>';
+                            htmlStr += '<div class="pull-left">'
+                            htmlStr += '<input name="talentTypeIds[]" value="' + t.talentTypeId + '" class="form-control talent-type" type="hidden">';
+                            htmlStr += '<input name="talentTypeNames[]" value="' + t.talentTypeName + '" class="form-control talent-type" type="hidden">';
+                            htmlStr += '<input placeholder="请输入金额或半分比" name="talentTypes[]" class="form-control talent-type" type="text">';
+                            htmlStr += '</div>';
+                            htmlStr += '</div>';
                         });
                         $('#type_amount').html(htmlStr);
                     }
@@ -545,40 +567,40 @@
         var type = $('input[name="itemConfigType"]:checked').val();
         var tType = $('input[name="itemConfigTType"]:checked').val();
 
-        if(type==0){
+        if (type == 0) {
             $("#item_config_service").attr("required", true);
             $("#item_config_amount_total,#item_config_amount_per").attr("readonly", true);
-        } else if(type==1 && tType==0){
+        } else if (type == 1 && tType == 0) {
             $("#item_config_amount_total,#item_config_amount_per").attr("required", true);
             $("#item_config_service").attr("readonly", true);
-        } else if(type==1 && tType==1){
+        } else if (type == 1 && tType == 1) {
             $("#item_config_service").attr("required", true);
             $("#item_config_amount_total,#item_config_amount_per").attr("readonly", true);
         }
 
         // itemConfigTType
 
-        if(tType==0){
+        if (tType == 0) {
             $(".talent-type").attr("readonly", true);
             $("#type_category_id").attr("disabled", true);
-        }else {
+        } else {
             $(".talent-type").attr("readonly", false);
             $("#type_category_id").attr("disabled", false);
 
             $.ajax({
                 type: "GET",
-                url: "${ctxPath}/item/item_record?itemConfigId="+$("#item_config_id").val(),
+                url: "${ctxPath}/item/item_record?itemConfigId=" + $("#item_config_id").val(),
                 success: function (data) {
                     var htmlStr = "";
-                    $.each(data,function(i,t){
-                        htmlStr+= '<div class="col-sm-3 pt5">';
-                        htmlStr+= '<label class="pull-left mw">'+t.talentTypeName+'：</label>';
-                        htmlStr+= '<div class="pull-left">'
-                        htmlStr+= '<input name="talentTypeIds[]" value="'+t.talentTypeId+'" class="form-control talent-type" type="hidden">';
-                        htmlStr+= '<input name="talentTypeNames[]" value="'+t.talentTypeName+'" class="form-control talent-type" type="hidden">';
-                        htmlStr+= '<input placeholder="请输入金额或半分比" name="talentTypes[]" value="'+t.itemTalentContent+'" class="form-control talent-type" type="text">';
-                        htmlStr+= '</div>';
-                        htmlStr+= '</div>';
+                    $.each(data, function (i, t) {
+                        htmlStr += '<div class="col-sm-3 pt5">';
+                        htmlStr += '<label class="pull-left mw">' + t.talentTypeName + '：</label>';
+                        htmlStr += '<div class="pull-left">'
+                        htmlStr += '<input name="talentTypeIds[]" value="' + t.talentTypeId + '" class="form-control talent-type" type="hidden">';
+                        htmlStr += '<input name="talentTypeNames[]" value="' + t.talentTypeName + '" class="form-control talent-type" type="hidden">';
+                        htmlStr += '<input placeholder="请输入金额或半分比" name="talentTypes[]" value="' + t.itemTalentContent + '" class="form-control talent-type" type="text">';
+                        htmlStr += '</div>';
+                        htmlStr += '</div>';
                     });
 
                     $('#type_amount').html(htmlStr);
@@ -595,10 +617,10 @@
                 $('#item_config_amount_per').parent().prev().append(
                     '<span class="red-star" style="color:red">*</span>'
                 );
-                $("#type_category_id").find("option:contains('--请选择--')").attr("selected",true);
+                $("#type_category_id").find("option:contains('--请选择--')").attr("selected", true);
                 $("#type_category_id").attr("disabled", true);
                 $('#type_amount').html("");
-            }else {
+            } else {
                 $(".talent-type").attr("readonly", false);
                 $("#item_config_amount_per").val("");
                 $("#item_config_amount_per").attr("readonly", true);
@@ -609,7 +631,7 @@
             }
         });
         //初始化发放频率为月时，设置发放频率为必填
-        if($('input[name="itemConfigSendType"]:checked').val()==1){
+        if ($('input[name="itemConfigSendType"]:checked').val() == 1) {
             $("#item_config_send_rate").attr("required", true);
         }
 
@@ -643,7 +665,7 @@
                 );
 
 
-            } else if($(this).val() == 1){ //现金
+            } else if ($(this).val() == 1) { //现金
                 $('#item_config_amount_total,#item_config_amount_per').removeAttr('readonly');
                 // $('#item_config_amount_per').removeAttr('readonly');
 
@@ -664,7 +686,7 @@
                 $('#item_config_service').next().remove();
                 $("#item_config_service").attr("readonly", true);
                 $('#item_config_service').parent().prev().children().remove();
-            } else if($(this).val() == 2){ //综合
+            } else if ($(this).val() == 2) { //综合
                 $('#item_config_amount_total,#item_config_amount_per').removeAttr('readonly');
                 $("#item_config_amount_total,#item_config_amount_per").removeAttr("required");
                 $('#item_config_service').parent().parent().removeClass("has-error");

@@ -54,8 +54,4 @@ public class CompanyUserItem {
      * 人才中心审核状态 0:不通过 1:退回 2:通过 3:已提交
      */
     private Integer centerChecked;
-
-    private Boolean del;
-
-
 }
