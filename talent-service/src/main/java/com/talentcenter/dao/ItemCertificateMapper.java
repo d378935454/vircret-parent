@@ -9,4 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ItemCertificateMapper extends BaseMapper<ItemCertificate> {
+    int delByItemConfigId(Long itemConfigId);
 }

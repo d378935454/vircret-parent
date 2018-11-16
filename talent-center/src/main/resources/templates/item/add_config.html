@@ -30,7 +30,7 @@
                         <label for="item_config_accept_begin" class="col-sm-2 control-label">申请受理时间：</label>
                         <div class="col-sm-3">
                             <input id="item_config_accept_begin" placeholder="请选择受理时间" name="itemConfigAccept"
-                                   class="form-control" type="text" required>
+                                   class="form-control" type="text" required autocomplete="off">
                         </div>
                     </div>
 
@@ -38,15 +38,15 @@
                         <label for="item_config_accept_begin" class="col-sm-2 control-label">审核时间：</label>
                         <div class="col-sm-3">
                             <input id="item_config_check_time" placeholder="请选择审核时间" name="itemConfigCheckTime"
-                                   class="form-control" type="text" required>
+                                   class="form-control" type="text" required autocomplete="off">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="item_config_effect" class="col-sm-2 control-label">生效时间：</label>
                         <div class="col-sm-3">
-                            <input id="item_config_effect" placeholder="请输入生效时间" name="itemConfigEffect"
-                                   class="date-time form-control" type="text" required>
+                            <input id="item_config_effect" placeholder="请选择生效时间" name="itemConfigEffect"
+                                   class="date-time form-control" type="text" required autocomplete="off">
                         </div>
                     </div>
 
@@ -54,18 +54,18 @@
                         <label  class="col-sm-2 control-label">审核机构：</label>
                         <div class="col-sm-10">
                             <div class="checkbox checkbox-inline">
-                                <input type="checkbox" checked name="itemConfigCompanyCheck" value="1">
-                                <label> 企业</label>
+                                <input type="checkbox" checked id="item_config_company_check" name="itemConfigCompanyCheck" value="1">
+                                <label for="item_config_company_check"> 企业</label>
                             </div>
 
                             <div class="checkbox checkbox-inline">
-                                <input type="checkbox" checked name="itemConfigStreetCheck" value="1">
-                                <label> 街道</label>
+                                <input type="checkbox" checked id="item_config_street_check" name="itemConfigStreetCheck" value="1">
+                                <label for="item_config_street_check"> 街道</label>
                             </div>
 
                             <div class="checkbox checkbox-inline">
-                                <input type="checkbox" checked name="itemConfigCenterCheck" value="1">
-                                <label> 人才中心</label>
+                                <input type="checkbox" checked id="item_config_center_check" name="itemConfigCenterCheck" value="1">
+                                <label for="item_config_center_check"> 人才中心</label>
                             </div>
                         </div>
                     </div>
@@ -165,7 +165,7 @@
                         <label class="col-sm-2 control-label">人才分类类型：</label>
                         <div class="col-sm-3">
                                 <select  name="typeCategoryId" id="type_category_id" class="form-control"type="text">
-                                    <option selected="selected" value="0">--请选择--</option>
+                                    <option selected="selected">--请选择--</option>
                                     @for(tc in typeCategories){
                                     <option value="${tc.typeCategoryId}">${tc.typeCategoryName}</option>
                                     @}
@@ -507,8 +507,9 @@
                         htmlStr+= '<div class="col-sm-3 pt5">';
                         htmlStr+= '<label class="pull-left mw">'+t.talentTypeName+'：</label>';
                         htmlStr+= '<div class="pull-left">'
-                        htmlStr+= '<input placeholder="请输入金额" name="talentTypeIds[]" value="'+t.talentTypeId+'" class="form-control talent-type" type="hidden">';
-                        htmlStr+= '<input placeholder="请输入金额" name="talentTypes[]" class="form-control talent-type" type="number">';
+                        htmlStr+= '<input name="talentTypeIds[]" value="'+t.talentTypeId+'" class="form-control talent-type" type="hidden">';
+                        htmlStr+= '<input name="talentTypeNames[]" value="'+t.talentTypeName+'" class="form-control talent-type" type="hidden">';
+                        htmlStr+= '<input placeholder="请输入金额" name="talentTypes[]" class="form-control talent-type" type="text">';
                         htmlStr+= '</div>';
                         htmlStr+= '</div>';
                     });
@@ -632,6 +633,7 @@
                 $('#item_config_service').removeAttr('required');
                 $('#item_config_amount_total').parent().parent().removeClass("has-error");
                 $('#item_config_amount_per').parent().parent().removeClass("has-error");
+                $('#item_config_service').parent().prev().children().remove();
 
                 $('#item_config_amount_total').parent().prev().children().remove();
                 $('#item_config_amount_per').parent().prev().children().remove();

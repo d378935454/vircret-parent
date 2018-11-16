@@ -2,10 +2,7 @@ package com.talentcenter.entity;
 
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -62,4 +59,7 @@ public class Certificate {
      * 备注
      */
     private String memo;
+
+    @Transient
+    private Boolean checked;
 }

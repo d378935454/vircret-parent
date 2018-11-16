@@ -2,206 +2,398 @@
 <html>
 @layout("/layout/_form_layout.html"){
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+<link href="/css/plugins/simditor/simditor.css" rel="stylesheet">
+<link href="/css/plugins/webuploader/webuploader.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.css">
+<style>
+    #u-file{
+        padding-top: 2px;
+        margin-right: 10px;
+    }
+    .pt5{
+        padding-bottom: 5px;
+    }
+    .mw{
+        min-width: 70px;
+        padding-top: 7px;
+        margin-bottom: 0;
+        text-align: left;
+    }
+</style>
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
                 <form class="form-horizontal m-t" id="viladate_form">
+
                     <div class="form-group">
-                        <label for="item_config_accept_begin" class="col-sm-4 control-label">受理开始时间：</label>
-                        <div class="col-sm-8">
-                            <input id="item_config_accept_begin" placeholder="请选择受理开始时间" name="itemConfigAcceptBegin"
-                                   value="${obj.itemConfigAcceptBegin,'yyyy-MM-dd'}" class="date-time form-control"
-                                   type="text" required>
+                        <label for="item_config_accept_begin" class="col-sm-2 control-label">申请受理时间：</label>
+                        <div class="col-sm-3">
+                            <input id="item_config_accept_begin" placeholder="请选择受理时间" name="itemConfigAccept"
+                                   class="form-control" type="text" value='${obj.itemConfigAcceptBegin,"MM-dd"} 至 ${obj.itemConfigAcceptEnd,"MM-dd"}' required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="item_config_accept_end" class="col-sm-4 control-label">受理结束时间：</label>
-                        <div class="col-sm-8">
-                            <input id="item_config_accept_end" placeholder="请选择受理结束时间" name="itemConfigAcceptEnd"
-                                   value="${obj.itemConfigAcceptEnd,'yyyy-MM-dd'}" class="date-time form-control"
-                                   type="text" required>
+                        <label for="item_config_accept_begin" class="col-sm-2 control-label">审核时间：</label>
+                        <div class="col-sm-3">
+                            <input id="item_config_check_time" placeholder="请选择审核时间" name="itemConfigCheckTime"
+                                   class="form-control" type="text" value='${obj.itemConfigCheckBegin,"MM-dd"} 至 ${obj.itemConfigCheckEnd,"MM-dd"}' required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="item_config_effect" class="col-sm-4 control-label">生效时间：</label>
-                        <div class="col-sm-8">
+                        <label for="item_config_effect" class="col-sm-2 control-label">生效时间：</label>
+                        <div class="col-sm-3">
                             <input id="item_config_effect" placeholder="请输入生效时间" name="itemConfigEffect"
-                                   value="${obj.itemConfigEffect,'yyyy-MM-dd'}" class="date-time form-control"
-                                   type="text" required>
+                                   class="date-time form-control" type="text" value='${obj.itemConfigEffect,"yyyy-MM-dd"}' required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" style="padding-top: 2px;">窗口办理：</label>
-                        <div class="col-sm-8">
-                            <div class="i-checks">
-                                <label>
-                                    <input type="radio" @if(obj.itemConfigFace){
-                                           checked @}
-                                           value="1" name="itemConfigFace"> <i></i> 是</label>&nbsp;&nbsp;
-                                <label>
-                                    <input type="radio" @if(!obj.itemConfigFace){
-                                           checked @}
-                                           value="0" name="itemConfigFace"> <i></i> 否 </label>&nbsp;&nbsp;
+                        <label  class="col-sm-2 control-label">审核机构：</label>
+                        <div class="col-sm-10">
+                            <div class="checkbox checkbox-inline">
+                                <input type="checkbox" @if(obj.itemConfigCompanyCheck==1){
+                                       checked
+                                       @}
+                                       name="itemConfigCompanyCheck" id="item_config_company_check" value="1">
+                                <label for="item_config_company_check"> 企业</label>
+                            </div>
 
+                            <div class="checkbox checkbox-inline">
+                                <input type="checkbox" @if(obj.itemConfigStreetCheck==1){
+                                       checked
+                                       @}
+                                       name="itemConfigStreetCheck" id="item_config_street_check" value="1">
+                                <label for="item_config_street_check"> 街道</label>
+                            </div>
+
+                            <div class="checkbox checkbox-inline">
+                                <input type="checkbox" @if(obj.itemConfigCenterCheck==1){
+                                       checked
+                                       @}
+                                       name="itemConfigCenterCheck" id="item_config_center_check" value="1">
+                                <label for="item_config_center_check"> 人才中心</label>
                             </div>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" style="padding-top: 2px;">补助方式：</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">窗口办理：</label>
+                        <div class="col-sm-3">
                             <div class="i-checks">
                                 <label>
-                                    <input type="radio" @if(obj.itemConfigType==1){
-                                           checked @}
-                                           value="1" name="itemConfigType"> <i></i> 是</label>&nbsp;&nbsp;
+                                    <input type="radio" value="0" @if(obj.itemConfigFace){
+                                           checked
+                                           @}
+                                           name="itemConfigFace"> <i></i> 否</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="radio" @if(obj.itemConfigType==0){
-                                           checked @}
-                                           value="0" name="itemConfigType"> <i></i> 否 </label>&nbsp;&nbsp;
+                                    <input type="radio" value="1" @if(!obj.itemConfigFace){
+                                           checked
+                                           @}
+                                           value="1" name="itemConfigFace"> <i></i> 是</label>
                             </div>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="item_config_amount_total" class="col-sm-4 control-label">总补助金额：</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">补助方式：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="1" @if(obj.itemConfigType==1){
+                                           checked
+                                           @}
+                                           name="itemConfigType"> <i></i> 现金</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="0" @if(obj.itemConfigType==0){
+                                           checked
+                                           @}
+                                           name="itemConfigType"> <i></i> 服务</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="2" @if(obj.itemConfigType==2){
+                                           checked
+                                           @}
+                                           name="itemConfigType"> <i></i> 综合</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">发放对象：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="0" @if(obj.itemConfigTarget==0){
+                                           checked
+                                           @}
+                                           name="itemConfigTarget"> <i></i> 个人</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="1" @if(obj.itemConfigTarget==1){
+                                           checked
+                                           @}
+                                           name="itemConfigTarget"> <i></i> 机构/企业</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">补助发放方式：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="0" @if(obj.itemConfigSendType==0){
+                                           checked
+                                           @}
+                                           name="itemConfigSendType"> <i></i> 一次性</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="1" @if(obj.itemConfigSendType==1){
+                                           checked
+                                           @}
+                                           name="itemConfigSendType"> <i></i> 月</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="2" @if(obj.itemConfigSendType==2){
+                                           checked
+                                           @}
+                                           name="itemConfigSendType"> <i></i> 年</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="3" @if(obj.itemConfigSendType==3){
+                                           checked
+                                           @}
+                                           name="itemConfigSendType"> <i></i> 阶段</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">按人才分类：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="0" @if(!obj.itemConfigTType){
+                                           checked
+                                           @}
+                                           name="itemConfigTType"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="1" @if(obj.itemConfigTType){
+                                           checked
+                                           @}
+                                           name="itemConfigTType"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="item_config_send_rate" class="col-sm-2 control-label">发放频率：</label>
+                        <div class="col-sm-3">
+                            <input id="item_config_send_rate" placeholder="请输入发放频率(例:0.5月发放一次)"
+                                   name="itemConfigSendRate" class="form-control" value="${obj.itemConfigSendRate}" type="number" readonly>
+                        </div>
+                    </div>
+
+                    <!--<div class="form-group">
+                        <label for="item_config_amount_total" class="col-sm-2 control-label">总补助金额：</label>
+                        <div class="col-sm-3">
                             <input id="item_config_amount_total" placeholder="请输入总补助金额" name="itemConfigAmountTotal"
-                                   value="${obj.itemConfigAmountTotal}"
-                                   class="form-control" type="number" required>
+                                   class="form-control" type="number">
+                        </div>
+                    </div>-->
+
+                    <div class="form-group">
+                        <label for="item_config_amount_per" class="col-sm-2 control-label">该期补助金额：</label>
+                        <div class="col-sm-3">
+                            <input id="item_config_amount_per" placeholder="请输入该期补助金额" name="itemConfigAmountPer"
+                                   class="form-control" value="${obj.itemConfigAmountPer}" type="number">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">人才分类类型：</label>
+                        <div class="col-sm-3">
+                                <select name="typeCategoryId" id="type_category_id" class="form-control">
+                                    <option>--请选择--</option>
+                                    @for(tc in typeCategories){
+                                    <option @if(tc.typeCategoryId == obj.typeCategoryId){
+                                            selected
+                                            @}
+                                            value="${tc.typeCategoryId}">${tc.typeCategoryName}</option>
+                                    @}
+                                </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">人才分类补助金额：</label>
+                        <div class="col-sm-10" id="type_amount">
+                            <!--<input id="item_config_amount_per" placeholder="请输入每份补助金额" name="itemConfigAmountPer"
+                                   class="form-control" type="number">-->
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="item_config_service" class="col-sm-2 control-label">服务描述：</label>
+                        <div class="col-sm-10">
+                            <input id="item_config_service" placeholder="请输入服务描述" name="itemConfigService"
+                                   class="form-control" value="${obj.itemConfigService}" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label">需要上传证件：</label>
+                        <div class="col-sm-10">
+                            @for(certificate in certificates){
+                            <div class="checkbox checkbox-inline">
+                                <input type="checkbox" @if(certificate.checked){
+                                        checked
+                                       @}
+                                       id="c_${certificate.certificateId}" name="certificates[]" value="${certificate.certificateId}">
+                                <label for="c_${certificate.certificateId}"> ${certificate.certificateName} </label>
+                            </div>
+                            @}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="item_config_content" class="col-sm-2 control-label">政策详情：</label>
+                        <div class="col-sm-10">
+                            <textarea id="editor" name="itemConfigContent" id="item_config_content" placeholder="政策详情" autofocus> ${obj.itemConfigContent}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="item_config_amount_per" class="col-sm-4 control-label">发放每份补助金额：</label>
-                        <div class="col-sm-8">
-                            <input id="item_config_amount_per" placeholder="请输入每份补助金额" name="itemConfigAmountPer"
-                                   value="${obj.itemConfigAmountPer}"
-                                   class="form-control" type="number" required>
+                        <label class="col-sm-2 control-label">政策详情附件：</label>
+                        <div class="col-sm-10">
+                            <div id="u-file"></div>
+                            <div class="btns" style="margin-top: 15px;">
+                                <div id="picker">选择文件</div>
+                            </div>
+                            <input type="hidden" name="itemConfigConetentAttachment" id="item_config_conetent_attachment">
                         </div>
+
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label" style="padding-top: 2px;">补助发放方式：</label>
+                    <!--<div class="form-group">
+                        <label  class="col-sm-4 control-label" style="padding-top: 2px;">企业审核：</label>
                         <div class="col-sm-8">
                             <div class="i-checks">
                                 <label>
-                                    <input type="radio" @if(obj.itemConfigType==0){
-                                           checked @}
-                                           value="0" name="noticeType"> <i></i> 一次性 </label>&nbsp;&nbsp;
+                                    <input type="radio" value="1" checked name="itemConfigCompanyCheck"> <i></i> 是</label>
                                 <label>
-                                    <input type="radio" @if(obj.itemConfigType==1){
-                                           checked @}
-                                           value="1" name="noticeType"> <i></i> 月</label>&nbsp;&nbsp;
-                                <label>
-                                    <input type="radio" @if(obj.itemConfigType==2){
-                                           checked @}
-                                           value="2" name="noticeType"> <i></i> 年</label>
+                                    <input type="radio" value="0" name="itemConfigCompanyCheck"> <i></i> 否</label>
                             </div>
                         </div>
                     </div>
-                        <div class="form-group">
-                            <label for="item_config_send_rate" class="col-sm-4 control-label">发放频率：</label>
-                            <div class="col-sm-8">
-                                <input id="item_config_send_rate" placeholder="请输入发放频率(例：0.5月发放一次)"
-                                       name="itemConfigSendRate"
-                                       value="${obj.itemConfigSendRate}"
-                                       class="form-control" type="text" required>
+                    <div class="form-group">
+                        <label  class="col-sm-4 control-label" style="padding-top: 2px;">街道审核：</label>
+                        <div class="col-sm-8">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="1" checked name="itemConfigStreetCheck"> <i></i> 是</label>
+                                <label>
+                                    <input type="radio" value="0" name="itemConfigStreetCheck"> <i></i> 否</label>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="item_config_service" class="col-sm-4 control-label">服务描述：</label>
-                            <div class="col-sm-8">
-                                <input id="item_config_service" placeholder="请输入服务描述" name="itemConfigService"
-                                       value="${obj.itemConfigService}" class="form-control" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-4 control-label" style="padding-top: 2px;">平台审核：</label>
+                        <div class="col-sm-8">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="1" checked name="itemConfigCenterCheck"> <i></i> 是</label>
+                                <label>
+                                    <input type="radio" value="0" name="itemConfigCenterCheck"> <i></i> 否</label>
                             </div>
+                        </div>
+                    </div>-->
 
+                    <div class="form-group">
+                        <label for="memo" class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-10">
+                            <textarea name="memo" class="form-control" id="memo" rows="5" cols="70">${obj.memo}</textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="item_config_content" class="col-sm-4 control-label">政策详情：</label>
-                            <div class="col-sm-8">
-                                <input id="item_config_content" placeholder="请输入政策详情" name="itemConfigContent"
-                                       value="${obj.itemConfigContent}" class="form-control" type="text">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <button class="btn btn-primary" type="submit">提交</button>
+                            <input type="hidden" name="itemConfigId" id="item_config_id" value="${obj.itemConfigId}">
+                            <input type="hidden" name="createTime" id="create_time" value="${obj.createTime}">
+                            <input type="hidden" id="t_type_id" value="${obj.typeCategoryId}">
+                            <input type="hidden" name="itemId" value="${obj.itemId}">
+                            <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                         </div>
+                    </div>
+                    <div id="date-table" style="position: absolute;height: 460px; top:20px;left:43.666668%;" class="col-sm-6">
 
-                        <div class="form-group">
-                            <label for="item_config_conetent_attachment" class="col-sm-4 control-label">政策详情附件：</label>
-                            <div class="col-sm-8">
-                                <input id="item_config_conetent_attachment" placeholder="请输入政策详情附件"
-                                       name="itemConfigConetentAttachment" value="${obj.itemConfigConetentAttachment}"
-                                       class="form-control" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label" style="padding-top: 2px;">企业审核：</label>
-                            <div class="col-sm-8">
-                                <div class="i-checks">
-                                    <label>
-                                        <input type="radio" @if(obj.itemConfigCompanyCheck){
-                                               checked @}
-                                               value="1" name="itemConfigCompanyCheck"> <i></i> 是</label>
-                                    <label>
-                                        <input type="radio" @if(!obj.itemConfigCompanyCheck){
-                                               checked @}
-                                               value="0" name="itemConfigCompanyCheck"> <i></i> 否</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label" style="padding-top: 2px;">街道审核：</label>
-                            <div class="col-sm-8">
-                                <div class="i-checks">
-                                    <label>
-                                        <input type="radio" @if(obj.itemConfigStreetCheck){
-                                               checked @}
-                                               value="1" name="itemConfigStreetCheck"> <i></i> 是</label>
-                                    <label>
-                                        <input type="radio" @if(!obj.itemConfigStreetCheck){
-                                               checked @}
-                                               value="0" name="itemConfigStreetCheck"> <i></i> 否</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label" style="padding-top: 2px;">平台办理：</label>
-                            <div class="col-sm-8">
-                                <div class="i-checks">
-                                    <label>
-                                        <input type="radio" @if(obj.itemConfigCenterCheck){
-                                               checked @}
-                                               value="1" name="itemConfigCenterCheck"> <i></i> 是</label>
-                                    <label>
-                                        <input type="radio" @if(!obj.itemConfigCenterCheck){
-                                               checked @}
-                                               value="0" name="itemConfigCenterCheck"> <i></i> 否</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="memo" class="col-sm-4 control-label">备注：</label>
-                            <div class="col-sm-8">
-                                <textarea name="memo" class="form-control" id="memo" rows="5" cols="70"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-sm-8 col-sm-offset-3">
-                                <input type="hidden" name="itemConfigId" value="${obj.itemConfigId}">
-                                <input type="hidden" name="itemId" value="${obj.itemId}">
-                                <button class="btn btn-primary" type="submit">提交</button>
-                                <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
-                            </div>
-                        </div>
+                        <table data-toggle="table" data-height="460">
+                            <thead>
+                            <tr>
+                                <th>受理时间</th>
+                                <th>政策</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>02-01 至 03-31</td>
+                                <td>购房补贴</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            <tr>
+                                <td>04-01 至 06-31</td>
+                                <td>人才公寓</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<div style="display: none;" id="record"></div>
 @}
 </body>
 <script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script type="text/javascript" src="/js/plugins/simditor/module.js"></script>
+<script type="text/javascript" src="/js/plugins/simditor/hotkeys.js"></script>
+<script type="text/javascript" src="/js/plugins/simditor/simditor.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
+
+<!-- Latest compiled and minified Locales -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="/js/plugins/webuploader/webuploader.js"></script>
 <script type="text/javascript">
     toastr.options = {
         "closeButton": true,
@@ -225,6 +417,294 @@
         });
     });
 
+    // 文件上传
+    jQuery(function() {
+        var $ = jQuery,
+            state = 'pending',
+            uploader;
+
+        uploader = WebUploader.create({
+
+            auto: true,
+
+            // 不压缩image
+            resize: false,
+
+            // swf文件路径
+            swf: '/js/Uploader.swf',
+
+            // 文件接收服务端。
+            server: '/upload_item',
+
+            fileNumLimit: 1,
+
+            duplicate: true,
+
+            accept: {
+                title: 'Office',
+                extensions: 'doc,docx,pdf'
+            },
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#picker'
+        });
+
+        // 当有文件添加进来的时候
+        uploader.on( 'fileQueued', function( file ) {
+
+        });
+
+        uploader.on( 'uploadSuccess', function( file,response ) {
+            var icon="";
+            if(file.ext=="doc"){
+                icon = '<i class="fa fa-file-word-o" style="font-size: 20px; margin-right: 2px; padding-top: 5px;"></i>';
+            }else{
+                icon = '<i class="fa fa-file-pdf-o" style="font-size: 20px; margin-right: 2px; padding-top: 5px;"></i>';
+            }
+
+            $("#u-file").html('<div class="info">' + icon + file.name + '</div>');
+            $( ".webuploader-pick" ).html('重新上传');
+        });
+
+        uploader.on('uploadFinished', function () {
+            //清空队列
+            uploader.reset();
+        });
+
+        uploader.on( 'uploadError', function( file ) {
+            var error_str = '<span>上传失败，请重新上传或联系系统管理员</span>';
+            $("#item_config_conetent_attachment").val("");
+            $("#u-file").html(error_str);
+        });
+
+        uploader.on("uploadAccept", function( file, data){
+            var res = true;
+            if ( data.status=="0") {
+                //data即为服务器返回的信息
+                // 通过return false来告诉组件，此文件上传有错。
+                res = false;
+            }else {
+                $("#item_config_conetent_attachment").val(data.fileInfo);
+            }
+            return res;
+        });
+    });
+
+    laydate.render({
+        elem: '#item_config_accept_begin',
+        range: '至',
+        format: 'MM-dd'
+    });
+
+    laydate.render({
+        elem: '#item_config_check_time',
+        range: '至',
+        format: 'MM-dd'
+    });
+
+    $(document).ready(function () {
+
+        $("#type_category_id").change(function () {
+            if($(this).val() == $("#t_type_id").val()){
+                $('#type_amount').html($('#record').html());
+            }else{
+                $.ajax({
+                    type: "GET",
+                    url: "${ctxPath}/item/talent_type?typeCategoryId="+$(this).val(),
+                    success: function (data) {
+                        var htmlStr = "";
+                        $.each(data,function(i,t){
+                            htmlStr+= '<div class="col-sm-3 pt5">';
+                            htmlStr+= '<label class="pull-left mw">'+t.talentTypeName+'：</label>';
+                            htmlStr+= '<div class="pull-left">'
+                            htmlStr+= '<input name="talentTypeIds[]" value="'+t.talentTypeId+'" class="form-control talent-type" type="hidden">';
+                            htmlStr+= '<input name="talentTypeNames[]" value="'+t.talentTypeName+'" class="form-control talent-type" type="hidden">';
+                            htmlStr+= '<input placeholder="请输入金额或半分比" name="talentTypes[]" class="form-control talent-type" type="text">';
+                            htmlStr+= '</div>';
+                            htmlStr+= '</div>';
+                        });
+                        $('#type_amount').html(htmlStr);
+                    }
+                });
+            }
+        });
+
+        //富文本 编辑器
+        var editor = new Simditor({
+            textarea: $('#editor'),
+            upload: false,
+            toolbar: [
+                'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale',
+                'color', 'ol', 'ul', 'blockquote', 'table', 'link', 'hr', 'indent',
+                'outdent', 'alignment'
+            ]
+            //optional options
+        });
+
+        //初始补助发放方式必填项
+        var type = $('input[name="itemConfigType"]:checked').val();
+        var tType = $('input[name="itemConfigTType"]:checked').val();
+
+        if(type==0){
+            $("#item_config_service").attr("required", true);
+            $("#item_config_amount_total,#item_config_amount_per").attr("readonly", true);
+        } else if(type==1 && tType==0){
+            $("#item_config_amount_total,#item_config_amount_per").attr("required", true);
+            $("#item_config_service").attr("readonly", true);
+        } else if(type==1 && tType==1){
+            $("#item_config_service").attr("required", true);
+            $("#item_config_amount_total,#item_config_amount_per").attr("readonly", true);
+        }
+
+        // itemConfigTType
+
+        if(tType==0){
+            $(".talent-type").attr("readonly", true);
+            $("#type_category_id").attr("disabled", true);
+        }else {
+            $(".talent-type").attr("readonly", false);
+            $("#type_category_id").attr("disabled", false);
+
+            $.ajax({
+                type: "GET",
+                url: "${ctxPath}/item/item_record?itemConfigId="+$("#item_config_id").val(),
+                success: function (data) {
+                    var htmlStr = "";
+                    $.each(data,function(i,t){
+                        htmlStr+= '<div class="col-sm-3 pt5">';
+                        htmlStr+= '<label class="pull-left mw">'+t.talentTypeName+'：</label>';
+                        htmlStr+= '<div class="pull-left">'
+                        htmlStr+= '<input name="talentTypeIds[]" value="'+t.talentTypeId+'" class="form-control talent-type" type="hidden">';
+                        htmlStr+= '<input name="talentTypeNames[]" value="'+t.talentTypeName+'" class="form-control talent-type" type="hidden">';
+                        htmlStr+= '<input placeholder="请输入金额或半分比" name="talentTypes[]" value="'+t.itemTalentContent+'" class="form-control talent-type" type="text">';
+                        htmlStr+= '</div>';
+                        htmlStr+= '</div>';
+                    });
+
+                    $('#type_amount').html(htmlStr);
+                    $('#record').html(htmlStr);
+                }
+            });
+
+        }
+
+        $("input:radio[name='itemConfigTType']").on('ifChecked', function (event) {
+            if ($(this).val() == 0) {
+                $(".talent-type").attr("readonly", true);
+                $("#item_config_amount_per").attr("readonly", false);
+                $('#item_config_amount_per').parent().prev().append(
+                    '<span class="red-star" style="color:red">*</span>'
+                );
+                $("#type_category_id").find("option:contains('--请选择--')").attr("selected",true);
+                $("#type_category_id").attr("disabled", true);
+                $('#type_amount').html("");
+            }else {
+                $(".talent-type").attr("readonly", false);
+                $("#item_config_amount_per").val("");
+                $("#item_config_amount_per").attr("readonly", true);
+                $('#item_config_amount_per').parent().parent().removeClass("has-error");
+                $("#item_config_amount_per").removeAttr("required");
+                $("#type_category_id").removeAttr("disabled");
+                $('#item_config_amount_per').parent().prev().children().remove();
+            }
+        });
+        //初始化发放频率为月时，设置发放频率为必填
+        if($('input[name="itemConfigSendType"]:checked').val()==1){
+            $("#item_config_send_rate").attr("required", true);
+        }
+
+        // 服务or现金方式change改变相应必填项
+        $("input:radio[name='itemConfigType']").on('ifChecked', function (event) {
+            if ($(this).val() == 0) {//服务
+
+                //清空input
+                $('#item_config_amount_total,#item_config_amount_per').val("");
+                //添加readonly属性
+                $('#item_config_amount_total,#item_config_amount_per').attr('readonly', true);
+
+                $('#item_config_amount_total').parent().parent().removeClass("has-error");
+                $('#item_config_amount_per').parent().parent().removeClass("has-error");
+
+                $('#item_config_amount_total').parent().prev().children().remove();
+                $('#item_config_amount_per').parent().prev().children().remove();
+
+                $('#item_config_amount_total').next().remove();
+                $('#item_config_amount_per').next().remove();
+
+                //移除required属性
+                $("#item_config_amount_total,#item_config_amount_per").removeAttr("required");
+
+                //添加required属性
+                $("#item_config_service").attr("required", true);
+                $("#item_config_service").removeAttr("readonly");
+
+                $('#item_config_service').parent().prev().append(
+                    '<span class="red-star" style="color:red">*</span>'
+                );
+
+
+            } else if($(this).val() == 1){ //现金
+                $('#item_config_amount_total,#item_config_amount_per').removeAttr('readonly');
+                // $('#item_config_amount_per').removeAttr('readonly');
+
+                $("#item_config_amount_total,#item_config_amount_per").attr("required", true);
+
+
+                $('#item_config_amount_total').parent().prev().append(
+                    '<span class="red-star" style="color:red">*</span>'
+                );
+
+                $('#item_config_amount_per').parent().prev().append(
+                    '<span class="red-star" style="color:red">*</span>'
+                );
+
+                $("#item_config_service").val("");
+                $('#item_config_service').removeAttr('required');
+                $('#item_config_service').parent().parent().removeClass("has-error");
+                $('#item_config_service').next().remove();
+                $("#item_config_service").attr("readonly", true);
+                $('#item_config_service').parent().prev().children().remove();
+            } else if($(this).val() == 2){ //综合
+                $('#item_config_amount_total,#item_config_amount_per').removeAttr('readonly');
+                $("#item_config_amount_total,#item_config_amount_per").removeAttr("required");
+                $('#item_config_service').parent().parent().removeClass("has-error");
+                $('#item_config_service').next().remove();
+                $('#item_config_service').removeAttr('required');
+                $('#item_config_amount_total').parent().parent().removeClass("has-error");
+                $('#item_config_amount_per').parent().parent().removeClass("has-error");
+                $('#item_config_service').parent().prev().children().remove();
+
+                $('#item_config_amount_total').parent().prev().children().remove();
+                $('#item_config_amount_per').parent().prev().children().remove();
+
+                $('#item_config_amount_total').next().remove();
+                $('#item_config_amount_per').next().remove();
+
+                $("#item_config_service").removeAttr("readonly");
+            }
+        });
+
+        //发放方式change 设置必填项
+        $("input:radio[name='itemConfigSendType']").on('ifChecked', function (event) {
+            if ($(this).val() == 1) {
+                $('#item_config_send_rate').removeAttr("readonly");
+                $('#item_config_send_rate').val(1);
+                $("#item_config_send_rate").attr("required", true);
+                $('#item_config_send_rate').parent().prev().append(
+                    '<span class="red-star" style="color:red">*</span>'
+                );
+            } else {
+                $("#item_config_send_rate").val("");
+                $("#item_config_send_rate").attr("readonly", true);
+                $('#item_config_send_rate').removeAttr('required');
+                $('#item_config_send_rate').parent().parent().removeClass("has-error");
+                $('#item_config_send_rate').next().remove();
+                $('#item_config_send_rate').parent().prev().children().remove();
+            }
+        });
+
+    });
+
     $.validator.setDefaults({
         highlight: function (e) {
             $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
@@ -244,28 +724,33 @@
                     remote: {
                         url: "${ctxPath}/checkUnique",
                         data: {
-                            item_config_id: function () {
-                                return $("#item_config_id").val();
+                            user_name: function () {
+                                return $("#itemConfigId").val();
                             },
                             table: function () {
                                 return "talent_item_config";
-                            },
-                            id: function () {
-                                return "item_config_id !=" + $("#item_config_id").val();
                             }
                         }
                     }
                 },
+                password: {
+                    required: true
+                },
                 comfirmPassword: {
+                    required: true,
                     equalTo: "#password"
                 }
             },
             messages: {
                 userName: {
-                    required: e + "请输入用户名",
+                    required: e + "请输入练考计划名称",
                     remote: e + "该用户名已存在"
                 },
+                password: {
+                    required: e + "请输入用户密码"
+                },
                 comfirmPassword: {
+                    required: e + "请确认密码",
                     equalTo: e + "两次密码不一致"
                 }
             },
@@ -277,7 +762,7 @@
                     success: function (data) {
                         if (data['status'] == 1) {
                             toastr.success(data['body']);
-                            setTimeout('window.location.href="/item/config.html?configId=' + data["data"] + '"', 900);
+                            setTimeout('window.location.href="/item/config.html?itemId=' + data["data"] + '"', 900);
                         } else {
                             toastr.success(data['body']);
                         }
