@@ -35,6 +35,18 @@ public class ItemConfig {
      */
     @DateTimeFormat(pattern = "MM-dd")
     private Date itemConfigAcceptEnd;
+
+    /**
+     *审核开始时间
+     */
+    @DateTimeFormat(pattern = "MM-dd")
+    private Date itemConfigCheckBegin;
+    /**
+     *审核结束时间
+     */
+    @DateTimeFormat(pattern = "MM-dd")
+    private Date itemConfigCheckEnd;
+
     /**
      * 生效时间
      */
@@ -44,6 +56,7 @@ public class ItemConfig {
      *窗口办理
      */
     private Boolean itemConfigFace;
+
     /**
      *补助方式
      */
@@ -74,29 +87,45 @@ public class ItemConfig {
      * 政策详情
      */
     private String itemConfigContent;
+
     /**
      * 政策详情附件
      */
     private String itemConfigConetentAttachment;
+
     /**
      *是否需要企业审核
      */
-    private Boolean itemConfigCompanyCheck;
+    private Integer itemConfigCompanyCheck;
+
     /**
      *是否需要街道审核
      */
-    private Boolean itemConfigStreetCheck;
+    private Integer itemConfigStreetCheck;
+
     /**
      *是否需要平台审核
      */
-    private Boolean itemConfigCenterCheck;
+    private Integer itemConfigCenterCheck;
+
+    /**
+     * 发放对象 0:个人 1:机构/企业
+     */
+    private Integer itemConfigTarget;
+
+    /**
+     * 是否按人才分类 0:否 1:是
+     */
+    private Boolean itemConfigTType;
+
+    /**
+     *人才分类类型ID
+     */
+    private Long typeCategoryId;
 
     /**
      * 状态 0:删除 1:正常
      */
-    private Integer itemConfigTarget;
-
-
     private Boolean del;
 
     /**

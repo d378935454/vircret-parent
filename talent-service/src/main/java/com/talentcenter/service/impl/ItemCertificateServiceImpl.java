@@ -84,4 +84,9 @@ public class ItemCertificateServiceImpl implements ItemCertificateService {
     public int batchDel(Map<String, Object> map) {
         return itemCertificateMapper.batchDel(map);
     }
+
+    @Override
+    public int delByItemConfigId(Long itemConfigId) {
+        return itemCertificateMapper.delByItemConfigId(itemConfigId);
+    }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.talentcenter.dao.ItemCertificateMapper">
+
+  <delete id="delByItemConfigId" parameterType="java.lang.Long">
+    DELETE from talent_item_certificate  WHERE item_config_id = #{itemConfigId,jdbcType=BIGINT};
+  </delete>
+</mapper>

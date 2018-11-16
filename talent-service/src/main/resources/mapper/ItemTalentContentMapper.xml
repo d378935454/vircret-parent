@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.talentcenter.dao.ItemTalentContentMapper">
+  <resultMap id="BaseResultMap" type="com.talentcenter.entity.ItemTalentContent">
+    <id column="item_talent_id" jdbcType="INTEGER" property="itemTalentId" />
+    <result column="item_config_id" jdbcType="INTEGER" property="itemConfigId" />
+    <result column="talent_type_name" jdbcType="VARCHAR" property="talentTypeName" />
+    <result column="talent_type_id" jdbcType="INTEGER" property="talentTypeId" />
+    <result column="item_talent_content" jdbcType="VARCHAR" property="itemTalentContent" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    item_talent_id, item_config_id, talent_type_name, talent_type_id, item_talent_content
+  </sql>
+
+  <delete id="delByItemConfigId" parameterType="java.lang.Long">
+    DELETE from talent_item_talent_content  WHERE item_config_id = #{itemConfigId,jdbcType=BIGINT};
+  </delete>
+</mapper>

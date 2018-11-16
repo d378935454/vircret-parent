@@ -1,15 +1,16 @@
 package com.talentcenter.service;
 
 
-import com.talentcenter.entity.ItemCertificate;
+import com.talentcenter.entity.ItemTalentContent;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
-public interface ItemCertificateService extends BaseService<ItemCertificate> {
+public interface ItemTalentContentService extends BaseService<ItemTalentContent> {
 
     int batchDel(Map<String, Object> map);
 
     int delByItemConfigId(Long itemConfigId);
+
 }
