@@ -49,6 +49,7 @@ public class UserController extends BaseController{
         //组装搜索条件
         User user = new User();
         user.setDel(true);
+        user.setUserNature(0);
         if(userName!=null && userName!="") user.setUserName(userName);
         if(realName!=null && realName!="") user.setRealName(realName);
         if(userTel!=null && userTel!="") user.setUserTel(userTel);
