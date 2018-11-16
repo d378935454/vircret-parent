@@ -2,12 +2,15 @@ package com.talentcenter.entity;
 
 import lombok.Data;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * talent_company_user_item
- * @author 
+ *
+ * @author
  */
 @Data
 @Table(name = "talent_company_user_item")
@@ -28,7 +31,7 @@ public class CompanyUserItem {
     private String itemName;
 
     /**
-     *企业退回或不通过原因
+     * 企业退回或不通过原因
      */
     private String companyReason;
     /**
@@ -52,6 +55,7 @@ public class CompanyUserItem {
      */
     private Integer centerChecked;
 
+    private Boolean del;
 
 
 }

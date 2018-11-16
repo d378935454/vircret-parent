@@ -32,6 +32,12 @@ public class CompanyUserController extends BaseController {
     private CompanyItemService companyItemService;
     @Autowired
     private CompanyUserItemService companyUserItemService;
+    @Autowired
+    private  CompanyUserInfoService  companyUserInfoService;
+    @Autowired
+    private  CompanyUserContractService  companyUserContractService;
+    @Autowired
+    private  CompanyUserFamilyService  companyUserFamilyService;
 
 
    /* @Autowired
@@ -83,6 +89,7 @@ public class CompanyUserController extends BaseController {
         c.setUserId(getSessionUser().getUserId());
         Company company = companyService.selectOne(c);
 
+      /*  companyItem.setCompanyId(getSessionUser().getUserId());*/
         companyItem.setCompanyId(company.getCompanyId());
 
         List<CompanyItem> companyItems =  companyItemService.select(companyItem);
@@ -204,6 +211,43 @@ public class CompanyUserController extends BaseController {
     }
     @RequestMapping("/info.html")
     public String info(Model model) {
+
         return "/company_user/info.html";
+    }
+
+    @ResponseBody
+    @RequestMapping("add_info")
+    public RSTFulBody addInfo(CompanyUserInfo companyUserInfo,CompanyUserContract companyUserContract,CompanyUserFamily companyUserFamily) {
+        User sessionUser = getSessionUser();
+        companyUserInfo.setUserId(sessionUser.getUserId());
+        companyUserContract.setUserId(sessionUser.getUserId());
+        companyUserFamily.setUserId(sessionUser.getUserId());
+
+            int res1 = companyUserInfoService.insertSelective(companyUserInfo);
+            int res2 = companyUserContractService.insertSelective(companyUserContract);
+            int res3 = companyUserFamilyService.insertSelective(companyUserFamily);
+            RSTFulBody rstFulBody = new RSTFulBody();
+            if (res1>0 && res2>0 && res3>0) rstFulBody.success("添加成功！");
+            else rstFulBody.fail("添加失败！");
+            return rstFulBody;
+
+    }
+
+    @RequestMapping("/items.html")
+    public String items(Model model) {
+        return "/company_user/items.html";
+    }
+
+    @RequestMapping("/ajax_items")
+    public String ajaxItems(Model model, int pageNum, int pageSize) {
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<Item> items = itemService.selectByUserId(getSessionUser().getUserId());
+
+        PageInfo<Item> pageInfo = new PageInfo<>(items);
+        String pageStr = makePageHtml(pageInfo);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
+        return "/company_user/ajax_items.html";
     }
 }

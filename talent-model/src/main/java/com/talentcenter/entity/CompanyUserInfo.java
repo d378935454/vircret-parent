@@ -1,5 +1,9 @@
 package com.talentcenter.entity;
 
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,9 +11,13 @@ import java.util.Date;
  * talent_company_user_info
  * @author 
  */
+@Data
+@Table(name = "talent_company_user_info")
 public class CompanyUserInfo implements Serializable {
 
-    private Integer companyUserInfoId;
+    private Long companyUserInfoId;
+
+    private Long userId;
 
     /**
      * 姓名
@@ -24,6 +32,7 @@ public class CompanyUserInfo implements Serializable {
     /**
      * 生日
      */
+    @DateTimeFormat(pattern = "y-MM-dd")
     private Date companyUserBirthday;
 
     /**
@@ -54,17 +63,17 @@ public class CompanyUserInfo implements Serializable {
     /**
      * 户口所在省份ID
      */
-    private Integer companyUserHomeProvinceId;
+    private Long companyUserHomeProvinceId;
 
     /**
      * 户口所在市ID
      */
-    private Integer companyUserHomeCityId;
+    private Long companyUserHomeCityId;
 
     /**
      * 户口所在区县ID
      */
-    private Integer companyUserHomeDistrictId;
+    private Long companyUserHomeDistrictId;
 
     /**
      * 在沪区县
@@ -94,6 +103,7 @@ public class CompanyUserInfo implements Serializable {
     /**
      * 毕业时间
      */
+    @DateTimeFormat(pattern = "y-MM-dd")
     private Date companyUserGraduation;
 
     /**

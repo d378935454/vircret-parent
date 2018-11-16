@@ -26,8 +26,8 @@ public class CompanyUserItemServiceImpl implements CompanyUserItemService {
 
     @Override
     public List<CompanyUserItem> selectByInfo(Object o) {
-       return companyUserItemMapper.selectByExample(o);
-//        return companyUserItemMapper.selectByInfo(o);
+      // return companyUserItemMapper.selectByExample(o);
+      return companyUserItemMapper.selectByInfo(o);
     }
 
     @Override
@@ -76,16 +76,18 @@ public class CompanyUserItemServiceImpl implements CompanyUserItemService {
     }
 
     @Override
-    public List<CompanyUserItem> selectByInfo(Map<String, Object> map) {
-        return null;
-    }
+    public List<CompanyUserItem> selectByInfo(Map<String, Object> map) { return companyUserItemMapper.selectByInfo(map); }
 
     @Override
     public int batchDel(Map<String, Object> map) {
         return companyUserItemMapper.batchDel(map);
     }
+
     @Override
     public int delByUserId(Long userId){
         return companyUserItemMapper.delByUserId(userId);
     }
+
+
+
 }

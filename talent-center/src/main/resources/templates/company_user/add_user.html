@@ -84,10 +84,6 @@
         "hideMethod": "fadeOut"
     }
 
-    laydate.render({
-        elem: '#street_begin_time'
-    });
-
     $.validator.setDefaults({
         highlight: function (e) {
             $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
@@ -126,7 +122,7 @@
             },
             messages: {
                 userName: {
-                    required: e + "请输入练考计划名称",
+                    required: e + "请输入名称",
                     remote: e + "该用户名已存在"
                 },
                 password:{

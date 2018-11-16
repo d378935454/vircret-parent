@@ -5,6 +5,10 @@
     <resultMap id="BaseResultMap" type="com.talentcenter.entity.Item">
         <id column="item_id" jdbcType="INTEGER" property="itemId" />
         <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+        <result column="item_length" jdbcType="INTEGER" property="itemLength" />
+        <result column="item_type_id" jdbcType="INTEGER" property="itemTypeId" />
+        <result column="item_type_name" jdbcType="VARCHAR" property="itemTypeName" />
+        <result column="item_category" jdbcType="INTEGER" property="itemCategory" />
         <result column="del" jdbcType="BIT" property="del" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -37,6 +41,17 @@
         <include refid="Base_Column_List"/>
         from talent_item
         <include refid="where"/>
+    </select>
+
+    <select id="selectByUserId"  resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        i.item_name,
+        i.item_length,
+        i.memo,
+        i.item_id
+        FROM talent_company_user_item cui LEFT JOIN talent_item i ON cui.item_id = i.item_id
+
+        WHERE  user_id = #{userId,jdbcType=BIGINT}
     </select>
 
     <delete id="batchDel" parameterType="Map">

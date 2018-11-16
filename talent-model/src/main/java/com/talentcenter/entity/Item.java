@@ -33,6 +33,12 @@ public class Item {
      * 政策分类名称
      */
     private String itemTypeName;
+
+    /**
+     * 政策栏目 0:普通 1:卓越人才
+     */
+    private Integer itemCategory;
+
     /**
      * 状态 0:删除 1:正常
      */
@@ -43,11 +49,6 @@ public class Item {
      * 添加时间
      */
     private Date createTime;
-
-    /**
-     * 政策栏目 0:普通 1:卓越人才
-     */
-    private Integer itemCategory;
 
     /**
      * 更新时间

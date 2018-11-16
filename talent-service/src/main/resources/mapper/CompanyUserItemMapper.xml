@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.talentcenter.dao.CompanyUserItemMapper">
+
+    <resultMap id="BaseResultMap" type="com.talentcenter.entity.Item">
+        <id column="item_id" jdbcType="INTEGER" property="itemId" />
+        <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+        <result column="del" jdbcType="BIT" property="del" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="create_id" jdbcType="INTEGER" property="createId" />
+        <result column="create_name" jdbcType="VARCHAR" property="createName" />
+        <result column="update_id" jdbcType="INTEGER" property="updateId" />
+        <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+        <result column="memo" jdbcType="VARCHAR" property="memo" />
+    </resultMap>
+
     <delete id="delByUserId" parameterType="java.lang.Long">
     DELETE from talent_company_user_item  WHERE user_id = #{userId,jdbcType=BIGINT};
   </delete>
+    <select id="selectByInfo"  resultMap="BaseResultMap" parameterType="java.lang.Object">
+        SELECT
+        i.item_name,
+        i.item_length,
+        i.memo,
+        i.item_id
+
+        FROM talent_company_user_item cui LEFT JOIN talent_item i ON cui.item_id = i.item_id
+
+        WHERE  user_id = #{userId,jdbcType=BIGINT}
+    </select>
 </mapper>

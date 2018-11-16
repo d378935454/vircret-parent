@@ -1,0 +1,47 @@
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>政策名称</th>
+        <th>共补助时间(月)</th>
+        <th>备注</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(list in page_info.list){
+    <tr>
+        <td>${list.itemName}</td>
+        <td>${list.itemLength}</td>
+        <td>${list.memo}</td>
+        <td>
+            <a href="${ctxPath}/item/config.html?itemId=${list.itemId}" title="查看详情"><!--<i class="glyphicon glyphicon-config"></i>-->查看详情</a>&nbsp;&nbsp;&nbsp;
+    </tr>
+    @}
+    </tbody>
+</table>
+<div class="col-sm-8 pull-right text-right">${pages}</div>
+<script>
+    $(".pagination  a").click(function(){
+        var page = this.attributes["data-p"].nodeValue;
+        ajax_get_table('search-form',page);
+        /*console.log(this.attributes["data-p"].nodeValue);
+        console.log(this.attr('data-p'));*/
+    });
+
+    $("#check_all").click(function () {
+        if($('#check_all').is(':checked')) {
+            $(".i-checks").prop("checked", "checked");
+            // $(".i-checks").
+        }else {
+            $(".i-checks").removeAttr("checked");
+        }
+    });
+
+    $(".i-checks").click(function () {
+        if($("input[class='i-checks']:checked").length<10){
+            $("#check_all").prop("checked", false);
+        }else {
+            $("#check_all").prop("checked", true);
+        }
+    });
+</script>

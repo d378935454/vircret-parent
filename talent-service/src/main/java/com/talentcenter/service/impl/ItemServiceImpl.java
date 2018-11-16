@@ -26,8 +26,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> selectByInfo(Object o) {
-       return itemMapper.selectByExample(o);
-//        return itemMapper.selectByInfo(o);
+      //return itemMapper.selectByExample(o);
+       return itemMapper.selectByInfo(o);
     }
 
     @Override
@@ -84,4 +84,7 @@ public class ItemServiceImpl implements ItemService {
     public int batchDel(Map<String, Object> map) {
         return itemMapper.batchDel(map);
     }
+
+    @Override
+    public List<Item> selectByUserId(Long userId) { return itemMapper.selectByUserId(userId); }
 }
