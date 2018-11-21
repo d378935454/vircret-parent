@@ -7,6 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface CompanyUserInfoService extends BaseService<CompanyUserInfo> {
 
-
-
+    int updateByUserId(CompanyUserInfo companyUserInfo);
 }
