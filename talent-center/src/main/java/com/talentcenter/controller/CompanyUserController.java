@@ -243,7 +243,6 @@ public class CompanyUserController extends BaseController {
 
         PageHelper.startPage(pageNum, pageSize);
         List<Item> items = itemService.selectByUserId(getSessionUser().getUserId());
-
         PageInfo<Item> pageInfo = new PageInfo<>(items);
         String pageStr = makePageHtml(pageInfo);
         model.addAttribute("page_info", pageInfo);
