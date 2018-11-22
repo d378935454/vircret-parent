@@ -39,6 +39,8 @@ public class CompanyController extends BaseController{
     @Autowired
     private CompanyItemService companyItemService;
 
+    @Autowired
+    private CompanyUserInfoService companyUserInfoService;
 
 
    /* @Autowired

@@ -80,5 +80,8 @@ public class CompanyUserFamilyServiceImpl implements CompanyUserFamilyService {
     public List<CompanyUserFamily> selectByInfo(Map<String, Object> map) { return companyUserFamilyMapper.selectByInfo(map); }
 
 
-
+    @Override
+    public int delByUserId(Long userId) {
+        return companyUserFamilyMapper.delByUserId(userId);
+    }
 }

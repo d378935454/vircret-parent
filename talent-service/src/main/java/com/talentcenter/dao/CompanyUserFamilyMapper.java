@@ -6,6 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface CompanyUserFamilyMapper extends BaseMapper<CompanyUserFamily> {
-
-
+    int delByUserId(Long userId);
 }

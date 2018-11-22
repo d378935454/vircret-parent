@@ -3,6 +3,9 @@ package com.talentcenter.entity;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
@@ -15,6 +18,8 @@ import java.util.Date;
 @Table(name = "talent_company_user_info")
 public class CompanyUserInfo implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyUserInfoId;
 
     private Long userId;
@@ -32,7 +37,7 @@ public class CompanyUserInfo implements Serializable {
     /**
      * 生日
      */
-    @DateTimeFormat(pattern = "y-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date companyUserBirthday;
 
     /**
@@ -141,6 +146,10 @@ public class CompanyUserInfo implements Serializable {
      */
     private String companyUserBankNo;
 
-    private static final long serialVersionUID = 1L;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserContractTimeBegin;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserContractTimeEnd;
 
 }

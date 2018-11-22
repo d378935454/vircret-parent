@@ -2,15 +2,30 @@
 <html>
 @layout("/layout/_form_layout.html"){
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+<style>
+    .pl3 {
+        padding-left: 15px;
+    }
+</style>
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-8">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
                 <form class="form-horizontal m-t" id="viladate_form">
                     <div class="form-group">
                         <label for="company_user_name" class="col-sm-4 control-label">姓名：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_name" name="companyUserName" class="form-control" type="text" required>
+                            <input id="company_user_name" name="companyUserName" class="form-control" type="text"
+                                   value="${obj.companyUserName}"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="company_user_card" class="col-sm-4 control-label">身份证：</label>
+                        <div class="col-sm-8">
+                            <input id="company_user_card" name="companyUserCard" class="form-control" type="text"
+                                   value="${obj.companyUserCard}"
+                                   required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -18,97 +33,178 @@
                         <div class="col-sm-8">
                             <div class="i-checks">
                                 <label>
-                                    <input type="radio" value="1" checked name="companyUserSex"> <i></i> 男</label>&nbsp;&nbsp;
+                                    <input type="radio" value="1" @if(obj.companyUserSex || obj.companyUserSex==null){
+                                           checked
+                                           @}
+                                           name="companyUserSex"> <i></i> 男</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="radio" value="0" name="companyUserSex"> <i></i> 女</label>&nbsp;&nbsp;
+                                    <input type="radio" value="0" @if(!obj.companyUserSex){
+                                           checked
+                                           @}
+                                           name="companyUserSex"> <i></i> 女</label>&nbsp;&nbsp;
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_birthday" class=" col-sm-4 control-label">生日：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_birthday"  name="companyUserBirthday"  class="form-control" type="text" >
+                            <input id="company_user_birthday" name="companyUserBirthday" class="form-control"
+                                   value='${obj.companyUserBirthday,"yyyy-MM-dd"}'
+                                   type="text">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_work_length" class="col-sm-4 control-label">工作年限：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_work_length"  class="form-control" type="number">
+                            <input id="company_user_work_length" name="companyUserWorkLength" class="form-control" value="${obj.companyUserWorkLength}" type="number">
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="company_user_card" class="col-sm-4 control-label">身份证：</label>
-                        <div class="col-sm-8">
-                            <input id="company_user_card" name="companyUserCard" class="form-control" type="text" required>
+                        <label class="col-sm-4 control-label">户籍地址：</label>
+                        <div class="pull-left pl3">
+                            <select id="province" name="companyUserHomeProvinceId" class="form-control area">
+                                <option value="">省</option>
+                                @for(province in provinces){
+                                <option @if(obj.companyUserHomeProvinceId==province.id){
+                                        selected
+                                        @}
+                                        value="${province.id}">${province.name}</option>
+                                @}
+                            </select>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="company_user_home_address" class="col-sm-4 control-label">户籍地址：</label>
-                        <div class="col-sm-8">
-                            <!--<select id="province_selector" class="bd-filter__select">省</select>
-                            <select id="city_selector" class="bd-filter__select">市/区</select>
-                            <select id="district_selector" class="bd-filter__select">镇</select>-->
-                            <input id="company_user_home_address" name="companyUserHomeDistrict" v class="form-control" type="text">
+                        <div class="pull-left pl3">
+                            <select id="city" name="companyUserHomeCityId" class="form-control area area-content">
+                                <option value="">市/区</option>
+                                @for(city in cities){
+                                <option @if(obj.companyUserHomeCityId==city.id){
+                                        selected
+                                        @}
+                                        value="${city.id}">${city.name}</option>
+                                @}
+                            </select>
+                        </div>
+                        <div class="pull-left pl3">
+                            <select id="district" name="companyUserHomeDistrictId" class="form-control area-content">
+                                <option value="">区/镇</option>
+                                @for(district in districts){
+                                <option @if(obj.companyUserHomeDistrictId==district.id){
+                                        selected
+                                        @}
+                                        value="${district.id}">${district.name}</option>
+                                @}
+                            </select>
+                        </div>
+                        <label class="col-sm-4 control-label"></label>
+                        <div class="col-sm-8" style="margin-top: 10px;">
+                            <input id="company_user_home_address" placeholder="户口详细地址" name="companyUserHomeAddress"
+                                   value="${obj.companyUserHomeAddress}"
+                                   class="form-control" type="text">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_hu_address" class="col-sm-4 control-label">在沪地址：</label>
+                        <!--<div class="pull-left pl3">
+                            <select class="form-control area">
+                                <option>省</option>
+                            </select>
+                        </div>
+                        <div class="pull-left pl3">
+                            <select class="form-control area area-content">
+                                <option>市/区</option>
+                            </select>
+                        </div>
+                        <div class="pull-left pl3">
+                            <select class="form-control area-content">
+                                <option>镇</option>
+                            </select>
+                        </div>
+                        <label class="col-sm-4 control-label"></label>-->
                         <div class="col-sm-8">
-                            <input id="company_user_hu_address" name="companyUserHomeAddress"  class="form-control" type="text">
+                            <input id="company_user_hu_address" placeholder="在沪详细地址" name="companyUserHuAddress"
+                                   value="${obj.companyUserHuAddress}"
+                                   class="form-control" type="text">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_school" class="col-sm-4 control-label">毕业院校：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_school"  name="companyUserSchool"  class="form-control" type="text">
+                            <input id="company_user_school" name="companyUserSchool" class="form-control" type="text"
+                                   value="${obj.companyUserSchool}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_graduation" class="col-sm-4 control-label">毕业时间：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_graduation"  name="companyUserGraduation"  class="form-control" type="text">
+                            <input id="company_user_graduation" name="companyUserGraduation" class="form-control"
+                                   value='${obj.companyUserGraduation,"yyyy-MM-dd"}'
+                                   type="text">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_education" class="col-sm-4 control-label">最高学历：</label>
                         <div class="col-sm-8">
-                            <select  name="companyUserEducation" id="company_user_education" class="form-control">
-                                <option selected="selected" value="">--请选择--</option>
-                                <option value="0">中专</option>
-                                <option value="1">本科</option>
-                                <option value="2">研究生</option>
-                                <option value="3">博士</option>
-                                <option value="4">博士后</option>
+                            <select name="companyUserEducation" id="company_user_education" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option @if(obj.companyUserEducation==0){
+                                        selected
+                                        @}
+                                        value="0">中专</option>
+                                <option @if(obj.companyUserEducation==1){
+                                         selected
+                                         @}
+                                         value="1">本科</option>
+                                <option @if(obj.companyUserEducation==2){
+                                        selected
+                                        @}
+                                        value="2">研究生</option>
+                                <option @if(obj.companyUserEducation==3){
+                                        selected
+                                        @}
+                                        value="3">博士</option>
+                                <option  @if(obj.companyUserEducation==4){
+                                         selected
+                                         @}
+                                         value="4">博士后</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_positional" class="col-sm-4 control-label">最高职称：</label>
                         <div class="col-sm-8">
-                            <select  name="companyUserPositional" id="company_user_positional" class="form-control">
-                                <option selected="selected" value="">--请选择--</option>
-                                <option value="0">初级</option>
-                                <option value="1">中级</option>
-                                <option value="2">高级</option>
+                            <select name="companyUserPositional" id="company_user_positional" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option @if(obj.companyUserPositional==0){
+                                        selected
+                                        @}
+                                        value="0">初级</option>
+                                <option @if(obj.companyUserPositional==1){
+                                        selected
+                                        @}
+                                        value="1">中级</option>
+                                <option  @if(obj.companyUserPositional==2){
+                                         selected
+                                         @}
+                                        value="2">高级</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_post" class="col-sm-4 control-label">职务：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_post" name="companyUserPost" class="form-control" type="text">
+                            <input id="company_user_post" name="companyUserPost" class="form-control" value="${obj.companyUserPost}" type="text">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_mobel" class="col-sm-4 control-label">手机号码：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_mobel"  name="companyUserMobel"  class="form-control" type="number">
+                            <input id="company_user_mobel" name="companyUserMobel" class="form-control" value="${obj.companyUserMobel}" type="number">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_tel" class="col-sm-4 control-label">固定电话：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_tel"  name="companyUserTel"  class="form-control" type="number">
+                            <input id="company_user_tel" name="companyUserTel" class="form-control" value="${obj.companyUserTel}" type="number">
                         </div>
                     </div>
                     <!--分割线-->
@@ -116,70 +212,119 @@
                         <HR align=center width=1000 color=#696969 SIZE=10>
                     </div>
                     <div class="form-group">
-                            <label  class="col-sm-4 control-label">劳动合同期限(起始～终止)：</label>
-                            <div  class="col-sm-8">
-                                <div class="div1"style="width:45%;"><input id="company_user_contract_time_begin"  name="companyUserContractTimeBegin"  class="form-control" type="text"></div>
-                                <div class="div2"style="width:10%;"><hr style="height:1px;border:none;border-top:1px solid  #696969 ;" /></div>
-                                <div class="div3"style="width:45%;"><input id="company_user_contract_time_end"   name="companyUserContractTimeEnd" class="form-control" type="text"></div>
-                            </div>
+                        <label class="col-sm-4 control-label">劳动合同期限(起始～终止)：</label>
+                        <div class="col-sm-8">
+                            <input id="user_contract_time" placeholder="请选择合同起始时间" name="userContractTime"
+                                   class="form-control" type="text"
+                                   @if(obj.companyUserContractTimeBegin!=null && obj.companyUserContractTimeEnd!=null){
+                                   value='${obj.companyUserContractTimeBegin,"yyyy-MM-dd"} 至 ${obj.companyUserContractTimeEnd,"yyyy-MM-dd"}'
+                                   @}else{
+                                    value=""
+                                   @}
+                                   >
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_bank_no" class="col-sm-4 control-label">申请人银行卡号：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_bank_no"  name="companyUserBankNo"  class="form-control" type="number" required>
+                            <input id="company_user_bank_no" name="companyUserBankNo" class="form-control" type="number"
+                                   value="${obj.companyUserBankNo}"
+                                   required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="company_user_bank" class="col-sm-4 control-label">开户行地址：</label>
                         <div class="col-sm-8">
-                            <input id="company_user_bank"  name="companyUserBank"  class="form-control" type="text" required>
+                            <input id="company_user_bank" name="companyUserBank" class="form-control" type="text"
+                                   value="${obj.companyUserBank}"
+                                   required>
                         </div>
                     </div>
                     <!--分割线-->
-                    <div>
-                        <HR align=center width=1000 color=#696969 SIZE=10>
+                    <div style="width: 1000px;">
+                        <HR align=center width=1000 color=#696969 SIZE=10 style="margin-bottom: 5px;">
+                        <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
+                            家庭成员
+                        </div>
+                        <div id="add-family" class="btn btn-sm btn-primary" style="float: right; margin-right: 20px;">
+                            <i class="fa fa-plus"></i>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="company_user_family_type" class="col-sm-4 control-label">家庭成员关系：</label>
-                        <div class="col-sm-8">
-                        <select  name="companyUserFamilyType" id="company_user_family_type" class="col-sm-4 form-control">
-                            <option selected="selected" value="">--请选择--</option>
-                            <option value="0">子女</option>
-                            <option value="1">配偶</option>
-                            <option value="2">直系亲属</option>
-                        </select>
-                    </div>
+
+                    <div id="familys" style="min-height: 80px;">
+
+                        @for(companyUserFamily in companyUserFamilies){
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-10">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">家庭成员关系：</label>
+                                    <div class="col-sm-8">
+                                        <select name="companyUserFamilyType[]" class="col-sm-4 form-control">
+                                            <option value="">--请选择--</option>
+                                            <option @if(companyUserFamily.companyUserFamilyType==0){
+                                                    selected
+                                                    @}
+                                                    value="0">子女</option>
+                                            <option @if(companyUserFamily.companyUserFamilyType==1){
+                                                    selected
+                                                    @}
+                                                    value="1">配偶</option>
+                                            <option @if(companyUserFamily.companyUserFamilyType==2){
+                                                    selected
+                                                    @}
+                                                    value="2">直系亲属</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">姓名：</label>
+                                    <div class="col-sm-8">
+                                        <input name="companyUserFamilyName[]" value="${companyUserFamily.companyUserFamilyName}" class="form-control" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">身份证：</label>
+                                    <div class="col-sm-8">
+                                        <input name="companyUserFamilyCard[]" value="${companyUserFamily.companyUserFamilyCard}" class="form-control" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" style="padding-top: 2px;">性别：</label>
+                                    <div class="col-sm-8">
+                                        <select name="companyUserFamilySex[]" class="col-sm-4 form-control">
+                                            <option value="">--请选择--</option>
+                                            <option @if(companyUserFamily.companyUserFamilySex==0){
+                                                    selected
+                                                    @}
+                                                    value="0">男</option>
+                                            <option @if(companyUserFamily.companyUserFamilySex==1){
+                                                    selected
+                                                    @}
+                                                    value="1">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2" onclick="delFamily(this)" style="margin-top: 75px;">
+                                <div class="btn btn-sm btn-danger btn-circle btn-outline">
+                                    <i class="fa fa-minus"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <HR align=center width=700 SIZE=10>
+                        </div>
+                        @}
+
                     </div>
 
                     <div class="form-group">
-                        <label for="company_user_family_name" class="col-sm-4 control-label">姓名：</label>
-                        <div class="col-sm-8">
-                            <input id="company_user_family_name"  name="companyUserFamilyName"  class="form-control" type="text">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="company_user_family_card" class="col-sm-4 control-label">身份证：</label>
-                        <div class="col-sm-8">
-                            <input id="company_user_family_card"  name="companyUserFamilyCard"  class="form-control" type="text">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label" style="padding-top: 2px;">性别：</label>
-                        <div class="col-sm-8">
-                            <div class="i-checks">
-                                <label>
-                                    <input type="radio" value="1" checked name="companyUserFamilySex"> <i></i> 男</label>&nbsp;&nbsp;
-                                <label>
-                                    <input type="radio" value="0" name="companyUserFamilySex"> <i></i> 女</label>&nbsp;&nbsp;
-                            </div>
-                        </div>
-                    </div>
-                    <!--分割线-->
-                    <div>
-                        <HR align=center width=1000 color=#696969 SIZE=10>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-8 col-sm-offset-4">
+                        <div class="col-sm-8 col-sm-offset-3">
+                            <input type="hidden" id="user-id" name="userId" value="${obj.userId}">
                             <button class="btn btn-primary" type="submit">提交</button>
                         </div>
                     </div>
@@ -188,16 +333,16 @@
         </div>
     </div>
 </div>
+
+
+<div id="family-templet" style="display: none;">
+
+</div>
 @}
 
 </body>
-<style type="text/css">
-    .div1{float:left; display:inline; }
-    .div2{float:left; display:inline; }
-    .div3{float:left; display:inline; }
-</style>
 <script src="/js/plugins/layer/laydate/laydate.js"></script>
-
+<script src="/js/card.js"></script>
 <script type="text/javascript">
 
     toastr.options = {
@@ -216,21 +361,96 @@
     }
     laydate.render({
         elem: '#company_user_birthday',
-        format: 'y-MM-dd'
+        format: 'yyyy-MM-dd'
     });
 
     laydate.render({
         elem: '#company_user_graduation',
-        format: 'y-MM-dd'
+        format: 'yyyy-MM-dd'
     });
     laydate.render({
-        elem: '#company_user_contract_time_begin',
-        format: 'y-MM-dd'
+        elem: '#user_contract_time',
+        range: '至',
+        format: 'yyyy-MM-dd'
     });
-    laydate.render({
-        elem: '#company_user_contract_time_end',
-        format: 'y-MM-dd'
+
+    $(document).ready(function () {
+        $(".area").change(function () {
+            var targetTag = $(this).parent().next().children(".area-content");
+            $.ajax({
+                type: "GET",
+                url: "${ctxPath}/son?parentId=" + $(this).val(),
+                success: function (data) {
+                    if (targetTag.attr("id") == "city") {
+                        var opt = "<option value=''>市/县</option>";
+                    } else if (targetTag.attr("id") == "district") {
+                        var opt = "<option value=''>区/镇</option>";
+                    }
+                    $.each(data, function (i, t) {
+                        opt += '<option value="' + t.id + '">';
+                        opt += t.name;
+                        opt += '</option>';
+                    });
+                    targetTag.html(opt);
+                }
+            });
+        });
+
+        $("#add-family").click(function () {
+            var content = "";
+            content+='<div class="col-sm-12 form-group">';
+            content+='<div class="col-sm-10">';
+            content+='<div class="form-group">';
+            content+='<label class="col-sm-4 control-label">家庭成员关系：</label>';
+            content+='<div class="col-sm-8">';
+            content+='<select name="companyUserFamilyType[]" class="col-sm-4 form-control">';
+            content+='<option value="">--请选择--</option>';
+            content+='<option value="0">子女</option>';
+            content+='<option value="1">配偶</option>';
+            content+='<option value="2">直系亲属</option>';
+            content+='</select>';
+            content+='</div>';
+            content+='</div>';
+            content+='<div class="form-group">';
+            content+='<label class="col-sm-4 control-label">姓名：</label>';
+            content+='<div class="col-sm-8">';
+            content+='<input name="companyUserFamilyName[]" class="form-control" type="text" autocomplete="off">';
+            content+='</div>';
+            content+='</div>';
+            content+='<div class="form-group">';
+            content+='<label class="col-sm-4 control-label">身份证：</label>';
+            content+='<div class="col-sm-8">';
+            content+='<input name="companyUserFamilyCard[]" class="form-control" type="text" autocomplete="off">';
+            content+='</div>';
+            content+='</div>';
+            content+='<div class="form-group">';
+            content+='<label class="col-sm-4 control-label">性别：</label>';
+            content+='<div class="col-sm-8">';
+            content+='<select name="companyUserFamilySex[]" class="col-sm-4 form-control">';
+            content+='<option value="">--请选择--</option>';
+            content+='<option value="0">男</option>';
+            content+='<option value="1">女</option>';
+            content+='</select>';
+            content+='</div>';
+            content+='</div>';
+            content+='</div>';
+            content+='<div class="col-sm-2" onclick="delFamily(this)" style="margin-top: 75px;">';
+            content+='<div class="btn btn-sm btn-danger btn-circle btn-outline">';
+            content+='<i class="fa fa-minus"></i>';
+            content+='</div>';
+            content+='</div>';
+            content+='</div>';
+            content+='<div class="form-group">';
+            content+='<HR align=center width=700 SIZE=10>';
+            content+='</div>';
+            $("#familys").append(content);
+        });
     });
+
+    function delFamily(v) {
+        $(v).parent().next().remove();
+        $(v).parent().remove();
+    }
 
     $.validator.setDefaults({
         highlight: function (e) {
@@ -242,120 +462,72 @@
         }, errorClass: "help-block m-b-none", validClass: "help-block m-b-none"
     }), $().ready(function () {
         // $("#commentForm").validate();
-        $(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});
+        $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
         var e = "<i class='fa fa-times-circle'></i> ";
         $("#viladate_form").validate({
             rules: {
                 companyUserName: {
-                    required: true,
-                    remote: {
-                        url: "${ctxPath}/checkUnique",
-                        data:{
-                            company_user_name:function(){
-                                return $("#company_user_name").val();
-                            },
-                            table:function(){
-                                return "talent_company_user_info";
-                            }
-                        }
-                    }
-                },
-                password:{
                     required: true
                 },
-                comfirmPassword:{
+                companyUserCard: {
                     required: true,
-                    equalTo: "#password"
+                    isIdCardNo: true
                 }
             },
             messages: {
-                userName: {
-                    required: e + "请输入名称",
-                    remote: e + "该用户名已存在"
+                companyUserName: {
+                    required: e + "请输入姓名"
                 },
-                password:{
-                    required: e + "请输入用户密码"
-                },
-                comfirmPassword:{
-                    required: e + "请确认密码",
-                    equalTo: e + "两次密码不一致"
+                companyUserCard: {
+                    required: e + "请输入身份证号码",
+                    isIdCardNo: e + "请输入正确的身份证号码"
                 }
             },
-            submitHandler: function() {
+            submitHandler: function () {
                 $.ajax({
-                    type : "POST",
-                    url:"${ctxPath}/company_user/add_info",
-                    data : $('#viladate_form').serialize(),
-                    success: function(data){
-                        debugger;
-                        if(data['status']==1){
+                    type: "POST",
+                    url: "${ctxPath}/company_user/update_user",
+                    data: $('#viladate_form').serialize(),
+                    success: function (data) {
+
+                        if (data['status'] == 1) {
                             toastr.success(data['body']);
-                            setTimeout('window.location.href="/company_user/info.html?"',900);
-                        }else{
+                        } else {
                             toastr.success(data['body']);
                         }
                     }
                 });
             }
-        }),$('input[required]').parent().prev().append(
+        }), $('input[required]').parent().prev().append(
             '<span style="color:red">*</span>'
         );
+
+
+        jQuery.validator.addMethod("isIdCardNo", function (value, element) {
+            if (value == "") {
+                return true;
+            } else {
+                if (idCardNoUtil.checkIdCardNo(value)) {
+                    var info = idCardNoUtil.getIdCardInfo(value);
+                    $("#company_user_birthday").val(info.birthday);
+                    if (info.gender == "男") {
+                        $("input[name='companyUserSex']:eq(1)").parent().removeClass("checked");
+                        $("input[name='companyUserSex']:eq(1)").attr("disabled", true);
+                        $("input[name='companyUserSex']:eq(0)").attr("checked", true);
+                        $("input[name='companyUserSex']:eq(0)").parent().addClass("checked");
+                    } else {
+                        $("input[name='companyUserSex']:eq(0)").parent().removeClass("checked");
+                        $("input[name='companyUserSex']:eq(0)").attr("disabled", true);
+                        $("input[name='companyUserSex']:eq(1)").attr("checked", true);
+                        $("input[name='companyUserSex']:eq(1)").parent().addClass("checked");
+                    }
+                    return this.optional(element) || idCardNoUtil.checkIdCardNo(value);
+                }
+            }
+
+        }, "请输入正确的身份证号");
     });
 
 </script>
 
-<!--<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script>
-    /** 省市区三级代码查询 **/
-    var DISTRICTS;
-    var provinceCode = '',
-        cityCode = '',
-        districtCode = '';
-    //筛选的地区
-    var province_selector = $('#province_selector'),
-        city_selector = $('#city_selector'),
-        district_selector = $('#district_selector');
-    var htm = '<option value="">&#45;&#45;&#45;&#45;请选择-&#45;&#45;&#45;&#45;</option>';
-    $.ajax({
-        type: 'GET',
-        url: 'districts.json',
-        dataType: 'json'
-    }).done(function (res) {
-        DISTRICTS = res;
-        htm = '<option value="">&#45;&#45;&#45;&#45;请选择-&#45;&#45;&#45;&#45;</option>';
-        for (var key in DISTRICTS['100000']) {
-            htm += '<option value="' + key + '">' + DISTRICTS['100000'][key] + '</option>';
-        }
-        province_selector.html(htm);
-        city_selector.html('<option value="">&#45;&#45;&#45;&#45;请选择-&#45;&#45;&#45;&#45;</option>');
-        district_selector.html('<option value="">&#45;&#45;&#45;&#45;请选择-&#45;&#45;&#45;&#45;</option>');
-    }).fail(function () {
-        console.log('获取地区json数据失败');
-    });
-
-    province_selector.change(function () {
-        provinceCode = province_selector.find('option:selected').val();
-        console.log(provinceCode);
-        htm = '<option value="">&#45;&#45;&#45;&#45;请选择-&#45;&#45;&#45;&#45;</option>';
-        for (var key in DISTRICTS[provinceCode]) {
-            htm += '<option value="' + key + '">' + DISTRICTS[provinceCode][key] + '</option>';
-        }
-        city_selector.html(htm);
-        district_selector.html('<option value="">&#45;&#45;&#45;&#45;请选择-&#45;&#45;&#45;&#45;</option>');
-    });
-    city_selector.change(function () {
-        cityCode = city_selector.find('option:selected').val();
-        console.log(cityCode);
-        htm = '<option value="">&#45;&#45;&#45;&#45;请选择-&#45;&#45;&#45;&#45;</option>';
-        for (var key in DISTRICTS[cityCode]) {
-            htm += '<option value="' + key + '">' + DISTRICTS[cityCode][key] + '</option>';
-            district_selector.html(htm);
-        }
-    });
-    district_selector.change(function () {
-        districtCode = district_selector.find('option:selected').val();
-        console.log(districtCode);
-    });
-
-   </script>-->
 </html>

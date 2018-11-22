@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static util.DateHelper.getDate4StrDate;
+
 @Controller
 @RequestMapping("/company_user")
 public class CompanyUserController extends BaseController {
@@ -33,11 +35,11 @@ public class CompanyUserController extends BaseController {
     @Autowired
     private CompanyUserItemService companyUserItemService;
     @Autowired
-    private  CompanyUserInfoService  companyUserInfoService;
+    private CompanyUserInfoService companyUserInfoService;
     @Autowired
-    private  CompanyUserContractService  companyUserContractService;
+    private RegionService regionService;
     @Autowired
-    private  CompanyUserFamilyService  companyUserFamilyService;
+    private CompanyUserFamilyService companyUserFamilyService;
 
 
    /* @Autowired
@@ -89,7 +91,6 @@ public class CompanyUserController extends BaseController {
         c.setUserId(getSessionUser().getUserId());
         Company company = companyService.selectOne(c);
 
-      /*  companyItem.setCompanyId(getSessionUser().getUserId());*/
         companyItem.setCompanyId(company.getCompanyId());
 
         List<CompanyItem> companyItems =  companyItemService.select(companyItem);
@@ -108,6 +109,9 @@ public class CompanyUserController extends BaseController {
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.insertSelective(user);
 
+        CompanyUserInfo companyUserInfo = new CompanyUserInfo();
+        companyUserInfo.setUserId(user.getUserId());
+        companyUserInfoService.insertSelective(companyUserInfo);
         ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
         for (String item : itemId) {
             CompanyUserItem companyUserItem = new CompanyUserItem();
@@ -211,26 +215,69 @@ public class CompanyUserController extends BaseController {
     }
     @RequestMapping("/info.html")
     public String info(Model model) {
+        User sessionUser = getSessionUser();
+        CompanyUserInfo cui = new CompanyUserInfo();
+        cui.setUserId(sessionUser.getUserId());
+        CompanyUserInfo companyUserInfo = companyUserInfoService.selectOne(cui);
+        Region region = new Region();
+        region.setParentId((long) 0);
+        List<Region> provinces = regionService.select(region);
+        List<Region> cities = new ArrayList<>();
+        List<Region> districts = new ArrayList<>();
+        if(companyUserInfo.getCompanyUserHomeProvinceId()!=null){
+            region.setParentId(companyUserInfo.getCompanyUserHomeProvinceId());
+            cities = regionService.select(region);
+        }
 
+        if(companyUserInfo.getCompanyUserHomeCityId()!=null){
+            region.setParentId(companyUserInfo.getCompanyUserHomeCityId());
+            districts = regionService.select(region);
+        }
+
+        CompanyUserFamily companyUserFamily = new CompanyUserFamily();
+        companyUserFamily.setUserId(sessionUser.getUserId());
+        List<CompanyUserFamily> companyUserFamilies = companyUserFamilyService.select(companyUserFamily);
+        model.addAttribute("provinces",provinces);
+        model.addAttribute("companyUserFamilies",companyUserFamilies);
+        model.addAttribute("cities",cities);
+        model.addAttribute("districts",districts);
+        model.addAttribute("obj",companyUserInfo);
         return "/company_user/info.html";
     }
 
     @ResponseBody
-    @RequestMapping("add_info")
-    public RSTFulBody addInfo(CompanyUserInfo companyUserInfo,CompanyUserContract companyUserContract,CompanyUserFamily companyUserFamily) {
-        User sessionUser = getSessionUser();
-        companyUserInfo.setUserId(sessionUser.getUserId());
-        companyUserContract.setUserId(sessionUser.getUserId());
-        companyUserFamily.setUserId(sessionUser.getUserId());
+    @RequestMapping("/update_user")
+    public RSTFulBody updateUser(CompanyUserInfo companyUserInfo,
+                                 @RequestParam(required = false) String userContractTime,
+                                 @RequestParam(required = false, value = "companyUserFamilyType[]") String[] companyUserFamilyType,
+                                 @RequestParam(required = false, value = "companyUserFamilyName[]") String[] companyUserFamilyName,
+                                 @RequestParam(required = false, value = "companyUserFamilyCard[]") String[] companyUserFamilyCard,
+                                 @RequestParam(required = false, value = "companyUserFamilySex[]") String[] companyUserFamilySex
+                                 ){
+        String[] contractTimes = userContractTime.split("至");
+        companyUserInfo.setCompanyUserContractTimeBegin(getDate4StrDate(contractTimes[0], "yyyy-MM-dd"));
+        companyUserInfo.setCompanyUserContractTimeEnd(getDate4StrDate(contractTimes[1], "yyyy-MM-dd"));
+        int res = companyUserInfoService.updateByUserId(companyUserInfo);
 
-            int res1 = companyUserInfoService.insertSelective(companyUserInfo);
-            int res2 = companyUserContractService.insertSelective(companyUserContract);
-            int res3 = companyUserFamilyService.insertSelective(companyUserFamily);
-            RSTFulBody rstFulBody = new RSTFulBody();
-            if (res1>0 && res2>0 && res3>0) rstFulBody.success("添加成功！");
-            else rstFulBody.fail("添加失败！");
-            return rstFulBody;
+        companyUserFamilyService.delByUserId(companyUserInfo.getUserId());
+        if (companyUserFamilyName != null) {
+            List<CompanyUserFamily> companyUserFamilies = new ArrayList<>();
+            for(int i=0;i<companyUserFamilyName.length;i++){
+                CompanyUserFamily companyUserFamily = new CompanyUserFamily();
+                companyUserFamily.setCompanyUserFamilyName(companyUserFamilyName[i]);
+                companyUserFamily.setCompanyUserFamilyCard(companyUserFamilyCard[i]);
+                companyUserFamily.setCompanyUserFamilySex(Integer.parseInt(companyUserFamilySex[i]));
+                companyUserFamily.setCompanyUserFamilyType(Integer.parseInt(companyUserFamilyType[i]));
+                companyUserFamily.setUserId(companyUserInfo.getUserId());
+                companyUserFamilies.add(companyUserFamily);
+            }
+            companyUserFamilyService.insertList(companyUserFamilies);
+        }
 
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if (res > 0) rstFulBody.success("提交成功！");
+        else rstFulBody.fail("提交失败！");
+        return rstFulBody;
     }
 
     @RequestMapping("/items.html")

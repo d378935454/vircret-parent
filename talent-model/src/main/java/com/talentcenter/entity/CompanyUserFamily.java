@@ -3,6 +3,9 @@ package com.talentcenter.entity;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
@@ -14,7 +17,8 @@ import java.util.Date;
 @Data
 @Table(name = "talent_company_user_family")
 public class CompanyUserFamily implements Serializable {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyUserFamilyId;
 
     private Long userId;
@@ -22,7 +26,7 @@ public class CompanyUserFamily implements Serializable {
     /**
      * 家庭类型
      */
-    private String companyUserFamilyType;
+    private Integer companyUserFamilyType;
     /**
      * 家庭成员姓名
      */
@@ -32,7 +36,7 @@ public class CompanyUserFamily implements Serializable {
      * 成员性别
      */
 
-    private Boolean companyUserFamilySex;
+    private Integer companyUserFamilySex;
 
     /**
      * 成员身份证号码

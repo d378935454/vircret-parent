@@ -79,5 +79,8 @@ public class CompanyUserInfoServiceImpl implements CompanyUserInfoService {
     public List<CompanyUserInfo> selectByInfo(Map<String, Object> map) { return companyUserInfoMapper.selectByInfo(map); }
 
 
-
+    @Override
+    public int updateByUserId(CompanyUserInfo companyUserInfo) {
+        return companyUserInfoMapper.updateByUserId(companyUserInfo);
+    }
 }

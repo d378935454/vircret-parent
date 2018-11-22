@@ -1,9 +1,11 @@
 package com.talentcenter.controller;
 
 import com.talentcenter.entity.Menu;
+import com.talentcenter.entity.Region;
 import com.talentcenter.entity.User;
 import com.talentcenter.service.CommonService;
 import com.talentcenter.service.MenuService;
+import com.talentcenter.service.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,9 @@ public class IndexController extends BaseController {
 
     @Autowired
     private CommonService commonService;
+
+    @Autowired
+    private RegionService regionService;
 
     @RequestMapping("/")
     public  String index(Model model){
@@ -92,5 +97,23 @@ public class IndexController extends BaseController {
     public Map<String,Object> uploadItem(MultipartFile file){
         Map<String,Object> map = upload(file,0);
         return map;
+    }
+
+    @ResponseBody
+    @RequestMapping("provinces")
+    public List<Region> provinces(){
+        Region region = new Region();
+        region.setLevel(1);
+        List<Region> regions = regionService.select(region);
+        return regions;
+    }
+
+    @ResponseBody
+    @RequestMapping("son")
+    public List<Region> son(Long parentId){
+        Region region = new Region();
+        region.setParentId(parentId);
+        List<Region> regions = regionService.select(region);
+        return regions;
     }
 }
