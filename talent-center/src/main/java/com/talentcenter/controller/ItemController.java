@@ -85,7 +85,9 @@ public class ItemController extends BaseController {
 
     @RequestMapping("add.html")
     public String addUI(Model model) {
-        List<ItemType> itemTypes = itemTypeService.selectAll();
+        ItemType itemType = new ItemType();
+        itemType.setDel(true);
+        List<ItemType> itemTypes = itemTypeService.select(itemType);
         model.addAttribute("itemTypes", itemTypes);
         return "/item/add.html";
     }
@@ -108,9 +110,11 @@ public class ItemController extends BaseController {
     @RequestMapping("edit.html")
     public String editUI(Model model, String itemId) {
         Item item = itemService.selectByPrimaryKey((long) Integer.parseInt(itemId));
+        ItemType itemType = new ItemType();
+        itemType.setDel(true);
+        List<ItemType> itemTypes = itemTypeService.select(itemType);
         model.addAttribute("itemId", itemId);
         model.addAttribute("obj", item);
-        List<ItemType> itemTypes = itemTypeService.selectAll();
         model.addAttribute("itemTypes", itemTypes);
         return "/item/edit.html";
     }
