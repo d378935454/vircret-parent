@@ -168,4 +168,9 @@ public class ItemConfig {
      * 备注
      */
     private String memo;
+
+    /**
+     * 状态 0:停止 1:启用
+     */
+    private Boolean itemConfigState;
 }

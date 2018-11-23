@@ -338,6 +338,16 @@ public class ItemController extends BaseController {
         return itemTalentContents;
     }
 
+    @ResponseBody
+    @RequestMapping("config_state")
+    public RSTFulBody configState(ItemConfig itemConfig){
+        int res = itemConfigService.updateByPrimaryKeySelective(itemConfig);
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if (res > 0) rstFulBody.success(res);
+        else rstFulBody.fail("删除失败！");
+        return rstFulBody;
+    }
+
     private Boolean updateItemTalentContent(
             String[] talentTypes,
             String[] talentTypeIds,
