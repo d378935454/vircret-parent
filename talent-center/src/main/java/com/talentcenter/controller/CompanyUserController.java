@@ -41,7 +41,11 @@ public class CompanyUserController extends BaseController {
     @Autowired
     private CompanyUserFamilyService companyUserFamilyService;
 
+    @Autowired
+    private ItemConfigService itemConfigService;
 
+    @Autowired
+    private ItemCertificateService itemCertificateService;
    /* @Autowired
     private RoleCompanyUserService roleCompanyUserService;*/
 
@@ -295,5 +299,54 @@ public class CompanyUserController extends BaseController {
         model.addAttribute("page_info", pageInfo);
         model.addAttribute("pages", pageStr);
         return "/company_user/ajax_items.html";
+    }
+
+    @RequestMapping("/item_info.html")
+    public String itemInfo(Model model,Long itemId){
+        User sessionUser = getSessionUser();
+        if(!ifPermit(sessionUser.getUserId(),itemId)){
+            return "redirect:/company_user/items.html";
+        }
+        Item item = itemService.selectByPrimaryKey(itemId);
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.setItemId(itemId);
+        itemConfig.setItemConfigState(true);
+        ItemConfig ic = itemConfigService.selectOne(itemConfig);
+//        ItemConfig itemConfig = itemConfigService.
+//        itemConfigService.se
+        model.addAttribute("item",item);
+        model.addAttribute("itemConfig",ic);
+        return "/company_user/item_info.html";
+    }
+
+    @RequestMapping("/ask_for.html")
+    public String askFor(Model model,Long itemId){
+        //判断是否有资格申请该补助
+        User sessionUser = getSessionUser();
+        if(!ifPermit(sessionUser.getUserId(),itemId)){
+            return "redirect:/company_user/items.html";
+        }
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.setItemId(itemId);
+        itemConfig.setItemConfigState(true);
+        ItemConfig ic = itemConfigService.selectOne(itemConfig);
+
+        ItemCertificate itemCertificate = new ItemCertificate();
+        itemCertificate.setItemConfigId(ic.getItemConfigId());
+        List<ItemCertificate> itemCertificates = itemCertificateService.select(itemCertificate);
+
+        model.addAttribute("certificates",itemCertificates);
+        return "/company_user/ask_for.html";
+    }
+
+
+    private Boolean ifPermit(Long userId,Long itemId){
+        Boolean res = true;
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",userId);
+        map.put("itemId",itemId);
+        List<CompanyUserItem> companyUserItems = companyUserItemService.selectByInfo(map);
+        if(companyUserItems==null) res = false;
+        return res;
     }
 }

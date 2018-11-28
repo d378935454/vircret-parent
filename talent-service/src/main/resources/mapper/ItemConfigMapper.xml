@@ -3,7 +3,29 @@
 <mapper namespace="com.talentcenter.dao.ItemConfigMapper">
 
     <resultMap id="BaseResultMap" type="com.talentcenter.entity.ItemConfig">
-        <id column="item_config_id" jdbcType="INTEGER" property="item_configId" />
+        <id column="item_config_id" jdbcType="INTEGER" property="itemConfigId" />
+        <result column="item_id" jdbcType="INTEGER" property="itemId" />
+        <result column="item_config_accept_begin" jdbcType="DATE" property="itemConfigAcceptBegin" />
+        <result column="item_config_accept_end" jdbcType="DATE" property="itemConfigAcceptEnd" />
+        <result column="item_config_check_begin" jdbcType="DATE" property="itemConfigCheckBegin" />
+        <result column="item_config_check_end" jdbcType="DATE" property="itemConfigCheckEnd" />
+        <result column="item_config_effect" jdbcType="DATE" property="itemConfigEffect" />
+        <result column="item_config_face" jdbcType="BIT" property="itemConfigFace" />
+        <result column="item_config_type" jdbcType="INTEGER" property="itemConfigType" />
+        <result column="item_config_amount_total" jdbcType="DECIMAL" property="itemConfigAmountTotal" />
+        <result column="item_config_amount_per" jdbcType="DECIMAL" property="itemConfigAmountPer" />
+        <result column="item_config_send_type" jdbcType="INTEGER" property="itemConfigSendType" />
+        <result column="item_config_send_rate" jdbcType="REAL" property="itemConfigSendRate" />
+        <result column="item_config_service" jdbcType="VARCHAR" property="itemConfigService" />
+        <result column="item_config_content" jdbcType="VARCHAR" property="itemConfigContent" />
+        <result column="item_config_conetent_attachment" jdbcType="VARCHAR" property="itemConfigConetentAttachment" />
+        <result column="attachment_name" jdbcType="VARCHAR" property="attachmentName" />
+        <result column="item_config_company_check" jdbcType="BIT" property="itemConfigCompanyCheck" />
+        <result column="item_config_street_check" jdbcType="BIT" property="itemConfigStreetCheck" />
+        <result column="item_config_center_check" jdbcType="BIT" property="itemConfigCenterCheck" />
+        <result column="item_config_target" jdbcType="INTEGER" property="itemConfigTarget" />
+        <result column="item_config_t_type" jdbcType="BIT" property="itemConfigTType" />
+        <result column="type_category_id" jdbcType="INTEGER" property="typeCategoryId" />
         <result column="del" jdbcType="BIT" property="del" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -15,23 +37,19 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        item_config_id, del, create_time, update_time, create_id, create_name,
-        update_id, update_name, memo
-    </sql>
+    item_config_id, item_id, item_config_accept_begin, item_config_accept_end, item_config_check_begin,
+    item_config_check_end, item_config_effect, item_config_face, item_config_type, item_config_amount_total,
+    item_config_amount_per, item_config_send_type, item_config_send_rate, item_config_service,
+    item_config_content, item_config_conetent_attachment, attachment_name, item_config_company_check,
+    item_config_street_check, item_config_center_check, item_config_target, item_config_t_type,
+    type_category_id, del, create_time, update_time, create_id, create_name, update_id,
+    update_name, memo
+  </sql>
 
-    <sql id="where">
-        <where>
-            <if test="item_configId !=null and item_configId != ''">
-                AND item_config_id = #{item_configId,jdbcType=BIGINT}
-            </if>
-        </where>
-    </sql>
-
-    <select id="selectByInfo" resultMap="BaseResultMap" parameterType="java.lang.Object">
+    <select id="selectNewRecord" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from talent_item_config
-        <include refid="where"/>
+        from talent_item_config ORDER BY item_config_id DESC LIMIT 1
     </select>
 
     <delete id="batchDel" parameterType="Map">

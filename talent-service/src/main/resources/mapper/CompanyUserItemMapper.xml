@@ -2,23 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.talentcenter.dao.CompanyUserItemMapper">
 
-    <resultMap id="BaseResultMap" type="com.talentcenter.entity.Item">
-        <id column="item_id" jdbcType="INTEGER" property="itemId" />
+    <resultMap id="BaseResultMap" type="com.talentcenter.entity.CompanyUserItem">
+        <id column="company_user_item_id" jdbcType="INTEGER" property="companyUserItemId" />
+        <result column="item_id" jdbcType="INTEGER" property="itemId" />
         <result column="item_name" jdbcType="VARCHAR" property="itemName" />
-        <result column="del" jdbcType="BIT" property="del" />
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-        <result column="create_id" jdbcType="INTEGER" property="createId" />
-        <result column="create_name" jdbcType="VARCHAR" property="createName" />
-        <result column="update_id" jdbcType="INTEGER" property="updateId" />
-        <result column="update_name" jdbcType="VARCHAR" property="updateName" />
-        <result column="memo" jdbcType="VARCHAR" property="memo" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="company_reason" jdbcType="VARCHAR" property="companyReason" />
+        <result column="company_checked" jdbcType="INTEGER" property="companyChecked" />
+        <result column="street_reason" jdbcType="VARCHAR" property="streetReason" />
+        <result column="street_checked" jdbcType="INTEGER" property="streetChecked" />
+        <result column="center_reason" jdbcType="VARCHAR" property="centerReason" />
+        <result column="center_checked" jdbcType="INTEGER" property="centerChecked" />
     </resultMap>
 
     <delete id="delByUserId" parameterType="java.lang.Long">
     DELETE from talent_company_user_item  WHERE user_id = #{userId,jdbcType=BIGINT};
   </delete>
-    <select id="selectByInfo"  resultMap="BaseResultMap" parameterType="java.lang.Object">
+
+    <sql id="Base_Column_List">
+    company_user_item_id, item_id, item_name, user_id, company_reason, company_checked,
+    street_reason, street_checked, center_reason, center_checked
+    </sql>
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         SELECT
         i.item_name,
         i.item_length,
@@ -28,5 +33,24 @@
         FROM talent_company_user_item cui LEFT JOIN talent_item i ON cui.item_id = i.item_id
 
         WHERE  user_id = #{userId,jdbcType=BIGINT}
+    </select>
+    <sql id="where">
+        <where>
+            <if test="companyUserItemId !=null and companyUserItemId != ''">
+                AND company_user_item_id = #{company_user_item_id,jdbcType=BIGINT}
+            </if>
+            <if test="itemId != null and itemId !=''">
+                AND item_id = #{itemId,jdbcType=BIGINT}
+            </if>
+            <if test="userId != null and userId !=''">
+                AND user_id = #{userId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </sql>
+    <select id="selectByInfo" resultMap="BaseResultMap" parameterType="java.lang.Object">
+        select
+        <include refid="Base_Column_List"/>
+        from talent_company_user_item
+        <include refid="where"/>
     </select>
 </mapper>

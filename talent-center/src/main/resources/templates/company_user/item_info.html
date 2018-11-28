@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_form_layout.html"){
+<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+    <body class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-9 col-lg-offset-1">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="text-center article-title">
+                            <h1>
+                                ${item.itemName}
+                            </h1>
+                        </div>
+                        <div>
+                            ${itemConfig.itemConfigContent}
+                        </div>
+                        <hr>
+                        <div>
+                            附件：<a href="/download/1">${itemConfig.attachmentName}</a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <a href="${ctxPath}/company_user/ask_for.html?itemId=${item.itemId}" class="btn btn-primary" type="submit">申请</a>
+                    <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
+                </div>
+            </div>
+        </div>
+@}
+</body>
+</html>

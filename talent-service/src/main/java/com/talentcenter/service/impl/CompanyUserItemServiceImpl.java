@@ -76,7 +76,12 @@ public class CompanyUserItemServiceImpl implements CompanyUserItemService {
     }
 
     @Override
-    public List<CompanyUserItem> selectByInfo(Map<String, Object> map) { return companyUserItemMapper.selectByInfo(map); }
+    public List<CompanyUserItem> selectByInfo(Map<String, Object> map) {
+        return companyUserItemMapper.selectByInfo(map);
+    }
+
+    @Override
+    public List<CompanyUserItem> selectByUserId(Long userId) { return companyUserItemMapper.selectByUserId(userId); }
 
     @Override
     public int batchDel(Map<String, Object> map) {

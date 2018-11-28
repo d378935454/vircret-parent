@@ -14,6 +14,6 @@ public interface CompanyUserItemService extends BaseService<CompanyUserItem> {
 
     int delByUserId(Long userId);
 
-    List<CompanyUserItem> selectByInfo(Object o);
+    List<CompanyUserItem> selectByUserId(Long userId);
 
 }

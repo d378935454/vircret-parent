@@ -11,4 +11,6 @@ public interface ItemConfigMapper extends BaseMapper<ItemConfig> {
 
     int batchDel(Map<String, Object> map);
 
+    ItemConfig selectNewRecord();
+
 }
