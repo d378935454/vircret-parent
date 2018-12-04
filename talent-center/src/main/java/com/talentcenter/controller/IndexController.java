@@ -105,6 +105,13 @@ public class IndexController extends BaseController {
     }
 
     @ResponseBody
+    @RequestMapping("upload_img")
+    public Map<String, Object> uploadImg(MultipartFile file) {
+        Map<String, Object> map = upload(file, 1);
+        return map;
+    }
+
+    @ResponseBody
     @RequestMapping("provinces")
     public List<Region> provinces() {
         Region region = new Region();
