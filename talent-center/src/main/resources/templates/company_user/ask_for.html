@@ -3,18 +3,34 @@
 @layout("/layout/_form_layout.html"){
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
 <link href="/css/plugins/webuploader/webuploader.css" rel="stylesheet" type="text/css">
+<style>
+    .upload-error{
+        color:#a94442;;
+    }
+</style>
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
-                <form class="form-horizontal m-t" id="viladate_form">
+                <form class="form-horizontal m-t" id="ask_form">
                     @for(certificate in certificates){
                     <div class="form-group">
                         <label class="col-sm-2 control-label">${certificate.certificateName}：</label>
                         <div class="col-sm-10">
                             <div class="uploader">
                                 <!--用来存放item-->
-                                <div id="fileList-${certificate.certificateId}" c-id="${certificate.certificateId}" class="uploader-list"></div>
+                                <div id="fileList-${certificate.certificateId}" c-id="${certificate.certificateId}" class="uploader-list">
+                                @if(certificate.companyUserCertificates!=null){
+                                    @for(img in certificate.companyUserCertificates){
+                                    <div id="WU_FILE_${img.companyUserCertificateId}" class="file-item thumbnail upload-state-done">
+                                        <img src="${ctxPath}/talent${img.imgUrl}">
+                                        <div class="file-panel" style="height: 0px;"><span class="cancel">删除</span></div>
+                                        <input type="hidden" name="certificateId[]" value="${img.certificateId}">
+                                        <input type="hidden" name="imgUrl[]" value="${img.imgUrl}">
+                                    </div>
+                                    @}
+                                @}
+                                </div>
                                 <div class="filePicker" c-id="${certificate.certificateId}">选择图片</div>
                             </div>
                         </div>
@@ -22,7 +38,8 @@
                     @}
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-2">
-                            <button class="btn btn-primary" type="submit">提交</button>
+                            <a class="btn btn-primary" id="submit">提交</a>
+                            <input type="hidden" name="itemId" value="${itemId}" />
                             <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                         </div>
                     </div>
@@ -36,6 +53,49 @@
 <script src="/js/plugins/layer/laydate/laydate.js"></script>
 <script src="/js/plugins/webuploader/webuploader.js"></script>
 <script type="text/javascript">
+
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    $('#submit').click(function () {
+        var check = true;
+        $('.uploader-list').each(function (i,e) {
+            if($(e).children('.upload-state-done').length==0){
+                var error = '<span class="help-block upload-error"><i class="fa fa-times-circle"></i> 请上传 '+$(e).parent().parent().prev().html().replace("：","")+'</span>';
+                $(e).html(error);
+                check = false;
+            }
+        });
+        if(check){
+            $.ajax({
+                type: "POST",
+                url: "${ctxPath}/company_user/ask_for",
+                data: $('#ask_form').serialize(),
+                success: function (data) {
+                    if (data['status'] == 1) {
+                        toastr.success(data['body']);
+                        setTimeout('window.location.href="/company_user/items.html"', 1000);
+                    } else {
+                        toastr.success(data['body']);
+                    }
+                }
+            });
+        }
+    });
+
+
     // 图片上传demo
     jQuery(function() {
 
@@ -55,6 +115,19 @@
             $list = $("#fileList-"+$(this).attr('c-id'));
         });
 
+        $('.upload-state-done').on( 'mouseenter', function() {
+            // console.log($(this).parent('.file-panel'));
+            $(this).children('.file-panel').stop().animate({height: 30});
+        });
+
+        $('.upload-state-done').on( 'mouseleave', function() {
+            // console.log($(this).parent('.file-panel'));
+            $(this).children('.file-panel').stop().animate({height: 0});
+        });
+
+        $('.cancel').on('click',function () {
+            removeFile( $(this) );
+        });
         // 初始化Web Uploader
         uploader = WebUploader.create({
 
@@ -81,10 +154,11 @@
 
         // 当有文件添加进来的时候
         uploader.on( 'fileQueued', function( file ) {
+            var fileId = 'WU_FILE_'+$('.upload-state-done').length;
+            // var fileId = 'WU_FILE_'+$list.children('.upload-state-done').length;
             var $li = $(
-                '<div id="' + file.id + '" class="file-item thumbnail">' +
+                '<div id="' + fileId + '" class="file-item thumbnail">' +
                 '<img>' +
-                '<div class="info">' + file.name + '</div>' +
                 '</div>'
                 ),
                 $btns = $('<div class="file-panel">' +
@@ -102,10 +176,10 @@
             $btns.on( 'click', 'span', function() {
                 var index = $(this).index(),
                     deg;
-
                 switch ( index ) {
                     case 0:
-                        removeFile( file );
+                        removeFile( $(this) );
+                        // removeFile( file );
                         return;
                 }
 
@@ -139,9 +213,11 @@
             window.uploader = uploader;
         });
 
-        function removeFile( file ) {
-            var $li = $('#'+file.id);
-            $li.off().find('.file-panel').off().end().remove();
+        function removeFile( obj ) {
+            // var fileId = 'WU_FILE_'+$('.upload-state-done').length;
+            // var $li = $('#'+obj.id);
+            // $li.off().find('.file-panel').off().end().remove();
+            obj.parent().parent().remove();
         }
 
 
@@ -163,7 +239,10 @@
 
         // 文件上传成功，给item添加成功class, 用样式标记上传成功。
         uploader.on( 'uploadSuccess', function( file,data ) {
-            var $li = $( '#'+file.id );
+            var fileId = 'WU_FILE_'+$('.upload-state-done').length;
+            // var fileId = 'WU_FILE_'+$list.children('.upload-state-done').length;
+            var $li = $( '#'+ fileId);
+            $li.prev('.upload-error').remove();
             $('<input type="hidden" name="certificateId[]" value="'+$list.attr("c-id")+'">' +
                 '<input type="hidden" name="imgUrl[]" value="'+data.fileInfo+'">').appendTo($li);
             $li.addClass('upload-state-done');

@@ -38,7 +38,10 @@ public class Upload {
         map.put("oderName",file.getOriginalFilename());
         try {
             //上传目录地址
-            String uploadDir = ClassUtils.getDefaultClassLoader().getResource("").getPath() +"upload/"+DateHelper.getCurDate()+"/";
+            String[] path = ClassUtils.getDefaultClassLoader().getResource("").getPath().split("/");
+            String uploadDir = path[1] + "/talent/upload/"+DateHelper.getCurDate()+"/";
+
+//            ClassUtils.get
             //如果目录不存在，自动创建文件夹
             File dir = new File(uploadDir);
             if(!dir.exists())

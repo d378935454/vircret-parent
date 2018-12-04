@@ -14,12 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import util.DateHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static util.DateHelper.getDate4StrDate;
+import static util.DateHelper.*;
 
 @Controller
 @RequestMapping("/company_user")
@@ -46,6 +43,15 @@ public class CompanyUserController extends BaseController {
 
     @Autowired
     private ItemCertificateService itemCertificateService;
+
+    @Autowired
+    private ItemTeamContentService itemTeamContentService;
+
+    @Autowired
+    private CertificateService certificateService;
+
+    @Autowired
+    private CompanyUserCertificateService companyUserCertificateService;
    /* @Autowired
     private RoleCompanyUserService roleCompanyUserService;*/
 
@@ -173,7 +179,7 @@ public class CompanyUserController extends BaseController {
         User sessionUser = getSessionUser();
         user.setUpdateId(sessionUser.getUserId());
         user.setUpdateName(sessionUser.getUserName());
-        user.setUpdateTime(DateHelper.getCurrentDate());
+        user.setUpdateTime(getCurrentDate());
         if (user.getPassword() != null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         int res = userService.updateByPrimaryKeySelective(user);
 
@@ -253,6 +259,7 @@ public class CompanyUserController extends BaseController {
     @RequestMapping("/update_user")
     public RSTFulBody updateUser(CompanyUserInfo companyUserInfo,
                                  @RequestParam(required = false) String userContractTime,
+                                 @RequestParam(required = false) String userHouseContractTime,
                                  @RequestParam(required = false, value = "companyUserFamilyType[]") String[] companyUserFamilyType,
                                  @RequestParam(required = false, value = "companyUserFamilyName[]") String[] companyUserFamilyName,
                                  @RequestParam(required = false, value = "companyUserFamilyCard[]") String[] companyUserFamilyCard,
@@ -261,6 +268,13 @@ public class CompanyUserController extends BaseController {
         String[] contractTimes = userContractTime.split("至");
         companyUserInfo.setCompanyUserContractTimeBegin(getDate4StrDate(contractTimes[0], "yyyy-MM-dd"));
         companyUserInfo.setCompanyUserContractTimeEnd(getDate4StrDate(contractTimes[1], "yyyy-MM-dd"));
+        companyUserInfo.setUpdateTimes(companyUserInfo.getUpdateTimes()+1);
+
+        if(userHouseContractTime!= null){
+            String[] houseContractTimes = userHouseContractTime.split("至");
+            companyUserInfo.setCompanyUserHouseContractTimeBegin(getDate4StrDate(houseContractTimes[0], "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserHouseContractTimeEnd(getDate4StrDate(houseContractTimes[1], "yyyy-MM-dd"));
+        }
         int res = companyUserInfoService.updateByUserId(companyUserInfo);
 
         companyUserFamilyService.delByUserId(companyUserInfo.getUserId());
@@ -285,7 +299,7 @@ public class CompanyUserController extends BaseController {
     }
 
     @RequestMapping("/items.html")
-    public String items(Model model) {
+    public String items() {
         return "/company_user/items.html";
     }
 
@@ -312,15 +326,50 @@ public class CompanyUserController extends BaseController {
         itemConfig.setItemId(itemId);
         itemConfig.setItemConfigState(true);
         ItemConfig ic = itemConfigService.selectOne(itemConfig);
+
+        ItemTeamContent itemTeamContent = new ItemTeamContent();
+        itemTeamContent.setItemId(itemId);
+        List<ItemTeamContent> itemTeamContents=itemTeamContentService.select(itemTeamContent);
+
+
+
+        Boolean ifShowSubmitButton=true;
+        List<ItemTeamContent> userItemTeam = new ArrayList<>();
+        if(itemTeamContents.size()>0){
+            List<ItemTeamContent> itc = itemTeamContentService.selectTeam(itemId);
+            CompanyUserItem companyUserItem = new CompanyUserItem();
+            companyUserItem.setUserId(sessionUser.getUserId());
+            List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
+            for (ItemTeamContent ii:itc) {
+                for (CompanyUserItem cc: companyUserItems){
+                    if(ii.getItemId() == cc.getItemId() && ii.getItemId()!=itemId){
+                        userItemTeam.add(ii);
+                        continue;
+                    }
+                }
+            }
+            for(ItemTeamContent i: itc){
+                companyUserItem.setItemId(i.getItemId());
+                companyUserItem.setHaveSubmit(true);
+                CompanyUserItem cui = companyUserItemService.selectOne(companyUserItem);
+                if(cui!=null){
+                    ifShowSubmitButton=false;
+                    break;
+                }
+            }
+        }
+
 //        ItemConfig itemConfig = itemConfigService.
 //        itemConfigService.se
         model.addAttribute("item",item);
+        model.addAttribute("ifShowSubmitButton",ifShowSubmitButton);
         model.addAttribute("itemConfig",ic);
+        model.addAttribute("userItemTeam",userItemTeam);
         return "/company_user/item_info.html";
     }
 
     @RequestMapping("/ask_for.html")
-    public String askFor(Model model,Long itemId){
+    public String askForUI(Model model,Long itemId){
         //判断是否有资格申请该补助
         User sessionUser = getSessionUser();
         if(!ifPermit(sessionUser.getUserId(),itemId)){
@@ -335,10 +384,75 @@ public class CompanyUserController extends BaseController {
         itemCertificate.setItemConfigId(ic.getItemConfigId());
         List<ItemCertificate> itemCertificates = itemCertificateService.select(itemCertificate);
 
+        for (ItemCertificate ii : itemCertificates) {
+            CompanyUserCertificate companyUserCertificate = new CompanyUserCertificate();
+            companyUserCertificate.setUserId(sessionUser.getUserId());
+            companyUserCertificate.setCertificateId(ii.getCertificateId());
+            List<CompanyUserCertificate> cuc = companyUserCertificateService.select(companyUserCertificate);
+            if(cuc!=null) ii.setCompanyUserCertificates(cuc);
+        }
+
+        int monthes = 0;
+        if(ic.getItemConfigContactTime()!=2){
+            int year = getCurrentYear();
+            Date lastDay = getYearLast(year);
+            Date currentDate = getCurrentDate();
+            Date begin = null;
+            Date end = null;
+            CompanyUserInfo companyUserInfo = new CompanyUserInfo();
+            companyUserInfo.setUserId(sessionUser.getUserId());
+            CompanyUserInfo c = companyUserInfoService.selectOne(companyUserInfo);
+            //计算当前时间到年底 与 劳动合同时间段重合月份数量
+            if(ic.getItemConfigContactTime()==0){
+                begin = c.getCompanyUserContractTimeBegin().getTime()>=currentDate.getTime() ? currentDate : c.getCompanyUserContractTimeBegin();
+                end = c.getCompanyUserContractTimeEnd().getTime()>=lastDay.getTime() ? lastDay : c.getCompanyUserContractTimeEnd();
+            }
+            //计算当前时间到年底 与 租房合同时间段重合月份数量
+            if(ic.getItemConfigContactTime()==1){
+                begin = c.getCompanyUserHouseContractTimeBegin().getTime()>=currentDate.getTime() ? currentDate : c.getCompanyUserHouseContractTimeBegin();
+                end = c.getCompanyUserHouseContractTimeEnd().getTime()>=lastDay.getTime() ? lastDay : c.getCompanyUserHouseContractTimeEnd();
+            }
+
+            int startMonth = getCustomMonth(begin);
+            int endMonth = getCustomMonth(end);
+
+            monthes = endMonth - startMonth;
+        }
         model.addAttribute("certificates",itemCertificates);
+        model.addAttribute("monthes",monthes);
+        model.addAttribute("itemId",itemId);
         return "/company_user/ask_for.html";
     }
 
+    @ResponseBody
+    @RequestMapping("/ask_for")
+    public RSTFulBody askFor(@RequestParam(required = false, value = "certificateId[]") Long[] certificateId,
+                             @RequestParam(required = false, value = "imgUrl[]") String[] imgUrl,
+                             Long itemId){
+        Long userId = getSessionUser().getUserId();
+        List<CompanyUserCertificate> companyUserCertificates = new ArrayList<>();
+        if(certificateId!=null){
+            for (int i=0;i<certificateId.length;i++){
+                Certificate certificate = certificateService.selectByPrimaryKey(certificateId[i]);
+                CompanyUserCertificate companyUserCertificate = new CompanyUserCertificate();
+                companyUserCertificate.setCertificateId(certificateId[i]);
+                companyUserCertificate.setCertificateName(certificate.getCertificateName());
+                companyUserCertificate.setImgUrl(imgUrl[i]);
+                companyUserCertificate.setUserId(userId);
+                companyUserCertificates.add(companyUserCertificate);
+            }
+        }
+        companyUserCertificateService.deleteByUserId(userId);
+        int res = companyUserCertificateService.insertList(companyUserCertificates);
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",userId);
+        map.put("itemId",itemId);
+        companyUserItemService.updateByItemIdAndUserId(map);
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if (res > 0) rstFulBody.success("申请成功，请耐心等待审核！");
+        else rstFulBody.fail("申请失败！");
+        return rstFulBody;
+    }
 
     private Boolean ifPermit(Long userId,Long itemId){
         Boolean res = true;

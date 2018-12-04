@@ -13,6 +13,7 @@
         <result column="street_checked" jdbcType="INTEGER" property="streetChecked" />
         <result column="center_reason" jdbcType="VARCHAR" property="centerReason" />
         <result column="center_checked" jdbcType="INTEGER" property="centerChecked" />
+        <result column="have_submit" jdbcType="INTEGER" property="haveSubmit" />
     </resultMap>
 
     <delete id="delByUserId" parameterType="java.lang.Long">
@@ -53,4 +54,8 @@
         from talent_company_user_item
         <include refid="where"/>
     </select>
+    
+    <update id="updateByItemIdAndUserId" parameterType="Map">
+        update talent_company_user_item set have_submit=1 where user_id = #{userId,jdbcType=BIGINT} and item_id= #{itemId,jdbcType=BIGINT}
+    </update>
 </mapper>

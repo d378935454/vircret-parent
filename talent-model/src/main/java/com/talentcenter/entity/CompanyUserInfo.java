@@ -152,4 +152,15 @@ public class CompanyUserInfo implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date companyUserContractTimeEnd;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserHouseContractTimeBegin;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserHouseContractTimeEnd;
+
+    private Float companyUserHousePrice;
+
+    private Integer companyUserHouseType;
+
+    private Integer updateTimes;
 }

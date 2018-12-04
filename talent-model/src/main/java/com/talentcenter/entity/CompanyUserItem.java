@@ -20,6 +20,7 @@ public class CompanyUserItem {
     private Long companyUserItemId;
 
     private Long userId;
+
     /**
      * 政策ID
      */
@@ -34,24 +35,34 @@ public class CompanyUserItem {
      * 企业退回或不通过原因
      */
     private String companyReason;
+
     /**
      * 公司审核状态 0:不通过 1:退回 2:通过 3:已提交
      */
     private Integer companyChecked;
+
     /**
      * 街道退回或不通过原因
      */
     private String streetReason;
+
     /**
      * 街道审核状态 0:不通过 1:退回 2:通过 3:已提交
      */
     private Integer streetChecked;
+
     /**
      * 人才中心退回或不通过原因
      */
     private String centerReason;
+
     /**
      * 人才中心审核状态 0:不通过 1:退回 2:通过 3:已提交
      */
     private Integer centerChecked;
+
+    /**
+     * 申请状态 0:未申请 1:已申请
+     */
+    private Boolean haveSubmit;
 }

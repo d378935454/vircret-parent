@@ -802,6 +802,20 @@ public class DateHelper {
     }
 
     /**
+     * 获取某年最后一天
+     * @param year
+     * @return
+     */
+    public static Date getYearLast(int year){
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR, year);
+        calendar.roll(Calendar.DAY_OF_YEAR, -1);
+        Date currYearLast = calendar.getTime();
+        return currYearLast;
+    }
+
+    /**
      * <p>获得指定的小时(日中的)，int格式</p>
      * <br>
      * @return

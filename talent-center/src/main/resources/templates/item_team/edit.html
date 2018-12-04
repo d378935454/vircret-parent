@@ -24,7 +24,7 @@
                                        @}
                                        id="c_${item.itemId}" name="items[]" value="${item.itemId}">
                                 <label for="c_${item.itemId}"> ${item.itemName} </label>
-                                <input type="hidden" name="itemNames[]" value="${item.itemName}">
+                                <input type="hidden" name="itemName${item.itemId}" value="${item.itemName}">
                             </div>
                             @}
                         </div>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -154,9 +155,8 @@ public class ItemTeamController extends BaseController {
 
     @ResponseBody
     @RequestMapping("edit")
-    public RSTFulBody edit(ItemTeam itemTeam,
-                           @RequestParam(required = false, value = "items[]") Long[] items,
-                           @RequestParam(required = false, value = "itemNames[]") String[] itemNames) {
+    public RSTFulBody edit(ItemTeam itemTeam,HttpServletRequest request,
+                           @RequestParam(required = false, value = "items[]") Long[] items) {
         User sessionUser = getSessionUser();
         itemTeam.setUpdateId(sessionUser.getUserId());
         itemTeam.setUpdateName(sessionUser.getUserName());
@@ -167,7 +167,7 @@ public class ItemTeamController extends BaseController {
         for(int i=0;i<items.length;i++){
             ItemTeamContent itemTeamContent = new ItemTeamContent();
             itemTeamContent.setItemId(items[i]);
-            itemTeamContent.setItemName(itemNames[i]);
+            itemTeamContent.setItemName(request.getParameter("itemName"+items[i]));
             itemTeamContent.setItemTeamId(itemTeam.getItemTeamId());
             itemTeamContents.add(itemTeamContent);
         }

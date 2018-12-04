@@ -19,10 +19,22 @@
                         <div>
                             附件：<a href="/download/1">${itemConfig.attachmentName}</a>
                         </div>
+                        <hr>
+                        <div>
+                                <div class="pull-left">不能同时享受的政策：</div>
+                                @for(uit in userItemTeam){
+                                <div class="pull-left" style="margin-right: 15px;">
+                                    ${uit.itemName}
+                                </div>
+
+                                @}
+                        </div>
                     </div>
                 </div>
                 <div>
-                    <a href="${ctxPath}/company_user/ask_for.html?itemId=${item.itemId}" class="btn btn-primary" type="submit">申请</a>
+                    @if(ifShowSubmitButton){
+                        <a href="${ctxPath}/company_user/ask_for.html?itemId=${item.itemId}" class="btn btn-primary" type="submit">申请</a>
+                    @}
                     <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                 </div>
             </div>

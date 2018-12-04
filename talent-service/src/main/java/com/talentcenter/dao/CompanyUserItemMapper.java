@@ -16,4 +16,8 @@ public interface CompanyUserItemMapper extends BaseMapper<CompanyUserItem> {
 
     List<CompanyUserItem> selectByUserId(Long userId);
 
+    List<CompanyUserItem> selectSameTeamItems(Map<String,Object> map);
+
+    int updateByItemIdAndUserId(Map<String,Object> map);
+
 }

@@ -240,6 +240,36 @@
                                    required>
                         </div>
                     </div>
+
+                    <div style="width: 1000px;">
+                        <HR align=center width=1000 color=#696969 SIZE=10 style="margin-bottom: 5px;">
+                        <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
+                            住房信息
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">类型：</label>
+                        <div class="col-sm-8">
+                            <select name="companyUserHouseType" id="company-user-house-type" class="col-sm-4 form-control">
+                                <option value="0">租房</option>
+                                <option value="1">购房</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">租房合同起始日期：</label>
+                        <div class="col-sm-8">
+                            <input  placeholder="请选择合同起始时间" name="userHouseContractTime" id="user-house-contract-time" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">价格：</label>
+                        <div class="col-sm-8">
+                            <input name="companyUserHousePrice" id="company-user-house-price" placeholder="" class="form-control" value="${obj.companyUserHousePrice}" type="number">
+                        </div>
+                    </div>
+
                     <!--分割线-->
                     <div style="width: 1000px;">
                         <HR align=center width=1000 color=#696969 SIZE=10 style="margin-bottom: 5px;">
@@ -325,6 +355,7 @@
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
                             <input type="hidden" id="user-id" name="userId" value="${obj.userId}">
+                            <input type="hidden" id="update-times" name="updateTimes" value="${obj.updateTimes}">
                             <button class="btn btn-primary" type="submit">提交</button>
                         </div>
                     </div>
@@ -395,6 +426,27 @@
                 }
             });
         });
+
+
+        $('#company-user-house-type').change(function () {
+            if($('#company-user-house-type').val()==0){
+                $('#user-house-contract-time').attr("readonly",false);
+                $('#company-user-house-price').val("")
+                $('#company-user-house-price').attr("placeholder","请输入每月租金")
+            }else{
+                $('#user-house-contract-time').attr("readonly",true);
+                $('#company-user-house-price').val("")
+                $('#company-user-house-price').attr("placeholder","请输入购房总价")
+            }
+        });
+
+        if($('#company-user-house-type').val()==0){
+            $('#user-house-contract-time').attr("readonly",false);
+            $('#company-user-house-price').attr("placeholder","请输入每月租金")
+        }else{
+            $('#user-house-contract-time').attr("readonly",true);
+            $('#company-user-house-price').attr("placeholder","请输入购房总价")
+        }
 
         $("#add-family").click(function () {
             var content = "";

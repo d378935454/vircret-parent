@@ -2,6 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.talentcenter.dao.ItemTeamContentMapper">
 
+    <resultMap id="BaseResultMap" type="com.talentcenter.entity.ItemTeamContent">
+        <id column="item_team_content_id" jdbcType="INTEGER" property="itemTeamContentId"/>
+        <result column="item_team_id" jdbcType="INTEGER" property="itemTeamId"/>
+        <result column="item_id" jdbcType="INTEGER" property="itemId"/>
+        <result column="item_name" jdbcType="VARCHAR" property="itemName"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    item_team_content_id, item_team_id, item_id, item_name
+    </sql>
+
     <delete id="delByTeamId" parameterType="java.lang.Long">
         DELETE FROM talent_item_team_content WHERE item_team_id = #{teamId,jdbcType=BIGINT}
     </delete>
@@ -9,4 +20,22 @@
     <update id="batchDel" parameterType="Map">
     UPDATE talent_item SET del=0 WHERE item_id IN (${ids});
   </update>
+    
+    <select id="selectTeam" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+            talent_item_team_content itc
+        WHERE
+            item_team_id IN (
+                SELECT
+                    item_team_id
+                FROM
+                    talent_item_team_content
+                WHERE
+                    item_id = #{itemId,jdbcType=BIGINT}
+            )
+        GROUP BY
+            item_id;
+    </select>
 </mapper>

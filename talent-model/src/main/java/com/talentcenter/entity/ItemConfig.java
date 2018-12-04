@@ -129,6 +129,8 @@ public class ItemConfig {
      */
     private Long typeCategoryId;
 
+    private Integer itemConfigContactTime;
+
     /**
      * 状态 0:删除 1:正常
      */

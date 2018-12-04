@@ -2,11 +2,9 @@ package com.talentcenter.entity;
 
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * talent_item_certificate
@@ -33,4 +31,7 @@ public class ItemCertificate {
      * 证书名称
      */
     private String certificateName;
+
+    @Transient
+    private List<CompanyUserCertificate> companyUserCertificates;
 }

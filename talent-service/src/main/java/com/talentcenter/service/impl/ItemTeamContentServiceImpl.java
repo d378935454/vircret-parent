@@ -89,4 +89,9 @@ public class ItemTeamContentServiceImpl implements ItemTeamContentService {
     public int delByTeamId(Long itemTeamId) {
         return itemTeamContentMapper.delByTeamId(itemTeamId);
     }
+
+    @Override
+    public List<ItemTeamContent> selectTeam(Long itemId) {
+        return itemTeamContentMapper.selectTeam(itemId);
+    }
 }
