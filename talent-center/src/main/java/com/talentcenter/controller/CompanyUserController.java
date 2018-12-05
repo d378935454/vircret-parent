@@ -189,7 +189,8 @@ public class CompanyUserController extends BaseController {
         user.setUpdateId(sessionUser.getUserId());
         user.setUpdateName(sessionUser.getUserName());
         user.setUpdateTime(getCurrentDate());
-        if (user.getPassword() != null) user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        if (user.getPassword() != null && user.getPassword()!="") user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        else user.setPassword(null);
         int res = userService.updateByPrimaryKeySelective(user);
 
         int del  = companyUserItemService.delByUserId(user.getUserId());
@@ -365,7 +366,6 @@ public class CompanyUserController extends BaseController {
     public String askForUI(Model model,Long itemId){
         //判断是否有资格申请该补助
         User sessionUser = getSessionUser();
-        ifHaveOneSubmit(itemId);
         if(!ifPermit(sessionUser.getUserId(),itemId) || !ifHaveOneSubmit(itemId)){
             return "redirect:/company_user/items.html";
         }
@@ -415,7 +415,16 @@ public class CompanyUserController extends BaseController {
         model.addAttribute("certificates",itemCertificates);
         model.addAttribute("monthes",monthes);
         model.addAttribute("itemId",itemId);
-        return "/company_user/ask_for.html";
+
+        Item item = itemService.selectByPrimaryKey(itemId);
+        if(item.getItemCategory()==0) return "/company_user/ask_for.html";
+        else{
+            Item i = new Item();
+            i.setItemCategory(0);
+            List<Item> items = itemService.select(i);
+            model.addAttribute("items",items);
+            return "/company_user/ask_for_s.html";
+        }
     }
 
     @ResponseBody
