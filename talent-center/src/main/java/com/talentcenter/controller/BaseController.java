@@ -5,6 +5,9 @@ import com.talentcenter.entity.User;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class BaseController {
 
@@ -43,46 +46,15 @@ public class BaseController {
         return htmlStr;
     }
 
-
-
-    /*private String executeUpload(String uploadDir,MultipartFile file) throws Exception
-    {
-        //文件后缀名
-        String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        //上传文件名
-        String filename = DateHelper.getCurDateTimeMI() + suffix;
-        //服务器端保存的文件对象
-        File serverFile = new File(uploadDir + filename);
-        //将上传的文件写入到服务器端文件内
-        file.transferTo(serverFile);
-
-        return filename;
-    }
-
-
-    protected Map<String, Object> upload(MultipartFile file)
-    {
-        Map<String,Object> map = new HashMap<>();
-        map.put("status","1");
-        map.put("oderName",file.getOriginalFilename());
-        try {
-            //上传目录地址
-            String uploadDir = ClassUtils.getDefaultClassLoader().getResource("").getPath() +"upload/"+DateHelper.getCurDate()+"/";
-            //如果目录不存在，自动创建文件夹
-            File dir = new File(uploadDir);
-            if(!dir.exists())
-            {
-                dir.mkdirs();
+    protected  Long[] removeDuplicates(Long [] arrStr) {
+        List<Long> list = new ArrayList<Long>();
+        for (int i=0; i<arrStr.length; i++) {
+            if(!list.contains(arrStr[i])) {
+                list.add(arrStr[i]);
             }
-            //调用上传方法
-            map.put("fileInfo",dir+"\\"+executeUpload(uploadDir+"",file));
-        }catch (Exception e)
-        {
-            //打印错误堆栈信息
-            map.put("status","0");
-            e.printStackTrace();
         }
-
-        return map;
-    }*/
+        //返回一个包含所有对象的指定类型的数组
+        Long[] newArrStr =  list.toArray(new Long[1]);
+        return newArrStr;
+    }
 }

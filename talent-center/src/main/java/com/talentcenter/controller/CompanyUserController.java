@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import util.DateHelper;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static util.DateHelper.*;
@@ -52,8 +53,16 @@ public class CompanyUserController extends BaseController {
 
     @Autowired
     private CompanyUserCertificateService companyUserCertificateService;
-   /* @Autowired
-    private RoleCompanyUserService roleCompanyUserService;*/
+
+    @Autowired
+    private InfoChangeService infoChangeService;
+
+    private final Map<String,String> infoMap = new HashMap<String,String>(){{
+        put("2", "company_user_card");
+        put("4", "company_user_school");
+        put("5", "company_user_school");
+        put("3", "company_user_card");
+    }};
 
     /**
      * 证书列表页
@@ -428,7 +437,8 @@ public class CompanyUserController extends BaseController {
     @RequestMapping("/ask_for")
     public RSTFulBody askFor(@RequestParam(required = false, value = "certificateId[]") Long[] certificateId,
                              @RequestParam(required = false, value = "imgUrl[]") String[] imgUrl,
-                             Long itemId){
+                             Long itemId,
+                             HttpServletRequest request){
         Long userId = getSessionUser().getUserId();
         List<CompanyUserCertificate> companyUserCertificates = new ArrayList<>();
         if(certificateId!=null){
@@ -444,6 +454,17 @@ public class CompanyUserController extends BaseController {
         }
         companyUserCertificateService.deleteByUserId(userId);
         int res = companyUserCertificateService.insertList(companyUserCertificates);
+        Long[] newCertificateId = removeDuplicates(certificateId);
+        for (Long v : newCertificateId) {
+            String change = request.getParameter("change_"+v);
+            if(change.equals("1")){
+                InfoChange infoChange = new InfoChange();
+                infoChange.setFiledName(infoMap.get(v+""));
+                infoChange.setUserId(userId);
+                InfoChange i = infoChangeService.selectOne(infoChange);
+                if(i==null) infoChangeService.insert(infoChange);
+            }
+        }
         Map<String,Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("itemId",itemId);

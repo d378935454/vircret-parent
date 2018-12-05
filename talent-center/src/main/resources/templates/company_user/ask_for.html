@@ -19,10 +19,11 @@
                         <div class="col-sm-10">
                             <div class="uploader">
                                 <!--用来存放item-->
+                                <input type="hidden" class="change_flag" name="change_${certificate.certificateId}" value="0" />
                                 <div id="fileList-${certificate.certificateId}" c-id="${certificate.certificateId}" class="uploader-list">
                                 @if(certificate.companyUserCertificates!=null){
                                     @for(img in certificate.companyUserCertificates){
-                                    <div id="WU_FILE_${img.companyUserCertificateId}" class="file-item thumbnail upload-state-done">
+                                    <div id="WU_F_${img.companyUserCertificateId}" class="file-item thumbnail upload-state-done">
                                         <img src="${ctxPath}/talent${img.imgUrl}">
                                         <div class="file-panel" style="height: 0px;"><span class="cancel">删除</span></div>
                                         <input type="hidden" name="certificateId[]" value="${img.certificateId}">
@@ -217,6 +218,7 @@
             // var fileId = 'WU_FILE_'+$('.upload-state-done').length;
             // var $li = $('#'+obj.id);
             // $li.off().find('.file-panel').off().end().remove();
+            obj.parent().parent().parent().prev().val('1');
             obj.parent().parent().remove();
         }
 
@@ -242,6 +244,7 @@
             var fileId = 'WU_FILE_'+$('.upload-state-done').length;
             // var fileId = 'WU_FILE_'+$list.children('.upload-state-done').length;
             var $li = $( '#'+ fileId);
+            $li.parent().prev().val('1');
             $li.prev('.upload-error').remove();
             $('<input type="hidden" name="certificateId[]" value="'+$list.attr("c-id")+'">' +
                 '<input type="hidden" name="imgUrl[]" value="'+data.fileInfo+'">').appendTo($li);
