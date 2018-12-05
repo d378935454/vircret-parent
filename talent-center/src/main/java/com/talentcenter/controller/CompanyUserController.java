@@ -336,34 +336,18 @@ public class CompanyUserController extends BaseController {
         itemConfig.setItemConfigState(true);
         ItemConfig ic = itemConfigService.selectOne(itemConfig);
 
-        ItemTeamContent itemTeamContent = new ItemTeamContent();
-        itemTeamContent.setItemId(itemId);
-        List<ItemTeamContent> itemTeamContents=itemTeamContentService.select(itemTeamContent);
+        Boolean ifShowSubmitButton=ifHaveOneSubmit(itemId);
 
-
-
-        Boolean ifShowSubmitButton=true;
         List<ItemTeamContent> userItemTeam = new ArrayList<>();
-        if(itemTeamContents.size()>0){
-            List<ItemTeamContent> itc = itemTeamContentService.selectTeam(itemId);
-            CompanyUserItem companyUserItem = new CompanyUserItem();
-            companyUserItem.setUserId(sessionUser.getUserId());
-            List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
-            for (ItemTeamContent ii:itc) {
-                for (CompanyUserItem cc: companyUserItems){
-                    if(ii.getItemId() == cc.getItemId() && ii.getItemId()!=itemId){
-                        userItemTeam.add(ii);
-                        continue;
-                    }
-                }
-            }
-            for(ItemTeamContent i: itc){
-                companyUserItem.setItemId(i.getItemId());
-                companyUserItem.setHaveSubmit(true);
-                CompanyUserItem cui = companyUserItemService.selectOne(companyUserItem);
-                if(cui!=null){
-                    ifShowSubmitButton=false;
-                    break;
+        List<ItemTeamContent> itc = itemTeamContentService.selectTeam(itemId);
+        CompanyUserItem companyUserItem = new CompanyUserItem();
+        companyUserItem.setUserId(sessionUser.getUserId());
+        List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
+        for (ItemTeamContent ii:itc) {
+            for (CompanyUserItem cc: companyUserItems){
+                if(ii.getItemId() == cc.getItemId() && ii.getItemId()!=itemId){
+                    userItemTeam.add(ii);
+                    continue;
                 }
             }
         }
@@ -381,7 +365,8 @@ public class CompanyUserController extends BaseController {
     public String askForUI(Model model,Long itemId){
         //判断是否有资格申请该补助
         User sessionUser = getSessionUser();
-        if(!ifPermit(sessionUser.getUserId(),itemId)){
+        ifHaveOneSubmit(itemId);
+        if(!ifPermit(sessionUser.getUserId(),itemId) || !ifHaveOneSubmit(itemId)){
             return "redirect:/company_user/items.html";
         }
         ItemConfig itemConfig = new ItemConfig();
@@ -440,6 +425,12 @@ public class CompanyUserController extends BaseController {
                              Long itemId,
                              HttpServletRequest request){
         Long userId = getSessionUser().getUserId();
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if(!ifPermit(userId,itemId) || !ifHaveOneSubmit(itemId)){
+            rstFulBody.fail("不能申请！");
+            return rstFulBody;
+        }
+
         List<CompanyUserCertificate> companyUserCertificates = new ArrayList<>();
         if(certificateId!=null){
             for (int i=0;i<certificateId.length;i++){
@@ -469,7 +460,7 @@ public class CompanyUserController extends BaseController {
         map.put("userId",userId);
         map.put("itemId",itemId);
         companyUserItemService.updateByItemIdAndUserId(map);
-        RSTFulBody rstFulBody = new RSTFulBody();
+
         if (res > 0) rstFulBody.success("申请成功，请耐心等待审核！");
         else rstFulBody.fail("申请失败！");
         return rstFulBody;
@@ -482,6 +473,28 @@ public class CompanyUserController extends BaseController {
         map.put("itemId",itemId);
         List<CompanyUserItem> companyUserItems = companyUserItemService.selectByInfo(map);
         if(companyUserItems==null) res = false;
+        return res;
+    }
+
+    private Boolean ifHaveOneSubmit(Long itemId){
+
+        Boolean res = true;
+        ItemTeamContent itemTeamContent = new ItemTeamContent();
+        itemTeamContent.setItemId(itemId);
+        List<ItemTeamContent> itemTeamContents=itemTeamContentService.select(itemTeamContent);
+        List<ItemTeamContent> itc = itemTeamContentService.selectTeam(itemId);
+        CompanyUserItem companyUserItem = new CompanyUserItem();
+        if(itemTeamContents.size()>0){
+            for(ItemTeamContent i: itc){
+                companyUserItem.setItemId(i.getItemId());
+                companyUserItem.setHaveSubmit(true);
+                CompanyUserItem cui = companyUserItemService.selectOne(companyUserItem);
+                if(cui!=null){
+                    res=false;
+                    break;
+                }
+            }
+        }
         return res;
     }
 }
