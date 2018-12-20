@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.jws.WebParam;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -226,5 +227,11 @@ public class StreetController extends BaseController{
         if(res>0) rstFulBody.success(res);
         else  rstFulBody.fail("删除失败！");
         return rstFulBody;
+    }
+
+    @RequestMapping("check_item.html")
+    public String checkItem(Model model){
+
+        return "/street/check_item.html";
     }
 }

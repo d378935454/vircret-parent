@@ -20,4 +20,6 @@ public interface CompanyUserItemMapper extends BaseMapper<CompanyUserItem> {
 
     int updateByItemIdAndUserId(Map<String,Object> map);
 
+    Map<String,Object> getCompanyCheckItem(Map<String,Object> map);
+
 }

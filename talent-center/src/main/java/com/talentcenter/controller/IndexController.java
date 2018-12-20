@@ -1,11 +1,10 @@
 package com.talentcenter.controller;
 
-import com.talentcenter.entity.Menu;
-import com.talentcenter.entity.Region;
-import com.talentcenter.entity.User;
+import com.talentcenter.entity.*;
 import com.talentcenter.service.CommonService;
 import com.talentcenter.service.MenuService;
 import com.talentcenter.service.RegionService;
+import com.talentcenter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,6 +69,10 @@ public class IndexController extends BaseController {
         return "/index.html";
     }
 
+    @RequestMapping("/index_content.html")
+    public String indexContent(){
+        return "/index_content.html";
+    }
     @ResponseBody
     @RequestMapping("/checkUnique")
     public Boolean checkUnique(HttpServletRequest request) {

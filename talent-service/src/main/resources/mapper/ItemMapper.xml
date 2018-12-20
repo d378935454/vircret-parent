@@ -51,7 +51,7 @@
         i.item_id
         FROM talent_company_user_item cui LEFT JOIN talent_item i ON cui.item_id = i.item_id
 
-        WHERE  user_id = #{userId,jdbcType=BIGINT}
+        WHERE  user_id = #{userId,jdbcType=BIGINT} AND parent_id = 0
     </select>
 
     <delete id="batchDel" parameterType="Map">

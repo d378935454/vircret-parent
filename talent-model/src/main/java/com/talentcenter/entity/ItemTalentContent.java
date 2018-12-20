@@ -38,4 +38,6 @@ public class ItemTalentContent implements Serializable {
      * 补助内容(目前只有钱和半分比)
      */
     private String itemTalentContent;
+
+    private Boolean payType;
 }

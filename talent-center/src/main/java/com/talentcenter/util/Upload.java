@@ -38,8 +38,17 @@ public class Upload {
         map.put("oderName",file.getOriginalFilename());
         try {
             //上传目录地址
-            String[] path = ClassUtils.getDefaultClassLoader().getResource("").getPath().split("/");
-            String uploadDir = path[1] + "/talent/upload/"+DateHelper.getCurDate()+"/";
+            String os = System.getProperty("os.name");
+            String uploadDir = "";
+            if (os.toLowerCase().startsWith("win")) {
+                String[] path = ClassUtils.getDefaultClassLoader().getResource("").getPath().split("/");
+                uploadDir = path[1] + "/talent/upload/"+DateHelper.getCurDate()+"/";
+            }else{
+                uploadDir = "/usr/talent/upload/"+DateHelper.getCurDate()+"/";
+            }
+//            System.out.println(path[]);
+
+
 
 //            ClassUtils.get
             //如果目录不存在，自动创建文件夹

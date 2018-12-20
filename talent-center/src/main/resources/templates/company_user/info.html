@@ -252,15 +252,27 @@
                         <label class="col-sm-4 control-label">类型：</label>
                         <div class="col-sm-8">
                             <select name="companyUserHouseType" id="company-user-house-type" class="col-sm-4 form-control">
-                                <option value="0">租房</option>
-                                <option value="1">购房</option>
+                                <option @if(obj.companyUserHouseType==0){
+                                        selected
+                                        @}
+                                        value="0">租房</option>
+                                <option @if(obj.companyUserHouseType==1){
+                                        selected
+                                        @}
+                                        value="1">购房</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-4 control-label">租房合同起始日期：</label>
                         <div class="col-sm-8">
-                            <input  placeholder="请选择合同起始时间" name="userHouseContractTime" id="user-house-contract-time" class="form-control" type="text">
+                            <input  placeholder="请选择合同起始时间" name="userHouseContractTime" id="user-house-contract-time" class="form-control" type="text"
+                                    @if(obj.companyUserHouseContractTimeBegin!=null && obj.companyUserHouseContractTimeEnd!=null){
+                                    value='${obj.companyUserHouseContractTimeBegin,"yyyy-MM-dd"} 至 ${obj.companyUserHouseContractTimeEnd,"yyyy-MM-dd"}'
+                                    @}else{
+                                    value=""
+                                    @}
+                            >
                         </div>
                     </div>
                     <div class="form-group">
@@ -383,7 +395,7 @@
         "positionClass": "toast-top-center",
         "showDuration": "400",
         "hideDuration": "1000",
-        "timeOut": "500",
+        "timeOut": "1500",
         "extendedTimeOut": "1000",
         "showEasing": "swing",
         "hideEasing": "linear",
@@ -401,6 +413,11 @@
     });
     laydate.render({
         elem: '#user_contract_time',
+        range: '至',
+        format: 'yyyy-MM-dd'
+    });
+    laydate.render({
+        elem: '#user-house-contract-time',
         range: '至',
         format: 'yyyy-MM-dd'
     });

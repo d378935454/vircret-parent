@@ -6,8 +6,10 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 150mb
-      max-request-size: 150mb
+      max-file-size: 50mb
+      max-request-size: 50mb
+#  jmx:
+#    enabled: false
 beetlsql:
   enabled: false
 beetl:
@@ -29,8 +31,6 @@ mapper:
   mappers: mapper.BaseMapper
   not-empty: false
   identity: MYSQL
-#page-size: 10 #每页显示记录数量
-#site-title: "这是一个测试" #网站title
 ---
 spring:
     profiles: dev
@@ -48,24 +48,41 @@ spring:
          max-wait: 60000
 server:
   port: 8080
-#---
-#spring:
-#    profiles: prod
-#    datasource:
-#       type: com.alibaba.druid.pool.DruidDataSource
-#       platform: mysql
-#       url: jdbc:mysql://localhost:3306/cprsim?characterEncoding=utf-8
-#       username: root
-#       password:
-#       driver-class-name: com.mysql.jdbc.Driver
-#       # 初始化大小，最小，最大
-#       druid:
-#         initial-size: 5
-#         min-idle: 3
-#         max-active: 20
-#         max-wait: 60000
-#server:
-#    port: 8081
+---
+spring:
+    profiles: prod
+    datasource:
+       type: com.alibaba.druid.pool.DruidDataSource
+       platform: mysql
+       url: jdbc:mysql://localhost:3307/talent?characterEncoding=utf-8
+       username: root
+       password: Wanbang123321
+       driver-class-name: com.mysql.jdbc.Driver
+       # 初始化大小，最小，最大
+       druid:
+         initial-size: 5
+         min-idle: 3
+         max-active: 20
+         max-wait: 60000
+server:
+    port: 8181
+---
+spring:
+    profiles: lined
+    datasource:
+       type: com.alibaba.druid.pool.DruidDataSource
+       url: jdbc:mysql://47.94.210.204:3307/talent?characterEncoding=utf-8
+       username: wanbang
+       password: Wanbang123321
+       driver-class-name: com.mysql.jdbc.Driver
+       # 初始化大小，最小，最大
+       druid:
+         initial-size: 5
+         min-idle: 3
+         max-active: 20
+         max-wait: 60000
+server:
+  port: 8080
 
 
 

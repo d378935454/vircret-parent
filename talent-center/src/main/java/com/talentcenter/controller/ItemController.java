@@ -332,6 +332,29 @@ public class ItemController extends BaseController {
     }
 
     @ResponseBody
+    @RequestMapping("talent_type_content")
+    public Map<String,Object> talentTypeContent(Long itemId){
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("state",0);
+        map.put("itemId",itemId);
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.setItemId(itemId);
+        itemConfig.setItemConfigState(true);
+        ItemConfig ic = itemConfigService.selectOne(itemConfig);
+
+        if(ic.getItemConfigTType()){
+            ItemTalentContent itemTalentContent = new ItemTalentContent();
+            itemTalentContent.setItemConfigId(ic.getItemConfigId());
+//            talentTypes = talentTypeService.select(talentType);
+            List<ItemTalentContent> itemTalentContents = itemTalentContentService.select(itemTalentContent);
+            map.put("itemTalentContents",itemTalentContents);
+            map.put("state",1);
+        }
+        return  map;
+    }
+
+    @ResponseBody
     @RequestMapping("item_record")
     public List<ItemTalentContent> itemRecord(ItemTalentContent itemTalentContent) {
         List<ItemTalentContent> itemTalentContents = itemTalentContentService.select(itemTalentContent);

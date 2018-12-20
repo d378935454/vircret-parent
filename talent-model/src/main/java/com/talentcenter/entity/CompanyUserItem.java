@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * talent_company_user_item
@@ -65,4 +66,16 @@ public class CompanyUserItem {
      * 申请状态 0:未申请 1:已申请
      */
     private Boolean haveSubmit;
+
+    private Long parentId;
+
+    private Integer type;
+
+    private double amount;
+
+    private String memo;
+
+    private Long talentTypeContent;
+
+    private Date submitTime;
 }

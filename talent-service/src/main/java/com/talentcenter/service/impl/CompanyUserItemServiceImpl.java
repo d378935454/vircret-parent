@@ -89,6 +89,11 @@ public class CompanyUserItemServiceImpl implements CompanyUserItemService {
     }
 
     @Override
+    public Map<String, Object> getCompanyCheckItem(Map<String, Object> map) {
+        return companyUserItemMapper.getCompanyCheckItem(map);
+    }
+
+    @Override
     public int batchDel(Map<String, Object> map) {
         return companyUserItemMapper.batchDel(map);
     }

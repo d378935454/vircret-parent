@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.talentcenter.entity.*;
 import com.talentcenter.service.*;
+import org.springframework.util.DigestUtils;
 import util.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,10 @@ public class CompanyController extends BaseController{
     private CompanyItemService companyItemService;
 
     @Autowired
-    private CompanyUserInfoService companyUserInfoService;
+    private UserService userService;
+
+    @Autowired
+    private CompanyUserItemService companyUserItemService;
 
 
    /* @Autowired
@@ -364,5 +368,80 @@ public class CompanyController extends BaseController{
         companyType.setDel(false);
         int res = companyTypeService.updateByPrimaryKeySelective(companyType);
         return "redirect:/company/type.html";
+    }
+
+
+
+    @RequestMapping("register.html")
+    public String register(Model model){
+        model.addAttribute("user","");
+        model.addAttribute("userName","");
+        model.addAttribute("password","");
+        model.addAttribute("companyCode","");
+        return "/register.html";
+    }
+
+    @RequestMapping("reg")
+    public String reg(String userName,String password,String companyCode,Model model){
+        User user = new User();
+        user.setUserName(userName);
+        User u = userService.selectOne(user);
+        if(u!=null){
+            model.addAttribute("user","用户名已存在");
+            model.addAttribute("userName",userName);
+            model.addAttribute("password",password);
+            model.addAttribute("companyCode",companyCode);
+            return "/register.html";
+        }else {
+            Company company = new Company();
+            company.setCompanyCode(companyCode);
+            Company c = companyService.selectOne(company);
+            User uu = new User();
+            uu.setUserName(userName);
+            uu.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+            uu.setUserNature(1);
+            int res = userService.insertSelective(uu);
+            Company cc = new Company();
+            if(c!=null){
+                cc.setCompanyId(c.getCompanyId());
+                cc.setUserId(uu.getUserId());
+                companyService.updateByPrimaryKeySelective(cc);
+            }else{
+                cc.setUserId(uu.getUserId());
+                companyService.insertSelective(cc);
+            }
+            return "/login.html";
+        }
+    }
+
+    @RequestMapping("check_item.html")
+    public String checkItem(Model model){
+        List<Item> items = itemService.selectAll();
+        model.addAttribute("items",items);
+        return "/company/check_item.html";
+    }
+
+    @RequestMapping("check_item")
+    public String ajaxCheckItem(Model model,
+                                @RequestParam(required = false) Long itemId,
+                                @RequestParam(required = false) Integer companyChecked){
+        CompanyUserItem companyUserItem = new CompanyUserItem();
+        companyUserItem.setCompanyChecked(3);
+        companyUserItem.setHaveSubmit(true);
+        companyUserItem.setParentId((long)0);
+        if(itemId!=null && itemId!=0) companyUserItem.setItemId(itemId);
+        if(companyChecked!=null) companyUserItem.setCompanyChecked(companyChecked);
+        List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
+        PageInfo<CompanyUserItem> pageInfo= new PageInfo<>(companyUserItems);
+        String pageStr = makePageHtml(pageInfo);
+        model.addAttribute("page_info",pageInfo);
+        model.addAttribute("pages",pageStr);
+        return "/company/ajax_items.html";
+    }
+
+    @RequestMapping("check_info.html")
+    public String checkInfo(Long companyUserItemId){
+
+        return "/company/check_info.html";
     }
 }

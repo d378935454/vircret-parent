@@ -57,11 +57,21 @@ public class CompanyUserController extends BaseController {
     @Autowired
     private InfoChangeService infoChangeService;
 
+    @Autowired
+    private TalentTypeService talentTypeService;
+
+    @Autowired
+    private ItemTalentContentService itemTalentContentService;
+
     private final Map<String,String> infoMap = new HashMap<String,String>(){{
-        put("2", "company_user_card");
-        put("4", "company_user_school");
-        put("5", "company_user_school");
+        put("1", "company_user_card");
+        put("3", "company_user_school");
+        put("5", "company_user_hu_address");
         put("3", "company_user_card");
+        put("2","company_user_home_address");
+        put("4","company_user_contract_time_begin");
+        put("6","company_user_school");
+        put("7","company_user_positional");
     }};
 
     /**
@@ -137,6 +147,14 @@ public class CompanyUserController extends BaseController {
             companyUserItem.setItemId((long) Integer.parseInt(item));
             companyUserItem.setUserId(user.getUserId());
             Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
+            ItemConfig itemConfig = new ItemConfig();
+            itemConfig.setItemId(i.getItemId());
+            itemConfig.setItemConfigState(true);
+            ItemConfig ic = itemConfigService.selectOne(itemConfig);
+            if(ic.getItemConfigCompanyCheck()!=null) companyUserItem.setCompanyChecked(3);
+            if(ic.getItemConfigStreetCheck()!=null) companyUserItem.setStreetChecked(3);
+            if(ic.getItemConfigCenterCheck()!=null) companyUserItem.setCenterChecked(3);
+            companyUserItem.setParentId((long)0);
             companyUserItem.setItemName(i.getItemName());
             companyUserItems.add(companyUserItem);
         }
@@ -201,6 +219,14 @@ public class CompanyUserController extends BaseController {
             companyUserItem.setItemId((long) Integer.parseInt(item));
             companyUserItem.setUserId(user.getUserId());
             Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
+            ItemConfig itemConfig = new ItemConfig();
+            itemConfig.setItemId(i.getItemId());
+            itemConfig.setItemConfigState(true);
+            ItemConfig ic = itemConfigService.selectOne(itemConfig);
+            if(ic.getItemConfigCompanyCheck()!=null) companyUserItem.setCompanyChecked(3);
+            if(ic.getItemConfigStreetCheck()!=null) companyUserItem.setStreetChecked(3);
+            if(ic.getItemConfigCenterCheck()!=null) companyUserItem.setCenterChecked(3);
+            companyUserItem.setParentId((long)0);
             companyUserItem.setItemName(i.getItemName());
             companyUserItems.add(companyUserItem);
         }
@@ -276,14 +302,14 @@ public class CompanyUserController extends BaseController {
                                  @RequestParam(required = false, value = "companyUserFamilySex[]") String[] companyUserFamilySex
                                  ){
         String[] contractTimes = userContractTime.split("至");
-        companyUserInfo.setCompanyUserContractTimeBegin(getDate4StrDate(contractTimes[0], "yyyy-MM-dd"));
-        companyUserInfo.setCompanyUserContractTimeEnd(getDate4StrDate(contractTimes[1], "yyyy-MM-dd"));
+        companyUserInfo.setCompanyUserContractTimeBegin(getDate4StrDate(contractTimes[0].trim(), "yyyy-MM-dd"));
+        companyUserInfo.setCompanyUserContractTimeEnd(getDate4StrDate(contractTimes[1].trim(), "yyyy-MM-dd"));
         companyUserInfo.setUpdateTimes(companyUserInfo.getUpdateTimes()+1);
 
         if(userHouseContractTime!= null){
             String[] houseContractTimes = userHouseContractTime.split("至");
-            companyUserInfo.setCompanyUserHouseContractTimeBegin(getDate4StrDate(houseContractTimes[0], "yyyy-MM-dd"));
-            companyUserInfo.setCompanyUserHouseContractTimeEnd(getDate4StrDate(houseContractTimes[1], "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserHouseContractTimeBegin(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserHouseContractTimeEnd(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
         }
         int res = companyUserInfoService.updateByUserId(companyUserInfo);
 
@@ -318,6 +344,8 @@ public class CompanyUserController extends BaseController {
 
         PageHelper.startPage(pageNum, pageSize);
         List<Item> items = itemService.selectByUserId(getSessionUser().getUserId());
+
+//        List<Item> items = itemService.select();
         PageInfo<Item> pageInfo = new PageInfo<>(items);
         String pageStr = makePageHtml(pageInfo);
         model.addAttribute("page_info", pageInfo);
@@ -337,7 +365,7 @@ public class CompanyUserController extends BaseController {
         itemConfig.setItemConfigState(true);
         ItemConfig ic = itemConfigService.selectOne(itemConfig);
 
-        Boolean ifShowSubmitButton=ifHaveOneSubmit(itemId);
+        Boolean ifShowSubmitButton=ifHaveOneSubmit(itemId,sessionUser.getUserId());
 
         List<ItemTeamContent> userItemTeam = new ArrayList<>();
         List<ItemTeamContent> itc = itemTeamContentService.selectTeam(itemId);
@@ -364,9 +392,11 @@ public class CompanyUserController extends BaseController {
 
     @RequestMapping("/ask_for.html")
     public String askForUI(Model model,Long itemId){
+
+        String url = "/company_user/ask_for.html";
         //判断是否有资格申请该补助
         User sessionUser = getSessionUser();
-        if(!ifPermit(sessionUser.getUserId(),itemId) || !ifHaveOneSubmit(itemId)){
+        if(!ifPermit(sessionUser.getUserId(),itemId) || !ifHaveOneSubmit(itemId,sessionUser.getUserId())){
             return "redirect:/company_user/items.html";
         }
         ItemConfig itemConfig = new ItemConfig();
@@ -377,6 +407,14 @@ public class CompanyUserController extends BaseController {
         ItemCertificate itemCertificate = new ItemCertificate();
         itemCertificate.setItemConfigId(ic.getItemConfigId());
         List<ItemCertificate> itemCertificates = itemCertificateService.select(itemCertificate);
+
+        List<ItemTalentContent> itemTalentContents = null;
+        if(ic.getItemConfigTType()){
+            ItemTalentContent itemTalentContent = new ItemTalentContent();
+            itemTalentContent.setItemConfigId(ic.getItemConfigId());
+//            talentTypes = talentTypeService.select(talentType);
+            itemTalentContents = itemTalentContentService.select(itemTalentContent);
+        }
 
         for (ItemCertificate ii : itemCertificates) {
             CompanyUserCertificate companyUserCertificate = new CompanyUserCertificate();
@@ -415,31 +453,53 @@ public class CompanyUserController extends BaseController {
         model.addAttribute("certificates",itemCertificates);
         model.addAttribute("monthes",monthes);
         model.addAttribute("itemId",itemId);
+        model.addAttribute("talentTypes",itemTalentContents);
 
         Item item = itemService.selectByPrimaryKey(itemId);
-        if(item.getItemCategory()==0) return "/company_user/ask_for.html";
-        else{
+        if(item.getItemCategory()!=0) {
             Item i = new Item();
             i.setItemCategory(0);
             List<Item> items = itemService.select(i);
             model.addAttribute("items",items);
-            return "/company_user/ask_for_s.html";
+            url = "/company_user/ask_for_s.html";
         }
+        return url;
     }
 
     @ResponseBody
     @RequestMapping("/ask_for")
     public RSTFulBody askFor(@RequestParam(required = false, value = "certificateId[]") Long[] certificateId,
                              @RequestParam(required = false, value = "imgUrl[]") String[] imgUrl,
+                             @RequestParam(required = false, value = "items[]") Long[] items,
+                             @RequestParam(required = false, value = "itemsName[]") String[] itemName,
                              Long itemId,
-                             HttpServletRequest request){
+                             HttpServletRequest request,
+                             String amount,
+                             String memo,
+                             Integer type,
+                             Integer talentType
+                             ){
         Long userId = getSessionUser().getUserId();
         RSTFulBody rstFulBody = new RSTFulBody();
-        if(!ifPermit(userId,itemId) || !ifHaveOneSubmit(itemId)){
+        if(!ifPermit(userId,itemId) || !ifHaveOneSubmit(itemId,userId)){
             rstFulBody.fail("不能申请！");
             return rstFulBody;
         }
+        if(items!=null){
+            List<CompanyUserItem> childItems = new ArrayList<>();
+            for (int i=0;i<items.length;i++){
+                CompanyUserItem companyUserItem = new CompanyUserItem();
+                companyUserItem.setUserId(userId);
+                companyUserItem.setItemId(items[i]);
+                companyUserItem.setItemName(itemName[i]);
+                companyUserItem.setParentId(itemId);
+                String talent = request.getParameter("talentType"+items[i]);
+                if(talent!=null) companyUserItem.setTalentTypeContent((long)Integer.parseInt(talent));
+                childItems.add(companyUserItem);
+            }
 
+            companyUserItemService.insertList(childItems);
+        }
         List<CompanyUserCertificate> companyUserCertificates = new ArrayList<>();
         if(certificateId!=null){
             for (int i=0;i<certificateId.length;i++){
@@ -468,12 +528,19 @@ public class CompanyUserController extends BaseController {
         Map<String,Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("itemId",itemId);
+        map.put("type",type);
+        map.put("haveSubmit",1);
+        map.put("talentType",talentType);
+        map.put("submitTime",getCurrentDate());
+        if(amount!=null && amount!="") map.put("amount",amount);
+        if(memo!=null && memo!="") map.put("memo",memo);
         companyUserItemService.updateByItemIdAndUserId(map);
 
         if (res > 0) rstFulBody.success("申请成功，请耐心等待审核！");
         else rstFulBody.fail("申请失败！");
         return rstFulBody;
     }
+
 
     private Boolean ifPermit(Long userId,Long itemId){
         Boolean res = true;
@@ -485,7 +552,13 @@ public class CompanyUserController extends BaseController {
         return res;
     }
 
-    private Boolean ifHaveOneSubmit(Long itemId){
+    private Boolean ifHaveOneSubmit(Long itemId,Long userId){
+
+        CompanyUserItem c = new CompanyUserItem();
+        c.setUserId(userId);
+        c.setHaveSubmit(true);
+        c.setItemId(itemId);
+        if(companyUserItemService.selectOne(c)!=null) return false;
 
         Boolean res = true;
         ItemTeamContent itemTeamContent = new ItemTeamContent();
@@ -497,6 +570,8 @@ public class CompanyUserController extends BaseController {
             for(ItemTeamContent i: itc){
                 companyUserItem.setItemId(i.getItemId());
                 companyUserItem.setHaveSubmit(true);
+                companyUserItem.setUserId(userId);
+                companyUserItem.setParentId((long)0);
                 CompanyUserItem cui = companyUserItemService.selectOne(companyUserItem);
                 if(cui!=null){
                     res=false;

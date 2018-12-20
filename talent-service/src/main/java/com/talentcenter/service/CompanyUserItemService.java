@@ -17,4 +17,6 @@ public interface CompanyUserItemService extends BaseService<CompanyUserItem> {
     List<CompanyUserItem> selectByUserId(Long userId);
 
     int updateByItemIdAndUserId(Map<String,Object> map);
+
+    Map<String,Object> getCompanyCheckItem(Map<String,Object> map);
 }

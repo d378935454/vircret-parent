@@ -235,8 +235,7 @@
                     <div class="form-group">
                         <label for="item_config_amount_per" class="col-sm-2 control-label">该期补助金额：</label>
                         <div class="col-sm-3">
-                            <input id="item_config_amount_per" placeholder="请输入该期补助金额" name="itemConfigAmountPer"
-                                   class="form-control" value="${obj.itemConfigAmountPer}" type="number">
+                            <input id="item_config_amount_per" placeholder="请输入该期补助金额" name="itemConfigAmountPer" class="form-control" value="${obj.itemConfigAmountPer}" type="number">
                         </div>
                     </div>
 
@@ -363,6 +362,7 @@
                             <input type="hidden" name="createTime" id="create_time" value="${obj.createTime}">
                             <input type="hidden" id="t_type_id" value="${obj.typeCategoryId}">
                             <input type="hidden" name="itemId" value="${obj.itemId}">
+                            <input type="hidden" name="itemConfigState" value="${obj.itemConfigState}">
                             <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                         </div>
                     </div>
