@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_form_layout.html"){
+<style>
+    .have-change{
+        position: relative;
+    }
+    .have-change::before{
+        content: " ";
+        border: 5px solid rgba(237,88,0,0.89);/*设置红色*/
+        border-bottom-right-radius:10px;/*设置圆角*/
+        position: absolute;
+        z-index: 1000;
+        left: 0%;
+        top: 0;
+    }
+</style>
+<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+    <body class="wrapper wrapper-content animated fadeInRight gray-bg">
+        <div class="row">
+            <div class="col-lg-9 col-lg-offset-1">
+                <div class="ibox">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"> 申请信息</a>
+                            </li>
+                            <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">历史信息</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <tbody>
+                                            <tr>
+                                                <th width="160">姓名</th>
+                                                <td>${user.realName}</td>
+                                                <th>性别：</th>
+                                                <td @if(ics.company_user_sex==1){
+                                                    class="have-change"
+                                                    @}
+                                                    width="190">
+                                                    @if(cui.companyUserSex==0){
+                                                    女
+                                                    @}else{
+                                                    男
+                                                    @}
+                                                </td>
+                                                <th>出生日期</th>
+                                                <td @if(ics.company_user_birthday==1){
+                                                    class="have-change"
+                                                    @}
+                                                >${cui.companyUserBirthday,"yyyy-MM-dd"}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>在申请单位开始工作时间</th>
+                                                <td @if(ics.company_user_work_start==1){
+                                                    class="have-change"
+                                                    @}
+                                                >${cui.companyUserWorkStart,"yyyy-MM-dd"}</td>
+                                                <th>婚姻状况</th>
+                                                <td @if(ics.company_user_marriage==1){
+                                                    class="have-change"
+                                                    @}
+                                                >
+                                                    @if(cui.companyUserMarriage){
+                                                    是
+                                                    @}else{
+                                                    否
+                                                    @}
+                                                </td>
+                                                <th>身份证号</th>
+                                                <td @if(ics.company_user_card==1){
+                                                    class="have-change"
+                                                    @}
+                                                >${cui.companyUserCard}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>户籍地址</th>
+                                                <td @if(ics.company_user_home_province==1 || ics.company_user_home_city==1 || ics.company_user_home_district==1 || ics.company_user_home_address==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="5">${cui.companyUserHomeProvince} ${cui.companyUserHomeCity} ${cui.companyUserHomeDistrict} ${cui.companyUserHomeAddress}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>在沪居住地址</th>
+                                                <td @if(ics.company_user_hu_address==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="5">${cui.companyUserHuAddress}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>住房性质</th>
+                                                @if(cui.companyUserHouseType==0){
+                                                <td @if(ics.company_user_house_type==1){
+                                                    class="have-change"
+                                                    @}
+                                                >租赁房</td>
+                                                <th>房屋合同日期</th>
+                                                <td @if(ics.company_user_house_contract_time_begin==1 || ics.company_user_house_contract_time_end==1){
+                                                    class="have-change"
+                                                    @}
+                                                >${cui.companyUserHouseContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserHouseContractTimeEnd,"yyyy-MM-dd"}</td>
+                                                <th>租房价格</th>
+                                                <td @if(ics.company_user_house_price==1){
+                                                    class="have-change"
+                                                    @}
+                                                >${cui.companyUserHousePrice}</td>
+                                                @}else{
+                                                <td @if(ics.company_user_house_type==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="2">自有房屋</td>
+                                                <th>房产总价</th>
+                                                <td @if(ics.company_user_house_price==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="2">${cui.companyUserHousePrice}</td>
+                                                @}
+                                            </tr>
+                                            <tr>
+                                                <th>单位全称</th>
+                                                <td colspan="3">${company.companyName}</td>
+                                                <th>现任职务</th>
+                                                <td @if(ics.company_user_post==1){
+                                                    class="have-change"
+                                                    @}
+                                                >${cui.companyUserPost}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>毕业院校</th>
+                                                <td @if(ics.company_user_school==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="2">${cui.companyUserSchool}</td>
+                                                <th>毕业时间</th>
+                                                <td @if(ics.company_user_graduation==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="2">${cui.companyUserGraduation,"yyyy-MM-dd"}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>学历</th>
+                                                <td @if(ics.company_user_education==1){
+                                                    class="have-change"
+                                                    @}
+                                                >
+                                                    @if(cui.companyUserEducation==0){
+                                                    中专
+                                                    @}else if(cui.companyUserEducation==1){
+                                                    本科
+                                                    @}else if(cui.companyUserEducation==2){
+                                                    研究生
+                                                    @}else if(cui.companyUserEducation==3){
+                                                    博士
+                                                    @}else if(cui.companyUserEducation==4){
+                                                    博士后
+                                                    @}
+                                                </td>
+                                                <th>学位</th>
+                                                <td @if(ics.company_user_degree==1){
+                                                    class="have-change"
+                                                    @}
+                                                >
+                                                    @if(cui.companyUserDegree==0){
+                                                    学士
+                                                    @}else if(cui.companyUserDegree==1){
+                                                    硕士
+                                                    @}else if(cui.companyUserDegree==2){
+                                                    博士
+                                                    @}
+                                                </td>
+                                                <th>工作年限</th>
+                                                <td @if(ics.company_user_work_length==1){
+                                                    class="have-change"
+                                                    @}
+                                                >${cui.companyUserWorkLength}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>申请前最近18个月社保缴费基数</th>
+                                                <td  @if(ics.company_user_society_save_time1_begin==1 || ics.company_user_society_save_time1_end==1 || ics.company_user_society_save_time2_begin==1 || ics.company_user_society_save_time2_end==1 || ics.company_user_society_save1==1 || ics.company_user_society_save2==1){
+                                                     class="have-change"
+                                                     @}
+                                                     colspan="5">
+                                                    ${cui.companyUserSocietySaveTime1Begin,"yyyy-MM-dd"} 至 ${cui.companyUserSocietySaveTime1End,"yyyy-MM-dd"} 基数：${cui.companyUserSocietySave1}<br />
+                                                    ${cui.companyUserSocietySaveTime2Begin,"yyyy-MM-dd"} 至 ${cui.companyUserSocietySaveTime2End,"yyyy-MM-dd"} 基数：${cui.companyUserSocietySave2}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>本次劳动合同期限</th>
+                                                <td @if(ics.company_user_contract_time_begin==1 || ics.company_user_contract_time_end==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="5">${cui.companyUserContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserContractTimeEnd,"yyyy-MM-dd"}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>本人及购房合同其余人员在上海是否被限制购房</th>
+                                                <td @if(ics.company_user_not_buy_house==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="2">
+                                                    @if(cui.companyUserNotBuyHouse){
+                                                    是
+                                                    @}else{
+                                                    否
+                                                    @}
+                                                </td>
+                                                <th>本人（及配偶）是否享受过奉贤区人才购房相关政策</th>
+                                                <td @if(ics.company_user_have_accept==1){
+                                                    class="have-change"
+                                                    @}
+                                                    colspan="2">
+                                                    @if(cui.companyUserHaveAccept){
+                                                    是
+                                                    @}else{
+                                                    否
+                                                    @}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="6">家庭成员基本情况（配偶及子女）</th></tr>
+                                            <tr>
+                                                <th>关系</th>
+                                                <th colspan="2">姓名</th>
+                                                <th>工作单位及职务</th>
+                                                <th colspan="2">身份证号码</th>
+                                            </tr>
+                                            @for(cuf in cufs){
+                                            <tr>
+                                                <td>
+                                                    @if(cuf.companyUserFamilyType==0){
+                                                    子女
+                                                    @}else if(cuf.companyUserFamilyType==1){
+                                                    配偶
+                                                    @}else if(cuf.companyUserFamilyType==2){
+                                                    直系亲属
+                                                    @}
+                                                </td>
+                                                <td colspan="2">${cuf.companyUserFamilyName}</td>
+                                                <td></td>
+                                                <td colspan="2">${cuf.companyUserFamilyCard}</td>
+                                            </tr>
+                                            @}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;padding-left: 10px;">政策详情</div>
+                                        <table class="table table-bordered table-striped">
+                                            <tbody>
+                                            <tr>
+                                                <th>窗口办理</th>
+                                                <td>
+                                                    @if(ic.itemConfigFace){
+                                                        是
+                                                    @}else{
+                                                        否
+                                                    @}
+                                                </td>
+
+                                                <th>补助方式</th>
+                                                <td>
+                                                    @if(ic.itemConfigType==1){
+                                                    现金
+                                                    @}else if(ic.itemConfigType==0){
+                                                    服务
+                                                    @}else{
+                                                    综合
+                                                    @}
+                                                </td>
+                                                <th>发放对象</th>
+                                                <td>
+                                                    @if(ic.itemConfigTarget==0){
+                                                    个人
+                                                    @}else{
+                                                    企业/机构
+                                                    @}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>补助发放方式</th>
+                                                <td>
+                                                    @if(ic.itemConfigSendType==0){
+                                                    一次性
+                                                    @}else if(ic.itemConfigSendType==1){
+                                                    按月发放
+                                                    @}else if(ic.itemConfigSendType==1){
+                                                    按年发放
+                                                    @}
+                                                </td>
+                                                <th>关联时间</th>
+                                                <td></td>
+                                                <th>是否按人才分类</th>
+                                                <td>
+                                                    @if(ic.itemConfigTType){
+                                                    是
+                                                    @}else{
+                                                    否
+                                                    @}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>发放频率</th>
+                                                <td>${ic.itemConfigSendRate}</td>
+                                                <th>该期补助金额</th>
+                                                <td>${ic.itemConfigAmountPer}</td>
+                                                <th>服务内容</th>
+                                                <td>${ic.itemConfigService}</td>
+                                            </tr>
+
+                                            @if(ic.typeCategoryId!=null){
+                                            <tr>
+                                                <th>人才分类</th>
+                                                <td>${tc.typeCategoryName}</td>
+                                                <th>服务内容</th>
+                                                <td colspan="3">
+                                                    <ol>
+                                                        @for(itc in itcs){
+                                                        <li>${itc.talentTypeName} 补助 <span class="red-bg">￥${itc.itemTalentContent}&nbsp;</span></li>
+                                                        @}
+                                                    </ol>
+                                                </td>
+                                            </tr>
+                                            @}
+                                            <tr>
+                                                <th>备注</th>
+                                                <td colspan="5">${ic.memo}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                    <strong>移动设备优先</strong>
+                                    <p>在 Bootstrap 2 中，我们对框架中的某些关键部分增加了对移动设备友好的样式。而在 Bootstrap 3 中，我们重写了整个框架，使其一开始就是对移动设备友好的。这次不是简单的增加一些可选的针对移动设备的样式，而是直接融合进了框架的内核中。也就是说，Bootstrap 是移动设备优先的。针对移动设备的样式融合进了框架的每个角落，而不是增加一个额外的文件。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+@}
+</body>
+</html>

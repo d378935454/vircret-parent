@@ -105,10 +105,21 @@ public class CompanyUserInfo implements Serializable {
      */
     private String companyUserSchool;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserWorkStart;
+
+    private Boolean companyUserMarriage;
+
+    private Boolean companyUserNotBuyHouse;
+
+    private Boolean companyUserHaveAccept;
+
+    private Integer companyUserDegree;
+
     /**
      * 毕业时间
      */
-    @DateTimeFormat(pattern = "y-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date companyUserGraduation;
 
     /**
@@ -161,6 +172,22 @@ public class CompanyUserInfo implements Serializable {
     private Float companyUserHousePrice;
 
     private Integer companyUserHouseType;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserSocietySaveTime1Begin;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserSocietySaveTime1End;
+
+    private Float companyUserSocietySave1;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserSocietySaveTime2Begin;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserSocietySaveTime2End;
+
+    private Float companyUserSocietySave2;
 
     private Integer updateTimes;
 }

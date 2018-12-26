@@ -46,7 +46,23 @@ public class CompanyController extends BaseController{
     @Autowired
     private CompanyUserItemService companyUserItemService;
 
+    @Autowired
+    private CompanyUserInfoService companyUserInfoService;
 
+    @Autowired
+    private CompanyUserFamilyService companyUserFamilyService;
+
+    @Autowired
+    private ItemConfigService itemConfigService;
+
+    @Autowired
+    private ItemTalentContentService itemTalentContentService;
+
+    @Autowired
+    private TypeCategoryService typeCategoryService;
+
+    @Autowired
+    private InfoChangeService infoChangeService;
    /* @Autowired
     private RoleCompanyService roleCompanyService;*/
 
@@ -425,14 +441,14 @@ public class CompanyController extends BaseController{
     public String ajaxCheckItem(Model model,
                                 @RequestParam(required = false) Long itemId,
                                 @RequestParam(required = false) Integer companyChecked){
-        CompanyUserItem companyUserItem = new CompanyUserItem();
-        companyUserItem.setCompanyChecked(3);
-        companyUserItem.setHaveSubmit(true);
-        companyUserItem.setParentId((long)0);
-        if(itemId!=null && itemId!=0) companyUserItem.setItemId(itemId);
-        if(companyChecked!=null) companyUserItem.setCompanyChecked(companyChecked);
-        List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
-        PageInfo<CompanyUserItem> pageInfo= new PageInfo<>(companyUserItems);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("companyChecked",3);
+        map.put("companyId",23);
+
+        List<Map<String,Object>> maps = companyService.selectCompanyCheckedItem(map);
+
+        PageInfo<Map<String,Object>> pageInfo= new PageInfo<>(maps);
         String pageStr = makePageHtml(pageInfo);
         model.addAttribute("page_info",pageInfo);
         model.addAttribute("pages",pageStr);
@@ -440,8 +456,47 @@ public class CompanyController extends BaseController{
     }
 
     @RequestMapping("check_info.html")
-    public String checkInfo(Long companyUserItemId){
+    public String checkInfo(Long companyUserItemId,Model model){
+        CompanyUserItem companyUserItem = companyUserItemService.selectByPrimaryKey(companyUserItemId);
+        User user = userService.selectByPrimaryKey(companyUserItem.getUserId());
+        CompanyUserInfo companyUserInfo = new CompanyUserInfo();
+        companyUserInfo.setUserId(companyUserItem.getUserId());
+        CompanyUserInfo cui = companyUserInfoService.selectOne(companyUserInfo);
+        Company company = new Company();
+        company.setUserId(user.getCompanyId());
+        Company c = companyService.selectOne(company);
+        CompanyUserFamily companyUserFamily = new CompanyUserFamily();
+        companyUserFamily.setUserId(user.getUserId());
+        List<CompanyUserFamily> cuf= companyUserFamilyService.select(companyUserFamily);
 
+//        ItemConfig itemConfig = item
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.setItemConfigState(true);
+        itemConfig.setItemId(companyUserItem.getItemId());
+        ItemConfig ic = itemConfigService.selectOne(itemConfig);
+//        TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(ic.getTypeCategoryId());
+        ItemTalentContent itemTalentContent = new ItemTalentContent();
+        itemTalentContent.setItemConfigId(ic.getItemConfigId());
+        List<ItemTalentContent> itemTalentContents = itemTalentContentService.select(itemTalentContent);
+
+        TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(ic.getTypeCategoryId());
+
+        InfoChange infoChange = new InfoChange();
+        infoChange.setUserId(user.getUserId());
+        List<InfoChange> infoChanges = infoChangeService.select(infoChange);
+        Map<String,Object> ics = new HashMap<>();
+        for (InfoChange change : infoChanges) {
+            ics.put(change.getFiledName(),1);
+        }
+//        itemConfigService.s
+        model.addAttribute("user",user);
+        model.addAttribute("cui",cui);
+        model.addAttribute("company",c);
+        model.addAttribute("cufs",cuf);
+        model.addAttribute("ic",ic);
+        model.addAttribute("itcs",itemTalentContents);
+        model.addAttribute("tc",typeCategory);
+        model.addAttribute("ics",ics);
         return "/company/check_info.html";
     }
 }

@@ -4,4 +4,21 @@
     <delete id="batchDel" parameterType="Map">
     UPDATE talent_company SET del=0 WHERE company_id IN (${ids});
   </delete>
+    <select id="selectCompanyCheckedItem" parameterType="Map" resultType="java.util.HashMap">
+        SELECT
+	tcui.company_checked,
+	tcui.have_submit,
+	tcui.item_name,
+	tcui.company_user_item_id,
+	tu.real_name,
+	tcui.submit_time
+FROM
+	talent_company_user_item tcui
+LEFT JOIN talent_user tu ON tcui.user_id=tu.user_id
+WHERE
+	tcui.company_checked = #{companyChecked,jdbcType=INTEGER}
+AND tcui.parent_id = 0
+AND tcui.have_submit = 1
+AND tu.company_id = #{companyId,jdbcType=BIGINT}
+    </select>
 </mapper>

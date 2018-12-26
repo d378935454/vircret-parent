@@ -84,4 +84,9 @@ public class CompanyServiceImpl implements CompanyService {
     public int batchDel(Map<String, Object> map) {
         return companyMapper.batchDel(map);
     }
+
+    @Override
+    public List<Map<String, Object>> selectCompanyCheckedItem(Map<String, Object> map) {
+        return companyMapper.selectCompanyCheckedItem(map);
+    }
 }

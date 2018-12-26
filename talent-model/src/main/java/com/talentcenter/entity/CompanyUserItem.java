@@ -78,4 +78,6 @@ public class CompanyUserItem {
     private Long talentTypeContent;
 
     private Date submitTime;
+
+    private Long configId;
 }

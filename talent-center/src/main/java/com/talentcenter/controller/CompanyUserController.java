@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static util.DateHelper.*;
+import static util.DateHelper.getDate4StrDate;
 
 @Controller
 @RequestMapping("/company_user")
@@ -156,6 +157,7 @@ public class CompanyUserController extends BaseController {
             if(ic.getItemConfigCenterCheck()!=null) companyUserItem.setCenterChecked(3);
             companyUserItem.setParentId((long)0);
             companyUserItem.setItemName(i.getItemName());
+            companyUserItem.setConfigId(ic.getItemConfigId());
             companyUserItems.add(companyUserItem);
         }
         int num = companyUserItemService.insertList(companyUserItems);
@@ -228,6 +230,7 @@ public class CompanyUserController extends BaseController {
             if(ic.getItemConfigCenterCheck()!=null) companyUserItem.setCenterChecked(3);
             companyUserItem.setParentId((long)0);
             companyUserItem.setItemName(i.getItemName());
+            companyUserItem.setConfigId(ic.getItemConfigId());
             companyUserItems.add(companyUserItem);
         }
         int num = companyUserItemService.insertList(companyUserItems);
@@ -296,11 +299,13 @@ public class CompanyUserController extends BaseController {
     public RSTFulBody updateUser(CompanyUserInfo companyUserInfo,
                                  @RequestParam(required = false) String userContractTime,
                                  @RequestParam(required = false) String userHouseContractTime,
+                                 @RequestParam(required = false) String userSocietySaveTime1,
+                                 @RequestParam(required = false) String userSocietySaveTime2,
                                  @RequestParam(required = false, value = "companyUserFamilyType[]") String[] companyUserFamilyType,
                                  @RequestParam(required = false, value = "companyUserFamilyName[]") String[] companyUserFamilyName,
                                  @RequestParam(required = false, value = "companyUserFamilyCard[]") String[] companyUserFamilyCard,
                                  @RequestParam(required = false, value = "companyUserFamilySex[]") String[] companyUserFamilySex
-                                 ){
+                                 ) {
         String[] contractTimes = userContractTime.split("至");
         companyUserInfo.setCompanyUserContractTimeBegin(getDate4StrDate(contractTimes[0].trim(), "yyyy-MM-dd"));
         companyUserInfo.setCompanyUserContractTimeEnd(getDate4StrDate(contractTimes[1].trim(), "yyyy-MM-dd"));
@@ -311,7 +316,20 @@ public class CompanyUserController extends BaseController {
             companyUserInfo.setCompanyUserHouseContractTimeBegin(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
             companyUserInfo.setCompanyUserHouseContractTimeEnd(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
         }
-        int res = companyUserInfoService.updateByUserId(companyUserInfo);
+
+        if(userSocietySaveTime1!=null){
+            String[] userSocietySaveTime1s = userSocietySaveTime1.split("至");
+            companyUserInfo.setCompanyUserSocietySaveTime1Begin(getDate4StrDate(userSocietySaveTime1s[0].trim(), "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserSocietySaveTime1End(getDate4StrDate(userSocietySaveTime1s[1].trim(), "yyyy-MM-dd"));
+        }
+
+        if(userSocietySaveTime2!=null){
+            String[] userSocietySaveTime2s = userSocietySaveTime2.split("至");
+            companyUserInfo.setCompanyUserSocietySaveTime2Begin(getDate4StrDate(userSocietySaveTime2s[0].trim(), "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserSocietySaveTime2End(getDate4StrDate(userSocietySaveTime2s[1].trim(), "yyyy-MM-dd"));
+        }
+
+        int res= companyUserInfoService.updateByUserId(companyUserInfo);
 
         companyUserFamilyService.delByUserId(companyUserInfo.getUserId());
         if (companyUserFamilyName != null) {

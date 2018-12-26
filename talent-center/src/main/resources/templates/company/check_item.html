@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_list_layout.html"){
+<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+    <body class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="ibox float-e-margins">
+                <div class="">
+                <form id="search-form">
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="pull-left" style="padding:5px 15px;">
+                                <div class="input-group">
+                                    <select name="itemId" class="input-sm">
+                                        <option value="0">全部</option>
+                                        @for(item in items){
+                                        <option value="${item.itemId}">${item.itemName}</option>
+                                        @}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="pull-left" style="padding:5px 15px;">
+                                <div class="input-group">
+                                    <select name="companyChecked" class="input-sm">
+                                        <option value="0">不通过</option>
+                                        <option value="1">退回</option>
+                                        <option value="2">通过</option>
+                                        <option value="3" selected>已提交</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <a onclick="ajax_get_table('search-form',1)" class="btn btn-sm btn-primary" style="margin-top: 5px;"><i class="fa fa-search"></i> 搜索</a>
+
+                        </div>
+                        <div class="table-responsive" id="ajax_return">
+
+                        </div>
+
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+@}
+</body>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script type="text/javascript">
+    var cur_page=1;
+    $(document).ready(function(){
+        ajax_get_table('search-form',1);
+    });
+
+    laydate.render({
+        elem: '#exam_time'
+        ,range: true
+    });
+
+    function ajax_get_table(tab,page){
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type : "POST",
+            url:"${ctxPath}/company/check_item?pageNum="+page+"&pageSize=20",//+tab,
+            data : $('#'+tab).serialize(),// 你的formid
+            success: function(data){
+                $("#ajax_return").html('');
+                $("#ajax_return").append(data);
+            }
+        });
+    }
+</script>
+</html>
