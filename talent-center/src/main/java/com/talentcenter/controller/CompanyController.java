@@ -63,6 +63,9 @@ public class CompanyController extends BaseController{
 
     @Autowired
     private InfoChangeService infoChangeService;
+
+    @Autowired
+    private CompanyUserCertificateService companyUserCertificateService;
    /* @Autowired
     private RoleCompanyService roleCompanyService;*/
 
@@ -488,7 +491,7 @@ public class CompanyController extends BaseController{
         for (InfoChange change : infoChanges) {
             ics.put(change.getFiledName(),1);
         }
-//        itemConfigService.s
+
         model.addAttribute("user",user);
         model.addAttribute("cui",cui);
         model.addAttribute("company",c);
@@ -497,6 +500,28 @@ public class CompanyController extends BaseController{
         model.addAttribute("itcs",itemTalentContents);
         model.addAttribute("tc",typeCategory);
         model.addAttribute("ics",ics);
+        model.addAttribute("companyUserItem",companyUserItem);
         return "/company/check_info.html";
+    }
+
+    @RequestMapping("/modal_content")
+    public String modalContent(Model model,Long userId,Long certificateId){
+        CompanyUserCertificate companyUserCertificate = new CompanyUserCertificate();
+        companyUserCertificate.setUserId(userId);
+        companyUserCertificate.setCertificateId(certificateId);
+        List<CompanyUserCertificate> companyUserCertificates = companyUserCertificateService.select(companyUserCertificate);
+        model.addAttribute("cucs",companyUserCertificates);
+        return "/company/modal_content.html";
+    }
+
+    @ResponseBody
+    @RequestMapping("/pass")
+    public Boolean pass(Long userItemId,Integer state,String companyReason){
+        CompanyUserItem companyUserItem = new CompanyUserItem();
+        companyUserItem.setCompanyUserItemId(userItemId);
+        companyUserItem.setCompanyChecked(state);
+        int res = companyUserItemService.updateByPrimaryKeySelective(companyUserItem);
+        if(res>0) return true;
+        else return false;
     }
 }

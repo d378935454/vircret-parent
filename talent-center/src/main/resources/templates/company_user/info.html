@@ -311,6 +311,24 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-sm-4 control-label">最近18个月个税缴费基数：</label>
+                        <div class="col-sm-4">
+                            <input placeholder="请选择起始时间" id="user-iit" name="userIitTime"
+                                   class="form-control" type="text"
+                                   @if(obj.companyUserIitBegin!=null && obj.companyUserIitEnd!=null){
+                                   value='${obj.companyUserIitBegin,"yyyy-MM-dd"} 至 ${obj.companyUserIitEnd,"yyyy-MM-dd"}'
+                                   @}else{
+                                   value=""
+                                   @}
+                            >
+                        </div>
+                        <div class="col-sm-4">
+                            <input placeholder="缴费基数" name="companyUserIit"
+                                   class="form-control" type="text" value="${obj.companyUserIit}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="company_user_bank_no" class="col-sm-4 control-label">申请人银行卡号：</label>
                         <div class="col-sm-8">
                             <input id="company_user_bank_no" name="companyUserBankNo" class="form-control" type="number"
@@ -525,6 +543,10 @@
     }
     laydate.render({
         elem: '#company_user_birthday',
+        format: 'yyyy-MM-dd'
+    });
+    laydate.render({
+        elem: '#user-iit',
         format: 'yyyy-MM-dd'
     });
     laydate.render({

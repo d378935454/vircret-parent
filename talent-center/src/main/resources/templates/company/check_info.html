@@ -14,8 +14,17 @@
         left: 0%;
         top: 0;
     }
+    .w5{
+        width: 50px;
+        display: inline-block;
+    }
+    .w3{
+        width: 20px;
+        display: inline-block;
+    }
 </style>
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet" type="text/css">
     <body class="wrapper wrapper-content animated fadeInRight gray-bg">
         <div class="row">
             <div class="col-lg-9 col-lg-offset-1">
@@ -40,7 +49,7 @@
                                                 <td @if(ics.company_user_sex==1){
                                                     class="have-change"
                                                     @}
-                                                    width="190">
+                                                    width="210">
                                                     @if(cui.companyUserSex==0){
                                                     女
                                                     @}else{
@@ -74,7 +83,8 @@
                                                 <td @if(ics.company_user_card==1){
                                                     class="have-change"
                                                     @}
-                                                >${cui.companyUserCard}</td>
+                                                >${cui.companyUserCard}
+                                                <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=2" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a></td>
                                             </tr>
                                             <tr>
                                                 <th>户籍地址</th>
@@ -88,7 +98,9 @@
                                                 <td @if(ics.company_user_hu_address==1){
                                                     class="have-change"
                                                     @}
-                                                    colspan="5">${cui.companyUserHuAddress}</td>
+                                                    colspan="5">${cui.companyUserHuAddress}
+                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=3" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <th>住房性质</th>
@@ -101,7 +113,9 @@
                                                 <td @if(ics.company_user_house_contract_time_begin==1 || ics.company_user_house_contract_time_end==1){
                                                     class="have-change"
                                                     @}
-                                                >${cui.companyUserHouseContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserHouseContractTimeEnd,"yyyy-MM-dd"}</td>
+                                                >${cui.companyUserHouseContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserHouseContractTimeEnd,"yyyy-MM-dd"}
+                                                <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=8" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                </td>
                                                 <th>租房价格</th>
                                                 <td @if(ics.company_user_house_price==1){
                                                     class="have-change"
@@ -133,7 +147,9 @@
                                                 <td @if(ics.company_user_school==1){
                                                     class="have-change"
                                                     @}
-                                                    colspan="2">${cui.companyUserSchool}</td>
+                                                    colspan="2">${cui.companyUserSchool}
+                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=4" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                </td>
                                                 <th>毕业时间</th>
                                                 <td @if(ics.company_user_graduation==1){
                                                     class="have-change"
@@ -170,6 +186,7 @@
                                                     @}else if(cui.companyUserDegree==2){
                                                     博士
                                                     @}
+                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=5" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                                 <th>工作年限</th>
                                                 <td @if(ics.company_user_work_length==1){
@@ -182,9 +199,19 @@
                                                 <td  @if(ics.company_user_society_save_time1_begin==1 || ics.company_user_society_save_time1_end==1 || ics.company_user_society_save_time2_begin==1 || ics.company_user_society_save_time2_end==1 || ics.company_user_society_save1==1 || ics.company_user_society_save2==1){
                                                      class="have-change"
                                                      @}
-                                                     colspan="5">
+                                                     colspan="2">
                                                     ${cui.companyUserSocietySaveTime1Begin,"yyyy-MM-dd"} 至 ${cui.companyUserSocietySaveTime1End,"yyyy-MM-dd"} 基数：${cui.companyUserSocietySave1}<br />
                                                     ${cui.companyUserSocietySaveTime2Begin,"yyyy-MM-dd"} 至 ${cui.companyUserSocietySaveTime2End,"yyyy-MM-dd"} 基数：${cui.companyUserSocietySave2}
+                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=6" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                </td>
+
+                                                <th>申请前最近18个月个税缴费基数</th>
+                                                <td  @if(ics.company_user_society_save_time1_begin==1 || ics.company_user_society_save_time1_end==1 || ics.company_user_society_save_time2_begin==1 || ics.company_user_society_save_time2_end==1 || ics.company_user_society_save1==1 || ics.company_user_society_save2==1){
+                                                     class="have-change"
+                                                     @}
+                                                     colspan="2">
+                                                    ${cui.companyUserIitBegin,"yyyy-MM-dd"} 至 ${cui.companyUserIitBegin,"yyyy-MM-dd"} 基数：${cui.companyUserIit}
+                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=7" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -192,7 +219,9 @@
                                                 <td @if(ics.company_user_contract_time_begin==1 || ics.company_user_contract_time_end==1){
                                                     class="have-change"
                                                     @}
-                                                    colspan="5">${cui.companyUserContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserContractTimeEnd,"yyyy-MM-dd"}</td>
+                                                    colspan="2">${cui.companyUserContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserContractTimeEnd,"yyyy-MM-dd"}
+                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=9" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <th>本人及购房合同其余人员在上海是否被限制购房</th>
@@ -245,6 +274,7 @@
                                             </tbody>
                                         </table>
                                     </div>
+
                                     <div class="table-responsive">
                                         <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;padding-left: 10px;">政策详情</div>
                                         <table class="table table-bordered table-striped">
@@ -317,7 +347,7 @@
                                                 <td colspan="3">
                                                     <ol>
                                                         @for(itc in itcs){
-                                                        <li>${itc.talentTypeName} 补助 <span class="red-bg">￥${itc.itemTalentContent}&nbsp;</span></li>
+                                                        <li><span class="w5">${itc.talentTypeName}</span> <span class="w3">补</span> <span class="red-bg">￥${itc.itemTalentContent}&nbsp;</span></li>
                                                         @}
                                                     </ol>
                                                 </td>
@@ -330,21 +360,161 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <div>
+                                        <a class="btn btn-primary" id="pass">通过</a>
+                                        <a class="btn btn-warning" data-toggle="modal" data-target="#npass-modal" id="npass">不通过</a>
+                                        <a class="btn btn-danger" id="back">退回</a>
+                                        <input type="hidden" id="user-item-id" value="${companyUserItem.companyUserItemId}">
+                                    </div>
                                 </div>
                             </div>
 
                             <div id="tab-2" class="tab-pane">
                                 <div class="panel-body">
-                                    <strong>移动设备优先</strong>
-                                    <p>在 Bootstrap 2 中，我们对框架中的某些关键部分增加了对移动设备友好的样式。而在 Bootstrap 3 中，我们重写了整个框架，使其一开始就是对移动设备友好的。这次不是简单的增加一些可选的针对移动设备的样式，而是直接融合进了框架的内核中。也就是说，Bootstrap 是移动设备优先的。针对移动设备的样式融合进了框架的每个角落，而不是增加一个额外的文件。</p>
+                                    <strong>历史记录</strong>
+                                    <p></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal fade bs-modal-lg" id="my-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
 
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="npass-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="message-text" class="control-label">不通过原因:</label>
+                                <textarea class="form-control" id="message-text"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" id="npass-btn"  data-dismiss="modal" class="btn btn-primary">确定</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="back-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="message-text" class="control-label">不通过原因:</label>
+                                <textarea class="form-control" id="back-message-text"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" id="back-btn" class="btn btn-primary">确定</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+
 @}
 </body>
+<script src="/js/jquery-ui-1.10.4.min.js"></script>
+<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    $(document).on("show.bs.modal", ".modal", function(){
+        $(this).draggable();
+        $(this).css("overflow", "hidden");
+    });
+    $("#my-modal").on("hidden.bs.modal", function() {
+        $(this).removeData("bs.modal");
+    });
+
+    $("#npass-modal").on("hidden.bs.modal", function() {
+        $(this).removeData("bs.modal");
+    });
+
+    $('#back-btn').click(function () {
+        var userItemId = $('#user-item-id').val();
+        $.ajax({
+            type:"POST",
+            url:"${ctxPath}/company/pass",
+            data:{
+                state:1,
+                userItemId:userItemId,
+                companyReason:$('#back-message-text').val()
+            },
+            success:function (data) {
+                $('#back-modal').modal('hide');
+                swal({
+                    title:"提交成功！",
+                    showConfirmButton: true,
+                    timer: 1500
+                });
+
+
+            }
+        });
+    });
+
+    $('#npass-btn').click(function () {
+        var userItemId = $('#user-item-id').val();
+        console.log($('#message-text').val());
+        console.log($('#message-text').text());
+        $.ajax({
+            type:"POST",
+            url:"${ctxPath}/company/pass",
+            data:{
+                state:0,
+                userItemId:userItemId,
+                companyReason:$('#message-text').val()
+            },
+            success:function (data) {
+                $('#npass-modal').modal('hide');
+                swal({
+                    title:"提交成功！",
+                    showConfirmButton: true,
+                    timer: 1500
+                });
+
+
+            }
+        });
+    });
+
+    $('#pass').click(function () {
+        // console.log($(this).attr("user-item-id"));
+        var userItemId = $('#user-item-id').val();
+        swal({
+            title: "您确定要通过审核吗？",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确定",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                type:"POST",
+                url:"${ctxPath}/company/pass",
+                data:{
+                    state:2,
+                    userItemId:userItemId,
+                    companyReason:""
+                },
+                success:function (data) {
+                    swal({
+                        title:"审核成功！",
+                        showConfirmButton: true,
+                        timer: 1500
+                    });
+                }
+            });
+        });
+    });
+</script>
 </html>

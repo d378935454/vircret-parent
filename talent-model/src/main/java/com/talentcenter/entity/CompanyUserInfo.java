@@ -116,6 +116,15 @@ public class CompanyUserInfo implements Serializable {
 
     private Integer companyUserDegree;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserIitBegin;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date companyUserIitEnd;
+
+    private Float companyUserIit;
+
+
     /**
      * 毕业时间
      */
