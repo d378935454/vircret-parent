@@ -169,9 +169,9 @@
                             htmlStr += '<select name="talentType'+data.itemId+'" id="ii-'+data.itemId+'">';
                             $.each(data.itemTalentContents, function (i, t) {
                                 if(t.payType){
-                                    htmlStr += '<option value="'+t.talentTypeId+'">'+t.talentTypeName+'--月工资的'+t.itemTalentContent+'</option>';
+                                    htmlStr += '<option value="'+t.itemTalentId+'">'+t.talentTypeName+'--月工资的'+t.itemTalentContent+'</option>';
                                 }else{
-                                    htmlStr += '<option value="'+t.talentTypeId+'">'+t.talentTypeName+'--￥'+t.itemTalentContent+'</option>';
+                                    htmlStr += '<option value="'+t.itemTalentId+'">'+t.talentTypeName+'--￥'+t.itemTalentContent+'</option>';
                                 }
                             })
                             htmlStr +="</select>";

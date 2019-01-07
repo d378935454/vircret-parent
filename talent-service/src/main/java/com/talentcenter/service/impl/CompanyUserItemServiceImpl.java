@@ -94,6 +94,16 @@ public class CompanyUserItemServiceImpl implements CompanyUserItemService {
     }
 
     @Override
+    public int updateUserItem(CompanyUserItem companyUserItem) {
+        return companyUserItemMapper.updateUserItem(companyUserItem);
+    }
+
+    @Override
+    public int delByParentId(Long parentId) {
+        return companyUserItemMapper.delByParentId(parentId);
+    }
+
+    @Override
     public int batchDel(Map<String, Object> map) {
         return companyUserItemMapper.batchDel(map);
     }

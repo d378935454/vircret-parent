@@ -1,23 +1,30 @@
 package com.talentcenter.controller;
 
 import RSTFul.RSTFulBody;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.talentcenter.entity.*;
 import com.talentcenter.service.*;
-import org.springframework.util.DigestUtils;
-import util.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import util.DateHelper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static util.DateHelper.getDate4StrDate;
 
 @Controller
 @RequestMapping("/company")
@@ -66,6 +73,9 @@ public class CompanyController extends BaseController{
 
     @Autowired
     private CompanyUserCertificateService companyUserCertificateService;
+
+    @Autowired
+    private ItemUserTimeService itemUserTimeService;
    /* @Autowired
     private RoleCompanyService roleCompanyService;*/
 
@@ -478,9 +488,13 @@ public class CompanyController extends BaseController{
         itemConfig.setItemId(companyUserItem.getItemId());
         ItemConfig ic = itemConfigService.selectOne(itemConfig);
 //        TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(ic.getTypeCategoryId());
-        ItemTalentContent itemTalentContent = new ItemTalentContent();
-        itemTalentContent.setItemConfigId(ic.getItemConfigId());
-        List<ItemTalentContent> itemTalentContents = itemTalentContentService.select(itemTalentContent);
+        List<ItemTalentContent> itemTalentContents = null;
+        if(ic.getItemConfigTType()){
+            ItemTalentContent itemTalentContent = new ItemTalentContent();
+            itemTalentContent.setItemConfigId(ic.getItemConfigId());
+//            talentTypes = talentTypeService.select(talentType);
+            itemTalentContents = itemTalentContentService.select(itemTalentContent);
+        }
 
         TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(ic.getTypeCategoryId());
 
@@ -492,15 +506,36 @@ public class CompanyController extends BaseController{
             ics.put(change.getFiledName(),1);
         }
 
+        Item item = itemService.selectByPrimaryKey(companyUserItem.getItemId());
+        List<CompanyUserItem> childUserItem=null;
+        if(item.getItemCategory()==1){
+            CompanyUserItem ccui = new CompanyUserItem();
+            ccui.setParentId(companyUserItem.getCompanyUserItemId());
+            childUserItem = companyUserItemService.select(ccui);
+        }
+
+        ItemUserTime itemUserTime = new ItemUserTime();
+        itemUserTime.setUserId(user.getUserId());
+        itemUserTime.setCompanyUserItemId(companyUserItem.getCompanyUserItemId());
+        ItemUserTime iut = itemUserTimeService.selectOne(itemUserTime);
+
+        Item ii = new Item();
+        ii.setItemCategory(0);
+        List<Item> items = itemService.select(ii);
+
         model.addAttribute("user",user);
         model.addAttribute("cui",cui);
         model.addAttribute("company",c);
         model.addAttribute("cufs",cuf);
         model.addAttribute("ic",ic);
         model.addAttribute("itcs",itemTalentContents);
+        model.addAttribute("items",items);
         model.addAttribute("tc",typeCategory);
         model.addAttribute("ics",ics);
+        model.addAttribute("item",item);
         model.addAttribute("companyUserItem",companyUserItem);
+        model.addAttribute("childUserItems",childUserItem);
+        model.addAttribute("iut",iut);
         return "/company/check_info.html";
     }
 
@@ -516,12 +551,59 @@ public class CompanyController extends BaseController{
 
     @ResponseBody
     @RequestMapping("/pass")
-    public Boolean pass(Long userItemId,Integer state,String companyReason){
+    public Boolean pass(@RequestBody JSONObject jsonParam){
+
+        PassJson passJson = JSON.parseObject(jsonParam.toJSONString(), new TypeReference<PassJson>() {});
+        CompanyUserItem cui = companyUserItemService.selectByPrimaryKey(passJson.getUserItemId());
+        CompanyUserItem companyUserItem = new CompanyUserItem();
+        companyUserItem.setCompanyUserItemId(passJson.getUserItemId());
+        companyUserItem.setType(passJson.getType());
+        companyUserItem.setAmount(passJson.getAmount());
+        companyUserItem.setMemo(passJson.getMemo());
+        companyUserItem.setTalentTypeContent(passJson.getTalentType());
+        companyUserItemService.updateUserItem(companyUserItem);
+
+        ItemUserTime itemUserTime = new ItemUserTime();
+        String[] houseContractTimes = passJson.getItemTime().split("至");
+        itemUserTime.setStartTime(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
+        itemUserTime.setEndTime(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
+        itemUserTime.setCompanyUserItemId(passJson.getUserItemId());
+        itemUserTime.setUserId(cui.getUserId());
+        itemUserTimeService.updateItemUserTime(itemUserTime);
+
+        companyUserItemService.delByParentId(passJson.getUserItemId());
+        if(passJson.getItems().size()>0){
+            List<CompanyUserItem> companyUserItems = new ArrayList<>();
+            for (ItemJson itemJson : passJson.getItems()) {
+                Item item = itemService.selectByPrimaryKey(itemJson.getItem());
+                ItemConfig itemConfig = new ItemConfig();
+                itemConfig.setItemId(item.getItemId());
+                itemConfig.setItemConfigState(true);
+                ItemConfig ic = itemConfigService.selectOne(itemConfig);
+                CompanyUserItem c = new CompanyUserItem();
+                c.setParentId(passJson.getUserItemId());
+                c.setItemId(item.getItemId());
+                c.setConfigId(ic.getItemConfigId());
+                c.setItemName(item.getItemName());
+                c.setUserId(cui.getUserId());
+                if(itemJson.getTypeContent()!=null) c.setTalentTypeContent(itemJson.getTypeContent());
+                companyUserItems.add(c);
+            }
+            companyUserItemService.insertList(companyUserItems);
+        }
+
+        return true;
+    }
+
+    @ResponseBody
+    @RequestMapping("/back_npass_pass")
+    public Boolean backNPassPass(Integer state,Long userItemId,String companyReason){
         CompanyUserItem companyUserItem = new CompanyUserItem();
         companyUserItem.setCompanyUserItemId(userItemId);
         companyUserItem.setCompanyChecked(state);
-        int res = companyUserItemService.updateByPrimaryKeySelective(companyUserItem);
-        if(res>0) return true;
-        else return false;
+        companyUserItem.setCompanyReason(companyReason);
+        companyUserItem.setHaveSubmit(false);
+        companyUserItemService.updateByPrimaryKeySelective(companyUserItem);
+        return true;
     }
 }

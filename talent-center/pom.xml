@@ -6,7 +6,7 @@
     <groupId>com.talentcenter</groupId>
     <artifactId>talent-center</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>talent-center</name>
     <description>Demo project for Spring Boot</description>
@@ -122,6 +122,14 @@
             <artifactId>shiro-ehcache</artifactId>
             <version>1.4.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.54</version>
+        </dependency>
+
 
     </dependencies>
 

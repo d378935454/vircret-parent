@@ -22,4 +22,7 @@ public interface CompanyUserItemMapper extends BaseMapper<CompanyUserItem> {
 
     Map<String,Object> getCompanyCheckItem(Map<String,Object> map);
 
+    int updateUserItem(CompanyUserItem companyUserItem);
+
+    int delByParentId(Long parentId);
 }

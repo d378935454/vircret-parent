@@ -62,7 +62,7 @@
                 have_submit=1,
             </if>
             <if test="type != null">
-                type = #{type,jdbcType=INTEGER},
+                `type` = #{type,jdbcType=INTEGER},
             </if>
             <if test="amount != null">
                 amount = #{amount,jdbcType=DECIMAL},
@@ -73,8 +73,41 @@
             <if test="talentType != null">
                 talent_type_content = #{talentType,jdbcType=BIGINT},
             </if>
+            <if test="submitTime != null">
+                submit_time = #{submitTime,jdbcType=DATE},
+            </if>
+            <if test="companyChecked != null">
+                company_checked = #{companyChecked,jdbcType=INTEGER},
+            </if>
+            <if test="companyChecked != null">
+                company_reason = null ,
+            </if>
+            <if test="streetChecked != null">
+                street_checked = #{streetChecked,jdbcType=INTEGER},
+            </if>
+            <if test="streetChecked != null">
+                street_reason = null ,
+            </if>
+            <if test="centerChecked != null">
+                center_checked = #{centerChecked,jdbcType=INTEGER},
+            </if>
+            <if test="centerChecked != null">
+                center_reason = null ,
+            </if>
         </set>
          where user_id = #{userId,jdbcType=BIGINT} and item_id= #{itemId,jdbcType=BIGINT}
     </update>
+    
+    <update id="updateUserItem" parameterType="com.talentcenter.entity.CompanyUserItem">
+        update talent_company_user_item set
+        `type` = #{type,jdbcType=INTEGER},
+        amount = #{amount,jdbcType=DECIMAL},
+        memo = #{memo,jdbcType=VARCHAR},
+        talent_type_content = #{talentTypeContent,jdbcType=BIGINT}
+        where company_user_item_id = #{companyUserItemId,jdbcType=BIGINT}
+    </update>
 
+    <delete id="delByParentId" parameterType="java.lang.Long">
+        delete from talent_company_user_item where parent_id=#{parentId,jdbcType=BIGINT}
+    </delete>
 </mapper>

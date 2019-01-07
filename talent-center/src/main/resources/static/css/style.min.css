@@ -338,7 +338,9 @@ body:not(.fixed-sidebar):not(.canvas-menu).mini-navbar .nav li:hover > .nav-seco
 }.navbar-fixed-top,
 .navbar-static-top
 {
-    background: #f3f3f4;
+    background: url(../img/top-banner.png) no-repeat;
+    background-size: 100% 100%;
+
 }.fixed-nav #wrapper
 {
     box-sizing: border-box;
@@ -6766,4 +6768,13 @@ body.rtls.top-navigation .footer.fixed
         background-color: #c0d5f6 !important;
         -webkit-print-color-adjust: exact;
     }
+}
+
+.top-banner{
+    min-height: 40px;
+    line-height: 40px;
+    margin-top: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 15px;
 }

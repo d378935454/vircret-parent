@@ -503,6 +503,16 @@ public class CompanyUserController extends BaseController {
             rstFulBody.fail("不能申请！");
             return rstFulBody;
         }
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.setItemId(itemId);
+        itemConfig.setItemConfigState(true);
+        ItemConfig ic = itemConfigService.selectOne(itemConfig);
+        CompanyUserItem cui = new CompanyUserItem();
+        cui.setItemId(itemId);
+        cui.setUserId(userId);
+        CompanyUserItem ccc = companyUserItemService.selectOne(cui);
+
+        companyUserItemService.delByParentId(ccc.getCompanyUserItemId());
         if(items!=null){
             List<CompanyUserItem> childItems = new ArrayList<>();
             for (int i=0;i<items.length;i++){
@@ -510,7 +520,8 @@ public class CompanyUserController extends BaseController {
                 companyUserItem.setUserId(userId);
                 companyUserItem.setItemId(items[i]);
                 companyUserItem.setItemName(itemName[i]);
-                companyUserItem.setParentId(itemId);
+                companyUserItem.setParentId(ccc.getCompanyUserItemId());
+                companyUserItem.setConfigId(ic.getItemConfigId());
                 String talent = request.getParameter("talentType"+items[i]);
                 if(talent!=null) companyUserItem.setTalentTypeContent((long)Integer.parseInt(talent));
                 childItems.add(companyUserItem);
@@ -550,6 +561,9 @@ public class CompanyUserController extends BaseController {
         map.put("haveSubmit",1);
         map.put("talentType",talentType);
         map.put("submitTime",getCurrentDate());
+        if(ccc.getCompanyChecked()==0) map.put("companyChecked",3);
+        if(ccc.getStreetChecked()==0) map.put("streetChecked",3);
+        if(ccc.getCenterChecked()==0) map.put("centerChecked",3);
         if(amount!=null && amount!="") map.put("amount",amount);
         if(memo!=null && memo!="") map.put("memo",memo);
         companyUserItemService.updateByItemIdAndUserId(map);
@@ -559,6 +573,42 @@ public class CompanyUserController extends BaseController {
         return rstFulBody;
     }
 
+    @RequestMapping("my_app.html")
+    public String myApp(){
+        return "/company_user/my_app.html";
+    }
+
+    @RequestMapping("/ajax_app")
+    public String ajaxApp(Model model, int pageNum, int pageSize
+    ) {
+        CompanyUserItem companyUserItem = new CompanyUserItem();
+        companyUserItem.setUserId(getSessionUser().getUserId());
+        companyUserItem.setParentId((long)0);
+        companyUserItem.setHaveSubmit(true);
+        //分页查询
+        PageHelper.startPage(pageNum, pageSize);
+        List<CompanyUserItem> companyUserItems = companyUserItemService.select(companyUserItem);
+
+        PageInfo<CompanyUserItem> pageInfo = new PageInfo<>(companyUserItems);
+        String pageStr = makePageHtml(pageInfo);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
+        return "/company_user/ajax_app.html";
+    }
+
+    @RequestMapping("/my_app_info.html")
+    public String myAppInfo(Model model,Long itemUserId){
+        CompanyUserItem companyUserItem = companyUserItemService.selectByPrimaryKey(itemUserId);
+        model.addAttribute("cui", companyUserItem);
+        return "/company_user/my_app_info.html";
+    }
+
+    @ResponseBody
+    @RequestMapping("/get_reason")
+    public CompanyUserItem getReason(Long userItemId){
+        CompanyUserItem companyUserItem = companyUserItemService.selectByPrimaryKey(userItemId);
+        return companyUserItem;
+    }
 
     private Boolean ifPermit(Long userId,Long itemId){
         Boolean res = true;

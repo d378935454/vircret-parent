@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_form_layout.html"){
+<link href="/css/plugins/bootstrap-step/bootstrap-step.css" rel="stylesheet" type="text/css">
+<style>
+    .nav > li.active {
+        border-left: 0;
+        background: none;
+    }
+    #step-content{
+        padding: 40px 10px;
+        font-size: 17px;
+    }
+    #step-content > .e-reason{
+        margin-top: 3px;
+    }
+</style>
+    <body class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-11">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <ul class="nav nav-pills nav-justified step step-progress">
+                            <li a-sin="have-submit" class="active">
+                                <a class="step-a">提交申请</a>
+                            </li>
+                            <li a-sin="company_check" state="${cui.companyChecked}" @if(cui.companyChecked==2){
+                                class="active"
+                                @}else if(cui.companyChecked==0){
+                                class="error"
+                                @}else if(cui.companyChecked==1){
+                                class="error"
+                                @}
+                                >
+                                <a class="step-a">公司审核</a>
+                            </li>
+                            <li a-sin="street_check" state="${cui.streetChecked}" @if(cui.streetChecked==2 || cui.streetChecked==4){
+                                class="active"
+                                @}else if(cui.streetChecked==0){
+                                class="error"
+                                @}else if(cui.streetChecked==1){
+                                class="error"
+                                @}
+                            >
+                                <a class="step-a">人才工作站 初审</a>
+                            </li>
+                            <li a-sin="street_check" @if(cui.streetChecked==4){
+                                class="active"
+                                @}
+                            >
+                                <a class="step-a">人才工作站 审核完成</a>
+                            </li>
+                            <li a-sin="center_check"  state="${cui.centerChecked}" @if(cui.centerChecked==2 || cui.centerChecked==4){
+                                class="active"
+                                @}else if(cui.centerChecked==0){
+                                class="error"
+                                @}else if(cui.centerChecked==1){
+                                class="error"
+                                @}
+                            >
+                                <a class="step-a">人才中心 窗口审核</a>
+                            </li>
+                            <li a-sin="center_check" @if(cui.centerChecked==4){
+                                class="active"
+                                @}
+                            >
+                                <a class="step-a">审核完成</a>
+                            </li>
+                        </ul>
+                        <div id="step-content"></div>
+                    </div>
+                </div>
+                <div>
+                    <a id="resubmit" style="display: none" href="${ctxPath}/company_user/ask_for.html?itemId=${cui.itemId}" class="btn btn-primary" type="submit">重新提交申请</a>
+                    <div class="btn btn-white" onclick="window.history.go(-1)">返回</div>
+                    <input id="user-item-id" type="hidden" value="${cui.companyUserItemId}" />
+                </div>
+            </div>
+        </div>
+@}
+</body>
+<script>
+    $(document).ready(function () {
+        if($(".error").length>0){
+            var htmlStr = '<div class="e-state">';
+
+            if($(".error").attr("a-sin")=='company_check'){
+                htmlStr +="公司审核 ";
+            }else if($(".error").attr("a-sin")=='street_check'){
+                htmlStr +="人才工作站审核 ";
+            }else if($(".error").attr("a-sin")=='center_check'){
+                htmlStr +="人才中心审核 ";
+            }
+
+            if($(".error").attr("state")==0){
+                $('#resubmit').show();
+                htmlStr += '不通过</div>';
+            }else if($(".error").attr("state")==1){
+                htmlStr += '退回</div>';
+            }
+            $.ajax({
+                type:'POST',
+                url: "${ctxPath}/company_user/get_reason",
+                data:{
+                    userItemId: $("#user-item-id").val()
+                },
+                success: function (data) {
+                    var reason = "";
+                    if($(".error:last").attr("a-sin")=='company_check'){
+                        reason = "原因 "+data.companyReason;
+                    }else if($(".error:last").attr("a-sin")=='street_check'){
+                        reason = "原因 "+data.streetReason;
+                    }else if($(".error:last").attr("a-sin")=='center_check'){
+                        reason = "原因 "+data.centerReason;
+                    }
+                    htmlStr += '<div class="e-reason">'+reason+'</div>';
+                    $("#step-content").append(htmlStr);
+                }
+            });
+        }
+    });
+    function bsStep(i) {
+        $('.step').each(function() {
+            var a, $this = $(this);
+            if(i > $this.find('li').length) {
+                console.log('您输入数值已超过步骤最大数量' + $this.find('li').length + '！！！');
+                a=$this.find('li').length;
+            } else if(i == undefined && $this.data('step') == undefined) {
+                a = 1
+            } else if(i == undefined && $this.data('step') != undefined) {
+                a = $(this).data('step');
+            } else {
+                a = i
+            }
+            $(this).find('li').removeClass('active');
+            $(this).find('li:lt(' + a + ')').addClass('active');
+        })
+    }
+</script>
+</html>

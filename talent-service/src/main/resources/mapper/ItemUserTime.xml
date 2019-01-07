@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.talentcenter.dao.ItemUserTimeMapper">
+
+    <update id="updateItemUserTime" parameterType="com.talentcenter.entity.ItemUserTime">
+        update talent_item_user_time set
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        end_time = #{endTime,jdbcType=TIMESTAMP}
+        where company_user_item_id = #{companyUserItemId,jdbcType=BIGINT}
+        and user_id = #{userId,jdbcType=BIGINT}
+        and state=0
+    </update>
+
+</mapper>

@@ -22,12 +22,17 @@
         width: 20px;
         display: inline-block;
     }
+    .error{
+        color: rgba(237,78,26,0.89);
+        margin-top: 5px;
+        display: none;
+    }
 </style>
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
 <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet" type="text/css">
     <body class="wrapper wrapper-content animated fadeInRight gray-bg">
         <div class="row">
-            <div class="col-lg-9 col-lg-offset-1">
+            <div class="col-lg-11">
                 <div class="ibox">
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
@@ -360,10 +365,103 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    @if(item.itemCategory==1){
+                                    <div class="table-responsive">
+                                        <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;">申请详情</div>
+                                        <div class="form-group col-sm-12" style="padding: 0">
+                                            <label class="pull-left control-label">卓越人才申请内容：</label>
+                                            <div class="pull-left m-r-lg">
+                                                <label class="pull-left control-label">类型：</label>
+                                                <select  id="type" class="pull-left">
+                                                    <option @if(companyUserItem.type==0){
+                                                            selected
+                                                            @}
+                                                            value="0">服务</option>
+                                                    <option @if(companyUserItem.type==1){
+                                                            selected
+                                                            @}
+                                                            value="1">现金</option>
+                                                </select>
+                                            </div>
+
+                                            <div id="item-amount">
+                                                <label class="pull-left control-label">申请金额：</label>
+                                                <div class="pull-left">
+                                                    <input id="amount" placeholder="申请金额" value="${companyUserItem.amount}" class="pull-left" type="text" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 m-t-sm" style="padding: 0;">
+                                                <label class="control-label">申请描述：</label>
+                                                <textarea name="memo" class="form-control" id="memo" rows="5" cols="70">${companyUserItem.memo}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-12" style="padding: 0;">
+                                            <label class="pull-left control-label">卓越人才额外政策：</label>
+                                            <div class="pull-left">
+                                                @for(item in items){
+                                                @for(childUserItem in childUserItems){
+                                                <div class="checkbox checkbox-inline" id="item-${item.itemId}">
+                                                    <input @if(item.itemId == childUserItem.itemId){
+                                                           checked
+                                                           @}
+                                                           type="checkbox" @if(childUserItem.talentTypeContent!=null){
+                                                           cuid="${childUserItem.talentTypeContent}"
+                                                           @}
+                                                            id="c_${item.itemId}" class="items" value="${item.itemId}">
+                                                    <label for="c_${item.itemId}"> ${item.itemName} </label>
+                                                </div>
+                                                @}
+                                                @}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @}else {
+                                    <div class="table-responsive">
+                                        <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;">申请详情</div>
+                                        @if(talentTypes!=null){
+                                        <div class="form-group">
+                                            <label class="pull-left control-label">人才分类：</label>
+                                            <div class="form-group col-sm-12" style="padding: 0;">
+                                                @for(talentType in talentTypes){
+                                                <div class="checkbox checkbox-info checkbox-circle checkbox-inline">
+                                                    <input type="radio" @if(talentType.talentTypeId==companyUserItem.talentTypeContent){
+                                                           checked
+                                                           @}
+                                                           id="i_${talentType.talentTypeId}" name="talentType" value="${talentType.talentTypeId}">
+                                                    <label for="i_${talentType.talentTypeId}"> ${talentType.talentTypeName}
+                                                        <br />
+                                                        @if(talentType.payType){
+                                                        月工资的 ${talentType.itemTalentContent}
+                                                        @}else{
+                                                        ￥${talentType.itemTalentContent}
+                                                        @}
+                                                    </label>
+                                                </div>
+                                                @}
+                                            </div>
+                                        </div>
+                                        @}
+                                    </div>
+                                    @}
+
+                                    <div class="form-group col-sm-12" style="padding: 0;">
+                                        <label class="pull-left control-label">该期时间段：</label>
+                                        <div class="pull-left">
+                                            <input id="item-time" placeholder="请选择时间段" type="text"
+                                                   value='${iut.startTime,"yyyy-MM-dd"} 至 ${iut.endTime,"yyyy-MM-dd"}'
+                                                   autocomplete="off" style="width: 200px">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-sm-12" style="padding: 0;">
+                                        <label class="pull-left control-label">申请提交时间：</label> <div class="pull-left">${companyUserItem.submitTime,"yyyy-MM-dd"}</div>
+                                    </div>
+
                                     <div>
                                         <a class="btn btn-primary" id="pass">通过</a>
                                         <a class="btn btn-warning" data-toggle="modal" data-target="#npass-modal" id="npass">不通过</a>
-                                        <a class="btn btn-danger" id="back">退回</a>
+                                        <a class="btn btn-danger" data-toggle="modal" data-target="#back-modal" id="back">退回</a>
                                         <input type="hidden" id="user-item-id" value="${companyUserItem.companyUserItemId}">
                                     </div>
                                 </div>
@@ -392,8 +490,9 @@
                     <div class="modal-content">
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="message-text" class="control-label">不通过原因:</label>
-                                <textarea class="form-control" id="message-text"></textarea>
+                                <label for="npass-message-text" class="control-label">不通过原因:</label>
+                                <textarea class="form-control" id="npass-message-text"></textarea>
+                                <div id="npass-error" class="error">不通过原因不能为空</div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -409,8 +508,9 @@
                     <div class="modal-content">
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="message-text" class="control-label">不通过原因:</label>
+                                <label for="back-message-text" class="control-label">退回原因:</label>
                                 <textarea class="form-control" id="back-message-text"></textarea>
+                                <div id="back-error"  class="error">退回原因不能为空</div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -427,7 +527,15 @@
 </body>
 <script src="/js/jquery-ui-1.10.4.min.js"></script>
 <script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
 <script>
+
+    laydate.render({
+        elem: '#item-time',
+        range: '至',
+        format: 'yyyy-MM-dd'
+    });
+
     $(document).on("show.bs.modal", ".modal", function(){
         $(this).draggable();
         $(this).css("overflow", "hidden");
@@ -436,15 +544,117 @@
         $(this).removeData("bs.modal");
     });
 
+    $(document).ready(function () {
+
+        $('#type').change(function () {
+            if($(this).val()==0){
+                $('#item-amount').hide();
+                $('#amount').attr('disabled',true);
+            }else {
+                $('#item-amount').show();
+                $('#amount').attr('disabled',false);
+            }
+        });
+
+        if($('#type').val()==0){
+            $('#item-amount').hide();
+            $('#amount').attr('disabled',true);
+            $('#amount').val("");
+        }else {
+            $('#item-amount').show();
+            $('#amount').attr('disabled',false);
+        }
+
+        $('.items').each(function (e,i) {
+            // $(i).val()
+            var cuid = $(this).attr("cuid");
+            $.ajax({
+                type:"GET",
+                url: "${ctxPath}/item/talent_type_content?itemId="+$(this).val(),
+                success:function (data) {
+                    if(data.state==1){
+                        var htmlStr = "";
+                        htmlStr += '<select name="talentType'+data.itemId+'" id="ii-'+data.itemId+'">';
+                        $.each(data.itemTalentContents, function (i, t) {
+                            // console.log(t);
+                            if(t.payType){
+                                if(cuid==t.itemTalentId){
+                                    htmlStr += '<option selected value="'+t.itemTalentId+'">'+t.talentTypeName+'--月工资的'+t.itemTalentContent+'</option>';
+                                }else{
+                                    htmlStr += '<option value="'+t.itemTalentId+'">'+t.talentTypeName+'--月工资的'+t.itemTalentContent+'</option>';
+                                }
+                            }else{
+                                if(cuid==t.itemTalentId){
+                                    htmlStr += '<option selected value="'+t.itemTalentId+'">'+t.talentTypeName+'--￥'+t.itemTalentContent+'</option>';
+                                }else{
+                                    htmlStr += '<option value="'+t.itemTalentId+'">'+t.talentTypeName+'--￥'+t.itemTalentContent+'</option>';
+                                }
+                            }
+                        })
+                        htmlStr +="</select>";
+                        $('#item-'+data.itemId).append(htmlStr);
+                        // console.log($(this).val());
+                        /*var htmlStr = "";
+                        htmlStr = '<select name="talentType"'+data.+' id="type_category_id">';*/
+
+                    }
+                }
+            });
+        });
+
+        $('.items').click(function () {
+            if($(this).is(':checked')){
+                var cuid = $(this).attr("cuid");
+                $.ajax({
+                    type:"GET",
+                    url: "${ctxPath}/item/talent_type_content?itemId="+$(this).val(),
+                    success:function (data) {
+                        if(data.state==1){
+                            var htmlStr = "";
+                            htmlStr += '<select name="talentType'+data.itemId+'" id="ii-'+data.itemId+'">';
+                            $.each(data.itemTalentContents, function (i, t) {
+                                if(t.payType){
+                                    if(cuid==t.itemTalentId){
+                                        htmlStr += '<option selected value="'+t.itemTalentId+'">'+t.talentTypeName+'--月工资的'+t.itemTalentContent+'</option>';
+                                    }else{
+                                        htmlStr += '<option value="'+t.itemTalentId+'">'+t.talentTypeName+'--月工资的'+t.itemTalentContent+'</option>';
+                                    }
+                                }else{
+                                    if(cuid==t.itemTalentId){
+                                        htmlStr += '<option selected value="'+t.itemTalentId+'">'+t.talentTypeName+'--￥'+t.itemTalentContent+'</option>';
+                                    }else{
+                                        htmlStr += '<option value="'+t.itemTalentId+'">'+t.talentTypeName+'--￥'+t.itemTalentContent+'</option>';
+                                    }
+                                }
+                            })
+                            htmlStr +="</select>";
+                            $('#item-'+data.itemId).append(htmlStr);
+                            // console.log($(this).val());
+                            /*var htmlStr = "";
+                            htmlStr = '<select name="talentType"'+data.+' id="type_category_id">';*/
+
+                        }
+                    }
+                });
+            }else{
+                $('#ii-'+$(this).val()).remove();
+            }
+        });
+    });
+
     $("#npass-modal").on("hidden.bs.modal", function() {
         $(this).removeData("bs.modal");
     });
 
     $('#back-btn').click(function () {
         var userItemId = $('#user-item-id').val();
+        if($('#back-message-text').val()==""){
+            $('#back-error').show();
+            return false;
+        }
         $.ajax({
             type:"POST",
-            url:"${ctxPath}/company/pass",
+            url:"${ctxPath}/company/back_npass_pass",
             data:{
                 state:1,
                 userItemId:userItemId,
@@ -465,15 +675,17 @@
 
     $('#npass-btn').click(function () {
         var userItemId = $('#user-item-id').val();
-        console.log($('#message-text').val());
-        console.log($('#message-text').text());
+        if($('#npass-message-text').val()==""){
+            $('#npass-error').show();
+            return false;
+        }
         $.ajax({
             type:"POST",
-            url:"${ctxPath}/company/pass",
+            url:"${ctxPath}/company/back_npass_pass",
             data:{
                 state:0,
                 userItemId:userItemId,
-                companyReason:$('#message-text').val()
+                companyReason:$('#npass-message-text').val()
             },
             success:function (data) {
                 $('#npass-modal').modal('hide');
@@ -498,14 +710,46 @@
             confirmButtonText: "确定",
             closeOnConfirm: false
         }, function () {
+            var type = ${item.itemCategory};
+            var talentType = ${ic.itemConfigTType};
+            var data = {
+                userItemId:userItemId,
+                itemTime:$('#item-time').val()
+            };
+            if($('input[class="items"]:checked').length>0) {
+                var dataTemp = [];
+                $('input[class="items"]:checked').each(function (i,e) {
+                    var objStr = "ii-"+$(e).val();
+                    var temp="";
+                    if($('#'+objStr).val()!=null){
+                        temp={
+                            item:$(e).val(),
+                            typeContent:$('#'+objStr).val()
+                        }
+                    }else{
+                        temp={
+                            item:$(e).val()
+                        }
+                    }
+                    dataTemp.push(temp);
+                });
+
+                data['items']=dataTemp;
+            }
+            if($('#amount').val()!=null) data['amount']=$('#amount').val();
+
+            if($("input[name='talentType']:checked").val()!=null) data['talentType']=$("input[type='talentType']:checked").val();
+
+            if(type==1){
+                data['type']=$('#type').val();
+                data['memo']=$('#memo').val();
+            }
             $.ajax({
                 type:"POST",
                 url:"${ctxPath}/company/pass",
-                data:{
-                    state:2,
-                    userItemId:userItemId,
-                    companyReason:""
-                },
+                dataType:"json",
+                contentType : "application/json",
+                data:JSON.stringify(data),
                 success:function (data) {
                     swal({
                         title:"审核成功！",
