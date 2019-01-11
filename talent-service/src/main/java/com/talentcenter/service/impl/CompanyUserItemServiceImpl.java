@@ -104,6 +104,11 @@ public class CompanyUserItemServiceImpl implements CompanyUserItemService {
     }
 
     @Override
+    public int selectNpassItem(Map<String, Object> map) {
+        return companyUserItemMapper.selectNpassItem(map);
+    }
+
+    @Override
     public int batchDel(Map<String, Object> map) {
         return companyUserItemMapper.batchDel(map);
     }

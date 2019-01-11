@@ -2,10 +2,7 @@ package com.talentcenter.entity;
 
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -27,6 +24,9 @@ public class Notice {
      */
     private String noticeContent;
 
+    @Transient
+    private String realNoticeContent;
+
     /**
      * 是否强制阅读 0:否 1:是
      */
@@ -34,7 +34,7 @@ public class Notice {
     /**
      *公告分类
      */
-    private Long noticeType;
+    private Integer noticeType;
     /**
      * 状态 0:删除 1:正常
      */

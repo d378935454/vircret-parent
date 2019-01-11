@@ -457,7 +457,7 @@ public class CompanyController extends BaseController{
 
         Map<String,Object> map = new HashMap<>();
         map.put("companyChecked",3);
-        map.put("companyId",23);
+        map.put("companyId",getSessionUser().getCompanyId());
 
         List<Map<String,Object>> maps = companyService.selectCompanyCheckedItem(map);
 
@@ -561,6 +561,7 @@ public class CompanyController extends BaseController{
         companyUserItem.setAmount(passJson.getAmount());
         companyUserItem.setMemo(passJson.getMemo());
         companyUserItem.setTalentTypeContent(passJson.getTalentType());
+        companyUserItem.setCompanyChecked(2);
         companyUserItemService.updateUserItem(companyUserItem);
 
         ItemUserTime itemUserTime = new ItemUserTime();
@@ -597,12 +598,11 @@ public class CompanyController extends BaseController{
 
     @ResponseBody
     @RequestMapping("/back_npass_pass")
-    public Boolean backNPassPass(Integer state,Long userItemId,String companyReason){
+    public Boolean backNPassPass(Integer state,Long userItemId,String reason){
         CompanyUserItem companyUserItem = new CompanyUserItem();
         companyUserItem.setCompanyUserItemId(userItemId);
         companyUserItem.setCompanyChecked(state);
-        companyUserItem.setCompanyReason(companyReason);
-        companyUserItem.setHaveSubmit(false);
+        companyUserItem.setCompanyReason(reason);
         companyUserItemService.updateByPrimaryKeySelective(companyUserItem);
         return true;
     }

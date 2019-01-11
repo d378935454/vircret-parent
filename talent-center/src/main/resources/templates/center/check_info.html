@@ -416,9 +416,43 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @}else {
+                                    <div class="table-responsive">
+                                        <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;">申请详情</div>
+                                        @if(talentTypes!=null){
+                                        <div class="form-group">
+                                            <label class="pull-left control-label">人才分类：</label>
+                                            <div class="form-group col-sm-12" style="padding: 0;">
+                                                @for(talentType in talentTypes){
+                                                <div class="checkbox checkbox-info checkbox-circle checkbox-inline">
+                                                    <input type="radio" @if(talentType.talentTypeId==companyUserItem.talentTypeContent){
+                                                           checked
+                                                           @}
+                                                           id="i_${talentType.talentTypeId}" name="talentType" value="${talentType.talentTypeId}">
+                                                    <label for="i_${talentType.talentTypeId}"> ${talentType.talentTypeName}
+                                                        <br />
+                                                        @if(talentType.payType){
+                                                        月工资的 ${talentType.itemTalentContent}
+                                                        @}else{
+                                                        ￥${talentType.itemTalentContent}
+                                                        @}
+                                                    </label>
+                                                </div>
+                                                @}
+                                            </div>
+                                        </div>
+                                        @}
+                                    </div>
                                     @}
 
-
+                                    <div class="form-group col-sm-12" style="padding: 0;">
+                                        <label class="pull-left control-label">该期时间段：</label>
+                                        <div class="pull-left">
+                                            <input id="item-time" placeholder="请选择时间段" type="text"
+                                                   value='${iut.startTime,"yyyy-MM-dd"} 至 ${iut.endTime,"yyyy-MM-dd"}'
+                                                   autocomplete="off" style="width: 200px">
+                                        </div>
+                                    </div>
 
                                     <div class="form-group col-sm-12" style="padding: 0;">
                                         <label class="pull-left control-label">申请提交时间：</label> <div class="pull-left">${companyUserItem.submitTime,"yyyy-MM-dd"}</div>
@@ -620,7 +654,7 @@
         }
         $.ajax({
             type:"POST",
-            url:"${ctxPath}/company/back_npass_pass",
+            url:"${ctxPath}/center/back_npass_pass",
             data:{
                 state:1,
                 userItemId:userItemId,
@@ -647,7 +681,7 @@
         }
         $.ajax({
             type:"POST",
-            url:"${ctxPath}/company/back_npass_pass",
+            url:"${ctxPath}/center/back_npass_pass",
             data:{
                 state:0,
                 userItemId:userItemId,
@@ -712,7 +746,7 @@
             }
             $.ajax({
                 type:"POST",
-                url:"${ctxPath}/company/pass",
+                url:"${ctxPath}/center/pass",
                 dataType:"json",
                 contentType : "application/json",
                 data:JSON.stringify(data),

@@ -626,7 +626,16 @@ public class CompanyUserController extends BaseController {
         c.setUserId(userId);
         c.setHaveSubmit(true);
         c.setItemId(itemId);
-        if(companyUserItemService.selectOne(c)!=null) return false;
+        Map<String,Object> map = new HashMap<>();
+        map.put("itemId",itemId);
+        map.put("userId",userId);
+        if(companyUserItemService.selectNpassItem(map)>0){
+            return true;
+        }else{
+            if(companyUserItemService.selectOne(c)!=null){
+                return false;
+            }
+        }
 
         Boolean res = true;
         ItemTeamContent itemTeamContent = new ItemTeamContent();

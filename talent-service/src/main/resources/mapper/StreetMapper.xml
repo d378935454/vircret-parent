@@ -45,4 +45,25 @@
     <delete id="delStreetUser" parameterType="Map">
     UPDATE talent_user SET del=0 WHERE street_id IN (${ids});
   </delete>
+
+    <select id="selectStreetItems" parameterType="Map" resultType="java.util.HashMap">
+        SELECT
+	tcui.company_checked,
+    tcui.street_checked,
+	tcui.center_checked,
+	tcui.have_submit,
+	tcui.item_name,
+	tcui.company_user_item_id,
+	tu.real_name,
+	tcui.submit_time
+FROM
+	talent_company_user_item tcui
+LEFT JOIN talent_user tu ON tcui.user_id=tu.user_id
+WHERE
+	tcui.street_checked = #{streetChecked,jdbcType=INTEGER}
+AND tcui.parent_id = 0
+AND tcui.have_submit = 1
+AND tcui.company_checked = 2
+AND tu.company_id IN (${companyIds})
+    </select>
 </mapper>

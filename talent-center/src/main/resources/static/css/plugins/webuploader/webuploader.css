@@ -111,7 +111,7 @@
 	border-width: 1px 0;
 }
 .wu-example:after {
-	content:"示例";
+	content:"";
 	position: absolute;
 	top: 15px;
 	left: 15px;

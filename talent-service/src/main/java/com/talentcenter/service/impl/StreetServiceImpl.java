@@ -1,6 +1,7 @@
 package com.talentcenter.service.impl;
 
 import com.talentcenter.dao.StreetMapper;
+import com.talentcenter.entity.CompanyUserItem;
 import com.talentcenter.entity.Street;
 import com.talentcenter.service.StreetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,5 +88,10 @@ public class StreetServiceImpl implements StreetService {
     @Override
     public int delStreetUser(Map<String, Object> map) {
         return streetMapper.delStreetUser(map);
+    }
+
+    @Override
+    public List<Map<String,Object>>  selectStreetItems(Map<String, Object> map) {
+        return streetMapper.selectStreetItems(map);
     }
 }

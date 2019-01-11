@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_form_layout.html"){
+<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+    <body class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="ibox float-e-margins">
+                <div class="">
+                <form id="search-form">
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="pull-left" style="margin-left:15px;margin-right: 5px;">
+                                <div class="input-group">
+                                    <input type="text" name="itemName" id="item_name" placeholder="政策名称" class="input-sm form-control">
+                                </div>
+                            </div>
+
+                            <div class="pull-left">
+                                <div class="input-group" style="margin-right: 5px;">
+                                    <input placeholder="起始时间" name="userHouseContractTime" id="user-house-contract-time" class="input-sm form-control" type="text"
+                                            value="" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="pull-left" style="margin-right: 5px;">
+                                <div class="input-group">
+                                    <input type="text" name="itemName" id="company-name-search" placeholder="公司名称" class="input-sm form-control">
+                                </div>
+                            </div>
+
+                            <div class="pull-left" style="margin-right: 5px;">
+                                <div class="input-group">
+                                    <input type="text" name="itemName" id="street-name-search" placeholder="街道名称" class="input-sm form-control">
+                                </div>
+                            </div>
+                            &nbsp;&nbsp;&nbsp;
+                            <a onclick="ajax_get_table('search-form',1)" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> 搜索</a>
+                            <div class="ibox-tools">
+                                <a class="collapse-link" data-toggle="collapse" href="#collapseExample" aria-expanded="false" style="margin-right: 10px;">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                            <div class="col-sm-12 collapse" id="collapseExample">
+                                <div class="gray-bg" style="padding: 8px 8px 8px 8px;margin-bottom: 5px;border-radius: 5px;">
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="user-name" name="property[]" value="userName">
+                                        <label for="user-name">姓名</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="user-age" name="property[]" value="userAge">
+                                        <label for="user-age">年龄</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="user-sex" name="property[]" value="userSex">
+                                        <label for="user-sex">性别</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="work-length" name="property[]" value="userWorkLength">
+                                        <label for="work-length">工作年限</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="home-info" name="property[]" value="userHomeInfo">
+                                        <label for="home-info">户口信息</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="birthday" name="property[]" value="userBirthday">
+                                        <label for="birthday">生日</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="card" name="property[]" value="userCard">
+                                        <label for="card">身份证号码</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="school" name="property[]" value="userSchool">
+                                        <label for="school">毕业院校</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="graduation" name="property[]" value="userGraduation">
+                                        <label for="graduation">毕业时间</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="education" name="property[]" value="userEducation">
+                                        <label for="education">学历</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="positional" name="property[]" value="userPositional">
+                                        <label for="positional">职称</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="post" name="property[]" value="userPost">
+                                        <label for="post">职务</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="mobel" name="property[]" value="userMobel">
+                                        <label for="mobel">电话</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="house" name="property[]" value="userHouse">
+                                        <label for="house">住房信息</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="marriage" name="property[]" value="userMarriage">
+                                        <label for="marriage">婚姻状况</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="not-buy-house" name="property[]" value="userNotBuyHouse">
+                                        <label for="not-buy-house">限制购房信息</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="company-name" name="property[]" value="compnayName">
+                                        <label for="company-name">所属单位名称</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="company-type" name="property[]" value="compnayType">
+                                        <label for="company-type">所属单位性质</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="company-nature" name="property[]" value="compnayNature">
+                                        <label for="company-nature">所属单位分类</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="company-street" name="property[]" value="compnayStreet">
+                                        <label for="company-street">所属单位街道</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="item" name="property[]" value="itemName">
+                                        <label for="item">政策</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="item-type" name="property[]" value="itemType">
+                                        <label for="item-type">政策分类</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="item-service-type" name="property[]" value="itemServiceType">
+                                        <label for="item-service-type">政策服务方式</label>
+                                    </div>
+
+                                    <div class="checkbox checkbox-inline">
+                                        <input type="checkbox" id="item-content" name="property[]" value="itemContent">
+                                        <label for="item-content">政策服务内容</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive" id="ajax_return">
+
+                        </div>
+
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+@}
+</body>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script type="text/javascript">
+    var cur_page=1;
+    $(document).ready(function(){
+        ajax_get_table('search-form',1);
+    });
+
+    laydate.render({
+        elem: '#user-house-contract-time',
+        range: '至',
+        format: 'yyyy-MM-dd'
+    });
+
+    function ajax_get_table(tab,page){
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type : "POST",
+            url:"${ctxPath}/item/ajax_index?pageNum="+page+"&pageSize=20",//+tab,
+            data : $('#'+tab).serialize(),// 你的formid
+            success: function(data){
+                $("#ajax_return").html('');
+                $("#ajax_return").append(data);
+            }
+        });
+    }
+
+    $("#batch_del").click(function () {
+        var num = $("input[class='i-checks']:checked").length;
+        if(num==0){
+            swal({type: "warning", title: "", text: "请正确选择要删除的项目。"})
+        }else {
+            swal({
+                title: "您确定要删除这 "+num+" 条信息吗",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "删除",
+                closeOnConfirm: false
+            }, function () {
+                var delIds = "";
+                $("input[class='i-checks']:checked").each(function(i){
+                    if(0==i){
+                        delIds = $(this).val();
+                    }else{
+                        delIds += (","+$(this).val());
+                    }
+                });
+
+                $.ajax({
+                    type : "POST",
+                    url:"${ctxPath}/item/batch_del",//+tab,
+                    data : {
+                        ids: delIds
+                    },
+                    success: function(data){
+                        if(data['status']==1){
+                            swal("成功删除"+data['body']+"条数据", "", "success")
+                            // setTimeout('window.location.href="/user/index.html"',900);
+                            ajax_get_table('search-form',cur_page);
+                        }else{
+                            swal({type: "warning", title: "", text: data['body']})
+                        }
+                    }
+                });
+            })
+        }
+    });
+</script>
+</html>

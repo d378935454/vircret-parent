@@ -178,17 +178,22 @@
                         <div class="col-sm-3">
                             <div class="i-checks">
                                 <label>
-                                    <input type="radio" value="0" @if(obj.itemConfigContactTime==0){
+                                    <input type="checkbox" value="0" @if(obj.itemConfigContactTime==0){
                                            checked
                                            @}
                                            checked name="itemConfigContactTime"> <i></i> 劳动合同</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="radio" value="1" @if(obj.itemConfigContactTime==1){
+                                    <input type="checkbox" value="1" @if(obj.itemConfigContactTime==1){
                                            checked
                                            @}
                                            name="itemConfigContactTime"> <i></i> 租房合同</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="radio" value="2" @if(obj.itemConfigContactTime==2){
+                                    <input type="checkbox" value="3" @if(obj.itemConfigContactTime==1){
+                                           checked
+                                           @}
+                                           name="itemConfigContactTime"> <i></i> 社保记录</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="checkbox" value="2" @if(obj.itemConfigContactTime==2){
                                            checked
                                            @}
                                            name="itemConfigContactTime"> <i></i> 不关联</label>

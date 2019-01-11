@@ -65,6 +65,7 @@ public class IndexController extends BaseController {
             if (childMenus.size() > 0) menus.get(i).setChildMenus(childMenus);
         }
         model.addAttribute("menus", menus);
+        model.addAttribute("user", sessionUser);
         //        menuService.select();
         return "/index.html";
     }

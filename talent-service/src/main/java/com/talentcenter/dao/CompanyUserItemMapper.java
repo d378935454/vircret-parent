@@ -25,4 +25,6 @@ public interface CompanyUserItemMapper extends BaseMapper<CompanyUserItem> {
     int updateUserItem(CompanyUserItem companyUserItem);
 
     int delByParentId(Long parentId);
+
+    int selectNpassItem(Map<String,Object> map);
 }

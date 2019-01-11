@@ -19,7 +19,7 @@
     <tr>
         <td><input type="checkbox" class="i-checks" name="input[]" value="${list.noticeId}"></td>
         <td>${list.noticeName}</td>
-        <td>${list.noticeContent}</td>
+        <td style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;max-width: 300px;">${list.noticeContent}</td>
         <td>
             @if(list.noticeReadeType==0){
             否

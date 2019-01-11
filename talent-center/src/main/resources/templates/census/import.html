@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+@layout("/layout/_form_layout.html"){
+<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+<link href="/css/plugins/webuploader/webuploader.css" rel="stylesheet" type="text/css">
+<link href="/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+    .m3 {
+        margin-left: 3px;
+    }
+
+    .pr5 {
+        padding-right: 80px;
+    }
+    .w12 {
+        width: 12.333333%;
+    }
+
+    .w3 {
+        width: 2.6%;
+        padding: 0;
+        cursor: pointer;
+        font-size: 30px;
+        top: -26px;
+    }
+    .w9{
+        width: 9%;
+    }
+    .w18 {
+        width: 18%;
+    }
+    .w30{
+        width: 30.33333%;
+    }
+    .pr0 {
+        padding-right: 0;
+    }
+    .pl0{
+        padding-left: 0;
+        width: 97%;
+    }
+    .has-error:focus {
+        border-color: #ed5565;
+    }
+    .mt3{
+        margin-bottom: 8px;
+    }
+    .has-error {
+        border-color: #ed5565;
+    }
+    .form-group {
+        padding-top: 15px;
+        padding-bottom: 10px;
+        margin: 0;
+        border-bottom-width: 1px;
+        border-bottom-style: dashed;
+        border-bottom-color: #46ac89;
+    }
+    .i1{
+        background-color: #1cc09f;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div id="uploader" class="wu-example">
+                    <!--用来存放文件信息-->
+                    <div id="thelist" class="uploader-list"></div>
+                    <div class="btns">
+                        <div id="picker">选择文件</div>
+                        <button id="ctlBtn" class="btn btn-default">上传并保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@}
+
+</body>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/plugins/webuploader/webuploader.js"></script>
+<script src="/js/plugins/webuploader/upload.js"></script>
+<script src="/js/plugins/jasny/jasny-bootstrap.min.js"></script>
+<script src="/js/card.js"></script>
+<script type="text/javascript">
+
+    $("#add_item").click(function () {
+        /*var del = '<span class="col-sm-1 w3" onclick="del_item(this)"><i class="fa fa-close text-danger"></i></span>';
+        var item = '<div class="form-group col-sm-12">'+$("#itme1").html()+del+'</div>';*/
+        var idSort = 0;
+        if ($(".form-group").length > 0) {
+            idSort = parseInt($(".form-group:last").attr("id")) + 1;
+            if (!checkForm(idSort - 1)) return;
+        }
+
+
+        var spanStart = '<span class="form-group col-sm-12 pl0 i0" id="a0"';
+        var spanEnd = '</span>';
+
+        var divStart = '<div class="form-group col-sm-12">';
+        var divEnd = '</div>';
+
+        var spanW6Start = '<span class="col-sm-6">';
+        var spanW6Start = '<span class="col-sm-12">';
+
+        var spanStartT3 = '<span class="col-sm-12 pl0 mt3" id="fst' + idSort + '">';
+        var spanStartT = '<span class="col-sm-12 pl0" id="fs' + idSort + '">';
+        var spanStartW12 = '<span class="col-sm-2 w12 pr0">';
+        var spanStartW18 = '<span class="col-sm-2 w18 pr0">';
+        var spanStartW9 = '<span class="col-sm-2 w9 pr0">';
+        var spanStartW30 = '<span class="col-sm-2 w30 pr0">';
+        // var spanStartW3 = '<span class="col-sm-2 w3 pr0">';
+
+
+
+        var inputName = spanStartW12 + '<input placeholder="姓名 例：小明" name="studentName[]" id="name' + idSort + '" id_sort="' + idSort + '" class="form-control student_name" type="text">' + spanEnd;
+        var inputCode = spanStartW9 + '<input placeholder="学号" name="studentCode[]" id="code' + idSort + '" id_sort="' + idSort + '" class="form-control student_name" type="text">' + spanEnd;
+        var inputProvince = spanStartW9 + '<input placeholder="省份" name="province[]" id="province'+ idSort +'" id_sort="' + idSort + '" class="form-control province" type="text">' + spanEnd;
+        var inputDistrict = spanStartW9 + '<input placeholder="区县" name="district[]" id="district'+ idSort +'" id_sort="' + idSort + '" class="form-control district" type="text">' + spanEnd;
+        var inputAddress = spanStartW30 + '<input placeholder="户口地址" name="address[]" id="address'+ idSort +'" id_sort="' + idSort + '" class="form-control address" type="text">' + spanEnd;
+        var contactName = spanStartW9 + '<input placeholder="联系人" name="contactName[]" id="contact_name'+ idSort +'" id_sort="' + idSort + '" class="form-control contact_name" type="text">' + spanEnd;
+        var contactNum = spanStartW12 + '<input placeholder="联系电话" name="contactNum[]" id="contact_num'+ idSort +'" id_sort="' + idSort + '" class="form-control contact_num" type="text">' + spanEnd;
+        var nowAddress = spanStartW30 + '<input placeholder="现居地址" name="nowAddress[]" id="now_address'+ idSort +'" id_sort="' + idSort + '" class="form-control now_address" type="text">' + spanEnd;
+        var inputCard = spanStartW18 + '<input name="studentCardNum[]" onkeyup="checkIdCard(this)" placeholder="身份证号码" data-mask="999 999 9999 9999 9999" id="card' + idSort + '" id_sort="' + idSort + '" class="form-control student_card_num" type="text">' + spanEnd;
+        var inputAge = spanStartW9 + '<input name="studentAge[]" placeholder="年龄" id="age' + idSort + '" id_sort="' + idSort + '" class="form-control student_age" type="text">' + spanEnd;
+        var inputSex = spanStartW9 + '<select name="studentSex[]" id="sex' + idSort + '" id_sort="' + idSort + '" class="form-control sex"> <option value="">性别</option> <option value="1">男</option> <option value="2">女</option> </select>' + spanEnd;
+
+        var del = '<span class="col-sm-1 w3" id="d' + idSort + '" id_sort="' + idSort + '" onclick="del_item(this)"><i class="fa fa-close text-danger"></i></span>';
+
+        var inputYear = "";
+        var options = "";
+        var inputClass = "";
+        var inputAliId = "";
+
+        if ($(".form-group").length == 0) {
+            inputYear = spanStartW12 + '<input name="classYear[]" id="year' + idSort + '" id_sort="' + idSort + '" class="form-control class_year" value="${cur_year}" type="text" required>' + spanEnd;
+            options = $("#opt_str").html();
+            inputClass = spanStartW12 + '<select name="classId[]" id="clazz' + idSort + '" id_sort="' + idSort + '" class="form-control" required><option value="">选择班级</option>' + options + '</select>' + spanEnd;
+            inputAliId = spanStartW18 + '<input placeholder="学籍副号" name="studentAliId[]" id="ali' + idSort + '" id_sort="0" class="form-control student_name" type="text">' + spanEnd;
+        } else {
+            var preId = idSort - 1;
+            var preYearId = "year" + preId;
+            var preClass = "clazz" + preId;
+            var preAli = "ali" + preId;
+            var yearValue = $("#" + preYearId).val();
+            var options = $("#" + preClass).html();
+
+            var aliValue = $("#" + preAli).val().substring(0,$("#" + preAli).val().length-3);
+            var preClassValue = $("#" + preClass).val();
+            var curClassId = "clazz" + idSort;
+
+            var index = $("#ddlRegType").find("option:selected").selectedIndex;
+
+            inputYear = spanStartW12 + '<input name="classYear[]" id="year' + idSort + '" id_sort="' + idSort + '" class="form-control class_year" value="' + yearValue + '" type="text" required>' + spanEnd;
+            inputClass = spanStartW12 + '<select name="classId[]" id="clazz' + idSort + '" id_sort="' + idSort + '" class="form-control" required>' + options + '</select>' + spanEnd;
+            inputAliId = spanStartW18 + '<input placeholder="学籍副号" name="studentAliId[]" id="ali' + idSort + '" id_sort="0" value="'+ aliValue +'" class="form-control student_name" type="text">' + spanEnd;
+        }
+
+        var top = spanStartT3 + inputName + inputCode + inputYear + inputClass + inputCard + inputAge + inputSex + inputAliId + spanEnd;
+        var bottom = spanStartT + inputProvince + inputDistrict + inputAddress + contactName + contactNum + nowAddress + spanEnd;
+
+        var htmlStr = divStart + top + bottom + del + divEnd;
+
+        $("#viladate_form").append(htmlStr);
+        $("#" + curClassId).val(preClassValue);
+
+        addYear(idSort);
+    });
+
+    function del_item(obj) {
+        $(obj).parent().remove();
+    }
+
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    function addYear(idSort) {
+        var id = "#year" + idSort
+        var classId = "clazz" + idSort;
+        laydate.render({
+            elem: id,//指定元素
+            type: 'year',
+            format: 'yyyy学年',
+            yearStr: "学年",
+            done: function (value, date, endDate) {
+                $.ajax({
+                    type: "POST",
+                    url: "${ctxPath}/clazz/get_tree",
+                    data: {
+                        classYear: date.year
+                    },
+                    success: function (data) {
+                        var optStr = "<option>选择班级</option>";
+                        $.each(data, function (i, v) {
+                            var optTemp = "";
+                            if (v['classes'] != null) {
+                                $.each(v['classes'], function (i1, v1) {
+                                    optTemp += "<option value='" + v1["classId"] + "'>" + v1["className"] + "</option>"
+                                })
+                            }
+
+                            optStr += "<optgroup label='" + v["gradeName"] + "'>" + optTemp + "</optgroup>"
+                        });
+                        $("#" + classId).html(optStr);
+                    }
+                });
+            }
+        });
+    }
+
+    function checkForm(idSort) {
+        var nameId = "name" + idSort;
+        var yearId = "year" + idSort;
+        var clazzId = "clazz" + idSort;
+        var sexId = "sex"+idSort;
+        /*var ageId = "sa"+idSort;
+        var sexId = "ss"+idSort;
+        var cardId = "c"+idSort;*/
+        var errorMsg = '';
+
+        var isError = true;
+
+        if ($("#" + nameId).val().length == 0) {
+            if ($("#" + nameId + "-error").html() == undefined) {
+                errorMsg = '<span id="' + nameId + '-error" class="help-block m-b-none"><i class="fa fa-times-circle"></i> 请填写姓名</span>';
+                $("#" + nameId).parent().append(errorMsg);
+                $("#" + nameId).parent().addClass("has-error");
+
+            }
+            isError = false;
+        } else if ($("#" + nameId).val().length < 2) {
+            if ($("#" + nameId + "-error").html() == undefined) {
+                errorMsg = '<span id="' + nameId + '-error" class="help-block m-b-none"><i class="fa fa-times-circle"></i> 姓名长度至少为2</span>';
+                $("#" + nameId).parent().append(errorMsg);
+                $("#" + nameId).parent().addClass("has-error");
+            }
+            isError = false;
+        } else {
+            $("#" + nameId + "-error").remove();
+            $("#" + nameId).parent().removeClass("has-error");
+        }
+
+        if ($("#" + clazzId).val() == "") {
+            if ($("#" + clazzId + "-error").html() == undefined) {
+                errorMsg = '<span id="' + clazzId + '-error" class="help-block m-b-none"><i class="fa fa-times-circle"></i> 请选择学生所属班级</span>';
+                $("#" + clazzId).parent().append(errorMsg);
+                $("#" + clazzId).parent().addClass("has-error");
+            }
+            isError = false;
+        } else {
+            $("#" + clazzId + "-error").remove();
+            $("#" + clazzId).parent().removeClass("has-error");
+        }
+
+        if ($("#" + sexId).val() == "") {
+            if ($("#" + sexId + "-error").html() == undefined) {
+                errorMsg = '<span id="' + sexId + '-error" class="help-block m-b-none"><i class="fa fa-times-circle"></i> 选择性别</span>';
+                $("#" + sexId).parent().append(errorMsg);
+                $("#" + sexId).parent().addClass("has-error");
+            }
+            isError = false;
+        } else {
+            $("#" + sexId + "-error").remove();
+            $("#" + sexId).parent().removeClass("has-error");
+        }
+
+        return isError;
+    }
+
+    function checkIdCard(obj) {
+        var idCard = $(obj).val().replace(/\s+/g,"");
+        console.log(idCard);
+        var sort = $(obj).attr("id_sort");
+        var ageId = "age" + sort;
+        var sexId = "sex" + sort;
+        var provinceId = "province" + sort;
+        var districtId = "district" + sort;
+        if (IdCardUtils.isIdCard18(idCard)) {
+            var info = IdCardUtils.getPersonInfo18(idCard);
+            $("#" + ageId).val(info.age);
+            $("#" + provinceId).val(info.province);
+            $("#" + districtId).val(info.district);
+            if (info.sex == "M") {
+                $("#" + sexId).val(1);
+            } else {
+                $("#" + sexId).val(2);
+            }
+            $(obj).removeClass("has-error");
+        } else {
+            $("#" + sexId).val("");
+            $("#" + ageId).val("");
+            $("#" + provinceId).val("");
+            $("#" + districtId).val("");
+            $(obj).addClass("has-error");
+        }
+    }
+
+    $("#save").click(function () {
+        var isCheck = true;
+        if ($(".form-group").length == 0) isCheck = false;
+        $(".form-group").each(function () {
+            if (!checkForm($(this).attr("id"))) isCheck = false;
+        });
+
+        if (isCheck) {
+            $.ajax({
+                type: "POST",
+                url: "${ctxPath}/student/batch_add_student",//+tab,
+                data: $('#viladate_form').serialize(),
+                success: function (data) {
+                    if (data['status'] == 1) {
+                        toastr.success(data['body']);
+                        setTimeout('window.location.href="/student/index.html"', 900);
+                    } else {
+                        toastr.success(data['body']);
+                    }
+                }
+            });
+        }
+
+    });
+
+</script>
+</html>

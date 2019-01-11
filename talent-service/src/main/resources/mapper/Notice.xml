@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.talentcenter.dao.NoticeMapper">
+    <resultMap id="BaseResultMap" type="com.talentcenter.entity.Notice">
+        <id column="notice_id" jdbcType="INTEGER" property="noticeId" />
+        <result column="notice_name" jdbcType="VARCHAR" property="noticeName" />
+        <result column="notice_reade_type" jdbcType="BIT" property="noticeReadeType" />
+        <result column="notice_type" jdbcType="INTEGER" property="noticeType" />
+        <result column="notice_content" jdbcType="INTEGER" property="noticeContent" />
+        <result column="del" jdbcType="BIT" property="del" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="create_id" jdbcType="INTEGER" property="createId" />
+        <result column="create_name" jdbcType="VARCHAR" property="createName" />
+        <result column="update_id" jdbcType="INTEGER" property="updateId" />
+        <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+        <result column="memo" jdbcType="VARCHAR" property="memo" />
+    </resultMap>
+
     <delete id="batchDel" parameterType="Map">
     UPDATE talent_notice SET del=0 WHERE notice_id IN (${ids});
   </delete>
+    <sql id="Base_Column_List">
+    notice_id, notice_name, notice_reade_type, notice_type, notice_content, del, create_time, update_time,
+    create_id, create_name, update_id, update_name, memo
+  </sql>
+    <sql id="where">
+        <where>
+            <if test="noticeType !=null">
+                AND notice_type = #{noticeType,jdbcType=INTEGER} OR notice_type = 2
+            </if>
+
+            AND del != 0
+        </where>
+    </sql>
+
+    <select id="selectIndexNotic" parameterType="com.talentcenter.entity.Notice" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" /> from talent_notice
+        <include refid="where"/>
+    </select>
 </mapper>

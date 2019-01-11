@@ -103,11 +103,18 @@
         `type` = #{type,jdbcType=INTEGER},
         amount = #{amount,jdbcType=DECIMAL},
         memo = #{memo,jdbcType=VARCHAR},
-        talent_type_content = #{talentTypeContent,jdbcType=BIGINT}
+        talent_type_content = #{talentTypeContent,jdbcType=BIGINT},
+        company_checked = 2
         where company_user_item_id = #{companyUserItemId,jdbcType=BIGINT}
     </update>
 
     <delete id="delByParentId" parameterType="java.lang.Long">
         delete from talent_company_user_item where parent_id=#{parentId,jdbcType=BIGINT}
     </delete>
+    
+    <select id="selectNpassItem" resultType="int">
+        select count(1) from talent_company_user_item where
+        (company_checked = 0 or  street_checked = 0 or center_checked = 0) and
+        item_id = #{itemId,jdbcType=BIGINT} and user_id = #{userId,jdbcType=BIGINT}
+    </select>
 </mapper>

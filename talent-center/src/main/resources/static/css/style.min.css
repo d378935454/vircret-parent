@@ -169,9 +169,8 @@ h5
 }.nav-header
 {
     padding: 33px 25px;
-
     background: url(patterns/header-profile.png) no-repeat;
-}.nav > li.active
+} .nav > li.active
 {
     border-left: 4px solid #19aa8d;
     background: #293846;
@@ -377,7 +376,7 @@ body.mini-navbar .profile-element
 }body.mini-navbar .nav-header
 {
     padding: 0;
-
+    background: none;
     background-color: #1ab394;
 }body.canvas-menu .nav-header
 {
@@ -6147,6 +6146,8 @@ body.rtls.top-navigation .footer.fixed
 }.content-tabs
 {
     border-bottom: solid 2px #2f4050;
+    /*border-bottom: solid 2px #34b394;*/
+    /*border-bottom: solid 2px #1a7ec0;*/
 }.page-tabs a
 {
     color: #999;

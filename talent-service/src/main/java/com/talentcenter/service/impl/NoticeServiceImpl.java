@@ -84,4 +84,9 @@ public class NoticeServiceImpl implements NoticeService {
     public int batchDel(Map<String, Object> map) {
         return noticeMapper.batchDel(map);
     }
+
+    @Override
+    public List<Notice> selectIndexNotic(Notice notice) {
+        return noticeMapper.selectIndexNotic(notice);
+    }
 }

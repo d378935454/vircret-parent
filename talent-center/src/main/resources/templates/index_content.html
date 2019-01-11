@@ -1,77 +1,107 @@
 <!DOCTYPE html>
 <html>
 @layout("/layout/_list_layout.html"){
-<link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
-    <body class="wrapper wrapper-content animated fadeInRight">
+<style>
+    .right-qr{
+        width: 22px;
+        height: 170px;
+        position: absolute;
+        background: #34b394;
+        top: 0px;
+        right: 302px;
+        border-bottom-left-radius: 5px;
+        border-top-left-radius: 5px;
+        display: flex;
+        align-items:center;
+        padding-left:6px;
+        color: #FFFFFF;
+        cursor: pointer;
+    }
+    #qrcode{
+        position: absolute;
+        right: -307px;
+        /*top: 55px;*/
+        z-index: 99999;
+        background: #f3f3f4;
+     }
+    .qr-img{
+        border: #34b394 1px solid;
+    }
+
+</style>
+    <body class="gray-bg">
         <div class="row">
             <div class="ibox float-e-margins">
+                <div class="col-sm-12">
+                    <div class="col-sm-6 left-content" style="overflow-y: auto">
+                        <div class="ibox-title">
+                            <h5>公告内容</h5> <span class="label label-primary">N+</span>
+                        </div>
+                        <div class="ibox-content" style="height: 550px;">
+                            <div id="n-title" class="text-center">
 
+                            </div>
+                            <div id="n-content">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6"  style="overflow-y: auto">
+                        <div class="ibox-title">
+                            <h5>公告列表</h5> <span class="label label-primary">L+</span>
+                        </div>
+                        <div class="ibox-content right-list" style="height: 550px;">
+                        </div>
+                    </div>
+                    <div id="qrcode">
+                        <div class="right-qr h">
+                            公众号二维码
+                        </div>
+                        <div class="qr-img">
+                            <img height="300" src="/img/qrcode_fxrcfwzc_1.jpg" />
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
 @}
 </body>
-<script src="/js/plugins/layer/laydate/laydate.js"></script>
 <script type="text/javascript">
 
-    laydate.render({
-        elem: '#exam_time'
-        ,range: true
+    var cur_page=1;
+    $(document).ready(function(){
+        ajax_get_table('search-form',1);
+    });
+
+    $('.right-qr').click(function () {
+        if($(this).hasClass("h")){
+            $('#qrcode').animate({right:'-5px'},300);
+            $(this).removeClass("h");
+        }else{
+            $('#qrcode').animate({right:'-307px'},300);
+            $(this).addClass("h");
+        }
     });
 
     function ajax_get_table(tab,page){
         cur_page = page; //当前页面 保存为全局变量
         $.ajax({
             type : "POST",
-            url:"${ctxPath}/item/ajax_index?pageNum="+page+"&pageSize=20",//+tab,
+            url:"${ctxPath}/notice/ajax_index_content?pageNum="+page+"&pageSize=5",//+tab,
             data : $('#'+tab).serialize(),// 你的formid
             success: function(data){
-                $("#ajax_return").html('');
-                $("#ajax_return").append(data);
+                $(".right-list").html('');
+                $(".right-list").append(data);
+                $('#n-title').html('<h2>'+$('.notice-title:first').html()+'</h2>');
+                $('#n-content').html($('.real-content:first').html());
             }
         });
     }
-
-    $("#batch_del").click(function () {
-        var num = $("input[class='i-checks']:checked").length;
-        if(num==0){
-            swal({type: "warning", title: "", text: "请正确选择要删除的项目。"})
-        }else {
-            swal({
-                title: "您确定要删除这 "+num+" 条信息吗",
-                text: "",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "删除",
-                closeOnConfirm: false
-            }, function () {
-                var delIds = "";
-                $("input[class='i-checks']:checked").each(function(i){
-                    if(0==i){
-                        delIds = $(this).val();
-                    }else{
-                        delIds += (","+$(this).val());
-                    }
-                });
-
-                $.ajax({
-                    type : "POST",
-                    url:"${ctxPath}/item/batch_del",//+tab,
-                    data : {
-                        ids: delIds
-                    },
-                    success: function(data){
-                        if(data['status']==1){
-                            swal("成功删除"+data['body']+"条数据", "", "success")
-                            // setTimeout('window.location.href="/user/index.html"',900);
-                            ajax_get_table('search-form',cur_page);
-                        }else{
-                            swal({type: "warning", title: "", text: data['body']})
-                        }
-                    }
-                });
-            })
-        }
-    });
+    
+    function changeNotice(obj) {
+        $('#n-title').html('<h2>'+$(obj).children('h3').children('.notice-title').html()+'</h2>');
+        $('#n-content').html($(obj).children('.real-content').html());
+    }
 </script>
 </html>

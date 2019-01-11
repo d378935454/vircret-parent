@@ -70,6 +70,36 @@ public class NoticeController extends BaseController{
         return "/notice/ajax_index.html";
     }
 
+    @RequestMapping("/ajax_index_content")
+    public String ajaxIndexContent(Model model, int pageNum, int pageSize,
+                            @RequestParam(required = false) String noticeName
+    ){
+        //组装搜索条件
+        User sessionUser = getSessionUser();
+        Notice notice = new Notice();
+        notice.setDel(true);
+        if(sessionUser.getUserNature()==1){
+            notice.setNoticeType(0);
+        }
+        if(sessionUser.getUserNature()==3){
+            notice.setNoticeType(1);
+        }
+        //分页查询
+        PageHelper.startPage(pageNum, pageSize);
+        List<Notice> notices = noticeService.selectIndexNotic(notice);
+
+        for (Notice n: notices) {
+            n.setRealNoticeContent(n.getNoticeContent());
+            n.setNoticeContent(delHTMLTag(n.getNoticeContent()));
+        }
+
+        PageInfo<Notice> pageInfo= new PageInfo<>(notices);
+        String pageStr = makePageHtml(pageInfo);
+        model.addAttribute("page_info",pageInfo);
+        model.addAttribute("pages",pageStr);
+        return "/notice/ajax_index_content.html";
+    }
+
     @RequestMapping("add.html")
     public String addUI(Model model) {
 

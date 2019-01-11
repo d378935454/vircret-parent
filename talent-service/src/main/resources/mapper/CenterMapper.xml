@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.talentcenter.dao.CompanyMapper">
-    <delete id="batchDel" parameterType="Map">
-    UPDATE talent_company SET del=0 WHERE company_id IN (${ids});
-  </delete>
-    <select id="selectCompanyCheckedItem" parameterType="Map" resultType="java.util.HashMap">
+<mapper namespace="com.talentcenter.dao.CenterMapper">
+
+    <select id="selectCenterItemCheckedItem" parameterType="Map" resultType="java.util.HashMap">
         SELECT
 	tcui.company_checked,
 	tcui.street_checked,
@@ -18,9 +16,9 @@ FROM
 	talent_company_user_item tcui
 LEFT JOIN talent_user tu ON tcui.user_id=tu.user_id
 WHERE
-	tcui.company_checked = #{companyChecked,jdbcType=INTEGER}
+	tcui.center_checked = #{centerChecked,jdbcType=INTEGER}
 AND tcui.parent_id = 0
 AND tcui.have_submit = 1
-AND tu.company_id = #{companyId,jdbcType=BIGINT}
+AND tcui.street_checked = 4
     </select>
 </mapper>

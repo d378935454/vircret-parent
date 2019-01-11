@@ -23,4 +23,6 @@ public interface CompanyUserItemService extends BaseService<CompanyUserItem> {
     int updateUserItem(CompanyUserItem companyUserItem);
 
     int delByParentId(Long parentId);
+
+    int selectNpassItem(Map<String,Object> map);
 }

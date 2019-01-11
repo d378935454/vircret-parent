@@ -1,0 +1,20 @@
+    @for(list in page_info.list){
+    <div class="search-result" onclick="changeNotice(this)">
+        <h3><a class="notice-title">${list.noticeName}</a></h3>
+        <span class="search-link">发布时间：${list.createTime,"yyyy-MM-dd"}</span>
+        <p style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" class="notice-content">
+            ${list.noticeContent}
+        </p>
+        <span style="display: none" class="real-content">${list.realNoticeContent}</span>
+    </div>
+    <div class="hr-line-dashed"></div>
+    @}
+    <div class="col-sm-8 pull-right text-right">${pages}</div>
+    <script>
+        $(".pagination  a").click(function(){
+            var page = this.attributes["data-p"].nodeValue;
+            ajax_get_table('search-form',page);
+            /*console.log(this.attributes["data-p"].nodeValue);
+            console.log(this.attr('data-p'));*/
+        });
+    </script>
