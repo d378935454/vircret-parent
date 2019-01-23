@@ -154,7 +154,7 @@ public class CenterController extends BaseController{
         model.addAttribute("company",c);
         model.addAttribute("cufs",cuf);
         model.addAttribute("ic",ic);
-        model.addAttribute("itcs",itemTalentContents);
+        model.addAttribute("talentTypes",itemTalentContents);
         model.addAttribute("items",items);
         model.addAttribute("tc",typeCategory);
         model.addAttribute("ics",ics);

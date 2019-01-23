@@ -199,4 +199,6 @@ public class CompanyUserInfo implements Serializable {
     private Float companyUserSocietySave2;
 
     private Integer updateTimes;
+
+    private Float companyUserHouseArea;
 }

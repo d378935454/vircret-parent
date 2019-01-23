@@ -362,7 +362,7 @@ public class StreetController extends BaseController{
         model.addAttribute("company",c);
         model.addAttribute("cufs",cuf);
         model.addAttribute("ic",ic);
-        model.addAttribute("itcs",itemTalentContents);
+        model.addAttribute("talentTypes",itemTalentContents);
         model.addAttribute("items",items);
         model.addAttribute("tc",typeCategory);
         model.addAttribute("ics",ics);
@@ -413,7 +413,7 @@ public class StreetController extends BaseController{
         itemUserTimeService.updateItemUserTime(itemUserTime);
 
         companyUserItemService.delByParentId(passJson.getUserItemId());
-        if(passJson.getItems().size()>0){
+        if(passJson.getItems()!=null){
             List<CompanyUserItem> companyUserItems = new ArrayList<>();
             for (ItemJson itemJson : passJson.getItems()) {
                 Item item = itemService.selectByPrimaryKey(itemJson.getItem());

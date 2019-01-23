@@ -160,7 +160,8 @@
                         <label class="col-sm-4 control-label">在申请单位开始工作时间：</label>
                         <div class="col-sm-8">
                             <input id="company-user-work-start" name="companyUserWorkStart" class="form-control" type="text"
-                                   value="${obj.companyUserWorkStart}" required>
+                                   value='${obj.companyUserWorkStart,"yyyy-MM-dd"}'
+                                   required>
                         </div>
                     </div>
 
@@ -223,7 +224,7 @@
                     <div class="form-group">
                         <label for="company_user_positional" class="col-sm-4 control-label">最高职称：</label>
                         <div class="col-sm-8">
-                            <select name="companyUserPositional" id="company_user_positional" class="form-control">
+                            <select name="companyUserPositional" id="company_user_positional" class="form-control" required>
                                 <option value="">--请选择--</option>
                                 <option @if(obj.companyUserPositional==0){
                                         selected
@@ -258,10 +259,7 @@
                             <input id="company_user_tel" name="companyUserTel" class="form-control" value="${obj.companyUserTel}" type="number">
                         </div>
                     </div>
-                    <!--分割线-->
-                    <div>
-                        <HR align=center width=1000 color=#696969 SIZE=10>
-                    </div>
+
                     <div class="form-group">
                         <label class="col-sm-4 control-label">劳动合同期限(起始～终止)：</label>
                         <div class="col-sm-8">
@@ -277,6 +275,23 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="company_user_bank_no" class="col-sm-4 control-label">申请人银行卡号：</label>
+                        <div class="col-sm-8">
+                            <input id="company_user_bank_no" name="companyUserBankNo" class="form-control" type="number"
+                                   value="${obj.companyUserBankNo}"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="company_user_bank" class="col-sm-4 control-label">开户行地址：</label>
+                        <div class="col-sm-8">
+                            <input id="company_user_bank" name="companyUserBank" class="form-control" type="text"
+                                   value="${obj.companyUserBank}"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!--<div class="form-group">
                         <label class="col-sm-4 control-label">最近18个月社保缴费基数：</label>
                         <div class="col-sm-4">
                             <input placeholder="请选择起始时间" id="user-society-save-time1" name="userSocietySaveTime1"
@@ -310,198 +325,183 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">最近18个月个税缴费基数：</label>
-                        <div class="col-sm-4">
-                            <input placeholder="请选择起始时间" id="user-iit" name="userIitTime"
-                                   class="form-control" type="text"
-                                   @if(obj.companyUserIitBegin!=null && obj.companyUserIitEnd!=null){
-                                   value='${obj.companyUserIitBegin,"yyyy-MM-dd"} 至 ${obj.companyUserIitEnd,"yyyy-MM-dd"}'
-                                   @}else{
-                                   value=""
-                                   @}
-                            >
-                        </div>
-                        <div class="col-sm-4">
-                            <input placeholder="缴费基数" name="companyUserIit"
-                                   class="form-control" type="text" value="${obj.companyUserIit}">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="company_user_bank_no" class="col-sm-4 control-label">申请人银行卡号：</label>
-                        <div class="col-sm-8">
-                            <input id="company_user_bank_no" name="companyUserBankNo" class="form-control" type="number"
-                                   value="${obj.companyUserBankNo}"
-                                   required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="company_user_bank" class="col-sm-4 control-label">开户行地址：</label>
-                        <div class="col-sm-8">
-                            <input id="company_user_bank" name="companyUserBank" class="form-control" type="text"
-                                   value="${obj.companyUserBank}"
-                                   required>
-                        </div>
-                    </div>
-
-                    <div style="width: 1000px;">
-                        <HR align=center width=1000 color=#696969 SIZE=10 style="margin-bottom: 5px;">
-                        <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
-                            住房信息
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">类型：</label>
-                        <div class="col-sm-8">
-                            <select name="companyUserHouseType" id="company-user-house-type" class="col-sm-4 form-control">
-                                <option @if(obj.companyUserHouseType==0){
-                                        selected
-                                        @}
-                                        value="0">租房</option>
-                                <option @if(obj.companyUserHouseType==1){
-                                        selected
-                                        @}
-                                        value="1">购房</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">租房合同起始日期：</label>
-                        <div class="col-sm-8">
-                            <input  placeholder="请选择合同起始时间" name="userHouseContractTime" id="user-house-contract-time" class="form-control" type="text"
-                                    @if(obj.companyUserHouseContractTimeBegin!=null && obj.companyUserHouseContractTimeEnd!=null){
-                                    value='${obj.companyUserHouseContractTimeBegin,"yyyy-MM-dd"} 至 ${obj.companyUserHouseContractTimeEnd,"yyyy-MM-dd"}'
+                     <div class="form-group">
+                         <label class="col-sm-4 control-label">最近18个月个税缴费基数：</label>
+                         <div class="col-sm-4">
+                             <input placeholder="请选择起始时间" id="user-iit" name="userIitTime"
+                                    class="form-control" type="text"
+                                    @if(obj.companyUserIitBegin!=null && obj.companyUserIitEnd!=null){
+                                    value='${obj.companyUserIitBegin,"yyyy-MM-dd"} 至 ${obj.companyUserIitEnd,"yyyy-MM-dd"}'
                                     @}else{
                                     value=""
                                     @}
-                            >
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">价格：</label>
-                        <div class="col-sm-8">
-                            <input name="companyUserHousePrice" id="company-user-house-price" placeholder="" class="form-control" value="${obj.companyUserHousePrice}" type="number">
-                        </div>
-                    </div>
+                             >
+                         </div>
+                         <div class="col-sm-4">
+                             <input placeholder="缴费基数" name="companyUserIit"
+                                    class="form-control" type="text" value="${obj.companyUserIit}">
+                         </div>
+                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">本人及购房合同其余人员在上海是否被限制购房：</label>
-                        <div class="col-sm-8">
-                            <div class="i-checks">
-                                <label>
-                                    <input type="radio" value="1" @if(obj.companyUserNotBuyHouse || obj.companyUserNotBuyHouse==null){
-                                           checked
-                                           @}
-                                           name="companyUserNotBuyHouse"> <i></i> 是</label>&nbsp;&nbsp;
-                                <label>
-                                    <input type="radio" value="0" @if(!obj.companyUserNotBuyHouse){
-                                           checked
-                                           @}
-                                           name="companyUserNotBuyHouse"> <i></i> 否</label>&nbsp;&nbsp;
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">本人（及配偶）是否享受过奉贤区人才购房相关政策：</label>
-                        <div class="col-sm-8">
-                            <div class="i-checks">
-                                <label>
-                                    <input type="radio" value="1" @if(obj.companyUserHaveAccept || obj.companyUserHaveAccept==null){
-                                           checked
-                                           @}
-                                           name="companyUserHaveAccept"> <i></i> 是</label>&nbsp;&nbsp;
-                                <label>
-                                    <input type="radio" value="0" @if(!obj.companyUserHaveAccept){
-                                           checked
-                                           @}
-                                           name="companyUserHaveAccept"> <i></i> 否</label>&nbsp;&nbsp;
-                            </div>
-                        </div>
-                    </div>
 
-                    <!--分割线-->
-                    <div style="width: 1000px;">
-                        <HR align=center width=1000 color=#696969 SIZE=10 style="margin-bottom: 5px;">
-                        <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
-                            家庭成员
-                        </div>
-                        <div id="add-family" class="btn btn-sm btn-primary" style="float: right; margin-right: 20px;">
-                            <i class="fa fa-plus"></i>
-                        </div>
-                    </div>
 
-                    <div id="familys" style="min-height: 80px;">
+                     <div style="width: 1000px;">
+                         <HR align=center width=1000 color=#696969 SIZE=10 style="margin-bottom: 5px;">
+                         <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
+                             住房信息
+                         </div>
+                     </div>
 
-                        @for(companyUserFamily in companyUserFamilies){
-                        <div class="col-sm-12 form-group">
-                            <div class="col-sm-10">
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">家庭成员关系：</label>
-                                    <div class="col-sm-8">
-                                        <select name="companyUserFamilyType[]" class="col-sm-4 form-control">
-                                            <option value="">--请选择--</option>
-                                            <option @if(companyUserFamily.companyUserFamilyType==0){
-                                                    selected
-                                                    @}
-                                                    value="0">子女</option>
-                                            <option @if(companyUserFamily.companyUserFamilyType==1){
-                                                    selected
-                                                    @}
-                                                    value="1">配偶</option>
-                                            <option @if(companyUserFamily.companyUserFamilyType==2){
-                                                    selected
-                                                    @}
-                                                    value="2">直系亲属</option>
-                                        </select>
-                                    </div>
-                                </div>
+                     <div class="form-group">
+                         <label class="col-sm-4 control-label">类型：</label>
+                         <div class="col-sm-8">
+                             <select name="companyUserHouseType" id="company-user-house-type" class="col-sm-4 form-control">
+                                 <option @if(obj.companyUserHouseType==0){
+                                         selected
+                                         @}
+                                         value="0">租房</option>
+                                 <option @if(obj.companyUserHouseType==1){
+                                         selected
+                                         @}
+                                         value="1">购房</option>
+                             </select>
+                         </div>
+                     </div>
+                     <div class="form-group">
+                         <label class="col-sm-4 control-label">租房合同起始日期：</label>
+                         <div class="col-sm-8">
+                             <input  placeholder="请选择合同起始时间" name="userHouseContractTime" id="user-house-contract-time" class="form-control" type="text"
+                                     @if(obj.companyUserHouseContractTimeBegin!=null && obj.companyUserHouseContractTimeEnd!=null){
+                                     value='${obj.companyUserHouseContractTimeBegin,"yyyy-MM-dd"} 至 ${obj.companyUserHouseContractTimeEnd,"yyyy-MM-dd"}'
+                                     @}else{
+                                     value=""
+                                     @}
+                             >
+                         </div>
+                     </div>
+                     <div class="form-group">
+                         <label class="col-sm-4 control-label">价格：</label>
+                         <div class="col-sm-8">
+                             <input name="companyUserHousePrice" id="company-user-house-price" placeholder="" class="form-control" value="${obj.companyUserHousePrice}" type="number">
+                         </div>
+                     </div>
 
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">姓名：</label>
-                                    <div class="col-sm-8">
-                                        <input name="companyUserFamilyName[]" value="${companyUserFamily.companyUserFamilyName}" class="form-control" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+                     <div class="form-group">
+                         <label class="col-sm-4 control-label">本人及购房合同其余人员在上海是否被限制购房：</label>
+                         <div class="col-sm-8">
+                             <div class="i-checks">
+                                 <label>
+                                     <input type="radio" value="1" @if(obj.companyUserNotBuyHouse || obj.companyUserNotBuyHouse==null){
+                                            checked
+                                            @}
+                                            name="companyUserNotBuyHouse"> <i></i> 是</label>&nbsp;&nbsp;
+                                 <label>
+                                     <input type="radio" value="0" @if(!obj.companyUserNotBuyHouse){
+                                            checked
+                                            @}
+                                            name="companyUserNotBuyHouse"> <i></i> 否</label>&nbsp;&nbsp;
+                             </div>
+                         </div>
+                     </div>
+                     <div class="form-group">
+                         <label class="col-sm-4 control-label">本人（及配偶）是否享受过奉贤区人才购房相关政策：</label>
+                         <div class="col-sm-8">
+                             <div class="i-checks">
+                                 <label>
+                                     <input type="radio" value="1" @if(obj.companyUserHaveAccept || obj.companyUserHaveAccept==null){
+                                            checked
+                                            @}
+                                            name="companyUserHaveAccept"> <i></i> 是</label>&nbsp;&nbsp;
+                                 <label>
+                                     <input type="radio" value="0" @if(!obj.companyUserHaveAccept){
+                                            checked
+                                            @}
+                                            name="companyUserHaveAccept"> <i></i> 否</label>&nbsp;&nbsp;
+                             </div>
+                         </div>
+                     </div>
 
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">身份证：</label>
-                                    <div class="col-sm-8">
-                                        <input name="companyUserFamilyCard[]" value="${companyUserFamily.companyUserFamilyCard}" class="form-control" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+                     &lt;!&ndash;分割线&ndash;&gt;
+                     <div style="width: 1000px;">
+                         <HR align=center width=1000 color=#696969 SIZE=10 style="margin-bottom: 5px;">
+                         <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
+                             家庭成员
+                         </div>
+                         <div id="add-family" class="btn btn-sm btn-primary" style="float: right; margin-right: 20px;">
+                             <i class="fa fa-plus"></i>
+                         </div>
+                     </div>
 
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label" style="padding-top: 2px;">性别：</label>
-                                    <div class="col-sm-8">
-                                        <select name="companyUserFamilySex[]" class="col-sm-4 form-control">
-                                            <option value="">--请选择--</option>
-                                            <option @if(companyUserFamily.companyUserFamilySex==0){
-                                                    selected
-                                                    @}
-                                                    value="0">男</option>
-                                            <option @if(companyUserFamily.companyUserFamilySex==1){
-                                                    selected
-                                                    @}
-                                                    value="1">女</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-2" onclick="delFamily(this)" style="margin-top: 75px;">
-                                <div class="btn btn-sm btn-danger btn-circle btn-outline">
-                                    <i class="fa fa-minus"></i>
-                                </div>
-                            </div>
-                        </div>
+                     <div id="familys" style="min-height: 80px;">
 
-                        <div class="form-group">
-                            <HR align=center width=700 SIZE=10>
-                        </div>
-                        @}
+                         @for(companyUserFamily in companyUserFamilies){
+                         <div class="col-sm-12 form-group">
+                             <div class="col-sm-10">
+                                 <div class="form-group">
+                                     <label class="col-sm-4 control-label">家庭成员关系：</label>
+                                     <div class="col-sm-8">
+                                         <select name="companyUserFamilyType[]" class="col-sm-4 form-control">
+                                             <option value="">&#45;&#45;请选择&#45;&#45;</option>
+                                             <option @if(companyUserFamily.companyUserFamilyType==0){
+                                                     selected
+                                                     @}
+                                                     value="0">子女</option>
+                                             <option @if(companyUserFamily.companyUserFamilyType==1){
+                                                     selected
+                                                     @}
+                                                     value="1">配偶</option>
+                                             <option @if(companyUserFamily.companyUserFamilyType==2){
+                                                     selected
+                                                     @}
+                                                     value="2">直系亲属</option>
+                                         </select>
+                                     </div>
+                                 </div>
 
-                    </div>
+                                 <div class="form-group">
+                                     <label class="col-sm-4 control-label">姓名：</label>
+                                     <div class="col-sm-8">
+                                         <input name="companyUserFamilyName[]" value="${companyUserFamily.companyUserFamilyName}" class="form-control" type="text" autocomplete="off">
+                                     </div>
+                                 </div>
+
+                                 <div class="form-group">
+                                     <label class="col-sm-4 control-label">身份证：</label>
+                                     <div class="col-sm-8">
+                                         <input name="companyUserFamilyCard[]" value="${companyUserFamily.companyUserFamilyCard}" class="form-control" type="text" autocomplete="off">
+                                     </div>
+                                 </div>
+
+                                 <div class="form-group">
+                                     <label class="col-sm-4 control-label" style="padding-top: 2px;">性别：</label>
+                                     <div class="col-sm-8">
+                                         <select name="companyUserFamilySex[]" class="col-sm-4 form-control">
+                                             <option value="">&#45;&#45;请选择&#45;&#45;</option>
+                                             <option @if(companyUserFamily.companyUserFamilySex==0){
+                                                     selected
+                                                     @}
+                                                     value="0">男</option>
+                                             <option @if(companyUserFamily.companyUserFamilySex==1){
+                                                     selected
+                                                     @}
+                                                     value="1">女</option>
+                                         </select>
+                                     </div>
+                                 </div>
+                             </div>
+                             <div class="col-sm-2" onclick="delFamily(this)" style="margin-top: 75px;">
+                                 <div class="btn btn-sm btn-danger btn-circle btn-outline">
+                                     <i class="fa fa-minus"></i>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <div class="form-group">
+                             <HR align=center width=700 SIZE=10>
+                         </div>
+                         @}
+
+                     </div>-->
 
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
@@ -734,7 +734,13 @@
                     }
                 });
             }
-        });
+        }), $('input[required]').parent().prev().append(
+            '<span style="color:red">*</span>'
+        ), $('select[required]').parent().prev().append(
+            '<span style="color:red">*</span>'
+        ),$('#city').parent().children("span").remove()
+        ,$('#province').parent().children("span").remove()
+        ,$('#district').parent().children("span").remove();
 
 
         jQuery.validator.addMethod("isIdCardNo", function (value, element) {

@@ -12,7 +12,7 @@
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
-                <form class="form-horizontal m-t" id="ask_form">
+                <form class="form-horizontal m-t" id="viladate_form">
                     @for(certificate in certificates){
                     <div class="form-group">
                         <label class="col-sm-2 control-label">${certificate.certificateName}：</label>
@@ -54,6 +54,287 @@
                         <div class="col-sm-10 col-sm-offset-2" style="margin-top: 10px;">
                             <div>请正确选择与你实际情况相符的选项</div>
                         </div>
+                    </div>
+                    @}
+
+                    @if(ic.ifHouse!=null){
+                    <div style="width: 1200px;">
+                        <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
+                        <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
+                            住房信息
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">类型：</label>
+                        <div class="col-sm-6">
+                            <select name="companyUserHouseType" id="company-user-house-type" class="col-sm-4 form-control" required>
+                                <option @if(cui.companyUserHouseType==0){
+                                        selected
+                                        @}
+                                        value="0">租房</option>
+                                <option @if(cui.companyUserHouseType==1){
+                                        selected
+                                        @}
+                                        value="1">购房</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">租房合同起始日期：</label>
+                        <div class="col-sm-6">
+                            <input  placeholder="请选择合同起始时间" name="userHouseContractTime" id="user-house-contract-time" class="form-control" type="text"
+                                    @if(cui.companyUserHouseContractTimeBegin!=null && cui.companyUserHouseContractTimeEnd!=null){
+                                    value='${cui.companyUserHouseContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserHouseContractTimeEnd,"yyyy-MM-dd"}'
+                                    @}else{
+                                    value=""
+                                    @}
+                                    required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">价格：</label>
+                        <div class="col-sm-6">
+                            <input name="companyUserHousePrice" id="company-user-house-price" placeholder="" class="form-control" value="${cui.companyUserHousePrice}" type="number" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="house-area" style="display: none">
+                        <label class="col-sm-3 control-label">房屋面积：</label>
+                        <div class="col-sm-6">
+                            <input name="companyUserHouseArea" id="company-user-house-area" placeholder="" class="form-control" value="${cui.companyUserHouseArea}" type="number" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">本人及购房合同其余人员在上海是否被限制购房：</label>
+                        <div class="col-sm-6">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="1" @if(cui.companyUserNotBuyHouse || cui.companyUserNotBuyHouse==null){
+                                           checked
+                                           @}
+                                           name="companyUserNotBuyHouse"> <i></i> 是</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="0" @if(!cui.companyUserNotBuyHouse){
+                                           checked
+                                           @}
+                                           name="companyUserNotBuyHouse"> <i></i> 否</label>&nbsp;&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">本人（及配偶）是否享受过奉贤区人才购房相关政策：</label>
+                        <div class="col-sm-6">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="1" @if(cui.companyUserHaveAccept || cui.companyUserHaveAccept==null){
+                                           checked
+                                           @}
+                                           name="companyUserHaveAccept"> <i></i> 是</label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="0" @if(!cui.companyUserHaveAccept){
+                                           checked
+                                           @}
+                                           name="companyUserHaveAccept"> <i></i> 否</label>&nbsp;&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                    @}
+
+                    @if(ic.ifSave!=null){
+                    <div style="width: 1200px;">
+                        <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
+                        <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
+                            社保信息
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">最近18个月社保缴费基数：</label>
+                        <div class="col-sm-4">
+                            <input placeholder="请选择起始时间" id="user-society-save-time1" name="userSocietySaveTime1"
+                                   class="form-control user_society_save_time nx" type="text"
+                                   @if(cui.companyUserSocietySaveTime1Begin!=null && cui.companyUserSocietySaveTime1End!=null){
+                                   value='${cui.companyUserSocietySaveTime1Begin,"yyyy-MM-dd"} 至 ${cui.companyUserSocietySaveTime1End,"yyyy-MM-dd"}'
+                                   @}else{
+                                   value=""
+                                   @}
+                                   required>
+                        </div>
+                        <div class="col-sm-3">
+                            <input placeholder="缴费基数" name="companyUserSocietySave1"
+                                   class="form-control nx" type="text" value="${cui.companyUserSocietySave1}" required>
+                        </div>
+
+                        <div class="col-sm-4 col-sm-offset-3" style="margin-top: 10px;">
+                            <input placeholder="请选择起始时间" id="user-society-save-time2" name="userSocietySaveTime2"
+                                   class="form-control user_society_save_time nx" type="text"
+                                   @if(cui.companyUserSocietySaveTime2Begin!=null && cui.companyUserSocietySaveTime2End!=null){
+                                   value='${cui.companyUserSocietySaveTime2Begin,"yyyy-MM-dd"} 至 ${cui.companyUserSocietySaveTime2End,"yyyy-MM-dd"}'
+                                   @}else{
+                                   value=""
+                                   @}
+                                   required>
+                        </div>
+
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <input placeholder="缴费基数" name="companyUserSocietySave2"
+                                   class="form-control nx" type="text" value="${cui.companyUserSocietySave2}" required>
+                        </div>
+                    </div>
+                    @}
+
+                    @if(ic.ifTax!=null){
+                    <div style="width: 1200px;">
+                        <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
+                        <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
+                            缴税信息
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">最近18个月个税缴费基数：</label>
+                        <div class="col-sm-4">
+                            <input placeholder="请选择起始时间" id="user-iit" name="userIitTime"
+                                   class="form-control nx" type="text"
+                                   @if(cui.companyUserIitBegin!=null && cui.companyUserIitEnd!=null){
+                                   value='${cui.companyUserIitBegin,"yyyy-MM-dd"} 至 ${cui.companyUserIitEnd,"yyyy-MM-dd"}'
+                                   @}else{
+                                   value=""
+                                   @}
+                                   required>
+                        </div>
+                        <div class="col-sm-3">
+                            <input placeholder="缴费基数" name="companyUserIit"
+                                   class="form-control nx" type="text" value="${cui.companyUserIit}" required>
+                        </div>
+                    </div>
+                    @}
+
+                    @if(ic.ifChild!=null){
+                    <div style="width: 1200px;">
+                        <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
+                        <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
+                            家庭成员
+                        </div>
+                        <div id="add-family" class="btn btn-sm btn-primary" style="float: right; margin-right: 20px;">
+                            <i class="fa fa-plus"></i>
+                        </div>
+                    </div>
+                    <div id="familys" style="min-height: 80px;">
+                        @if(companyUserFamilies==null){
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-10">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">家庭成员关系：</label>
+                                    <div class="col-sm-6">
+                                        <select name="companyUserFamilyType[]" class="col-sm-4 form-control" required>
+                                            <option value="">--请选择--</option>
+                                            <option value="0">子女</option>
+                                            <option value="1">配偶</option>
+                                            <option value="2">直系亲属</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">姓名：</label>
+                                    <div class="col-sm-6">
+                                        <input name="companyUserFamilyName[]" value="" class="form-control" type="text" autocomplete="off" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">身份证：</label>
+                                    <div class="col-sm-6">
+                                        <input name="companyUserFamilyCard[]" value="" class="form-control" type="text" autocomplete="off" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" style="padding-top: 2px;">性别：</label>
+                                    <div class="col-sm-6">
+                                        <select name="companyUserFamilySex[]" class="col-sm-4 form-control" required>
+                                            <option value="">--请选择--</option>
+                                            <option value="0">男</option>
+                                            <option value="1">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <HR align=center width=700 SIZE=10>
+                        </div>
+                        @}else{
+                        @for(companyUserFamily in companyUserFamilies){
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-10">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">家庭成员关系：</label>
+                                    <div class="col-sm-8">
+                                        <select name="companyUserFamilyType[]" class="col-sm-4 form-control" required>
+                                            <option value="">--请选择--</option>
+                                            <option @if(companyUserFamily.companyUserFamilyType==0){
+                                                    selected
+                                                    @}
+                                                    value="0">子女</option>
+                                            <option @if(companyUserFamily.companyUserFamilyType==1){
+                                                    selected
+                                                    @}
+                                                    value="1">配偶</option>
+                                            <option @if(companyUserFamily.companyUserFamilyType==2){
+                                                    selected
+                                                    @}
+                                                    value="2">直系亲属</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">姓名：</label>
+                                    <div class="col-sm-8">
+                                        <input name="companyUserFamilyName[]" value="${companyUserFamily.companyUserFamilyName}" class="form-control" type="text" autocomplete="off" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">身份证：</label>
+                                    <div class="col-sm-8">
+                                        <input name="companyUserFamilyCard[]" value="${companyUserFamily.companyUserFamilyCard}" class="form-control" type="text" autocomplete="off" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" style="padding-top: 2px;">性别：</label>
+                                    <div class="col-sm-8">
+                                        <select name="companyUserFamilySex[]" class="col-sm-4 form-control" required>
+                                            <option value="">--请选择--</option>
+                                            <option @if(companyUserFamily.companyUserFamilySex==0){
+                                                    selected
+                                                    @}
+                                                    value="0">男</option>
+                                            <option @if(companyUserFamily.companyUserFamilySex==1){
+                                                    selected
+                                                    @}
+                                                    value="1">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2" onclick="delFamily(this)" style="margin-top: 75px;">
+                                <div class="btn btn-sm btn-danger btn-circle btn-outline">
+                                    <i class="fa fa-minus"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <HR align=center width=700 SIZE=10>
+                        </div>
+                        @}
+                        @}
+
                     </div>
                     @}
 
@@ -99,11 +380,28 @@
                 check = false;
             }
         });
+
+        $('input[required]').each(function (i,e) {
+            if($(e).val()=="" || $(e).val==null){
+                check = false;
+                $(e).parent().parent().addClass("has-error");
+                $(e).parent().append('<span id="company_user_bank-error" class="help-block m-b-none"><i class="fa fa-times-circle"></i>  必填</span>');
+            }
+        });
+
+        $('input[required]').change(function () {
+            if($(this).val()!="" && $(this).val!=null){
+                $(this).parent().parent().removeClass("has-error");
+                $(this).next().remove();
+                check = true;
+            }
+        });
+
         if(check){
             $.ajax({
                 type: "POST",
                 url: "${ctxPath}/company_user/ask_for",
-                data: $('#ask_form').serialize(),
+                data: $('#viladate_form').serialize(),
                 success: function (data) {
                     if (data['status'] == 1) {
                         toastr.success(data['body']);
@@ -116,7 +414,133 @@
         }
     });
 
+    $('input[required]').parent().prev().append(
+        '<span style="color:red">*</span>');
 
+    $('select[required]').parent().prev().append(
+        '<span style="color:red">*</span>');
+
+    $('.nx').parent().children("span").remove();
+
+    laydate.render({
+        elem: '#user-house-contract-time',
+        range: '至',
+        format: 'yyyy-MM-dd'
+    });
+    laydate.render({
+        elem: '#user-society-save-time1',
+        range: '至',
+        format: 'yyyy-MM-dd'
+    });
+    laydate.render({
+        elem: '#user-society-save-time2',
+        range: '至',
+        format: 'yyyy-MM-dd'
+    });
+    laydate.render({
+        elem: '#user-iit',
+        range: '至',
+        format: 'yyyy-MM-dd'
+    });
+
+    $('#company-user-house-type').change(function () {
+        if($('#company-user-house-type').val()==0){
+            $('#user-house-contract-time').attr("readonly",false);
+            $('#company-user-house-price').val("")
+            $('#company-user-house-price').attr("placeholder","请输入每月租金")
+            $('#house-area').hide();
+            $('#company-user-house-area').attr("required", false);
+        }else{
+            $('#user-house-contract-time').attr("readonly",true);
+            $('#company-user-house-price').val("")
+            $('#company-user-house-price').attr("placeholder","请输入购房总价")
+            $('#house-area').show();
+            $('#company-user-house-area').attr("required", true);
+        }
+    });
+
+    if($('#company-user-house-type').val()==0){
+        $('#user-house-contract-time').attr("readonly",false);
+        $('#company-user-house-price').attr("placeholder","请输入每月租金")
+        $('#house-area').hide();
+        $('#company-user-house-area').attr("required", false);
+    }else{
+        $('#user-house-contract-time').attr("readonly",true);
+        $('#company-user-house-price').attr("placeholder","请输入购房总价")
+        $('#house-area').show();
+        $('#company-user-house-area').attr("required", true);
+    }
+
+   /* $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        }, success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        }, errorElement: "span", errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent())
+        }, errorClass: "help-block m-b-none", validClass: "help-block m-b-none"
+    }), $().ready(function () {
+        // $("#commentForm").validate();
+        $(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#viladate_form").validate({
+            rules: {
+                userName: {
+                    required: true,
+                    remote: {
+                        url: "${ctxPath}/checkUnique",
+                        data:{
+                            user_name:function(){
+                                return $("#user_name").val();
+                            },
+                            table:function(){
+                                return "talent_user";
+                            }
+                        }
+                    }
+                },
+                password:{
+                    required: true
+                },
+                comfirmPassword:{
+                    required: true,
+                    equalTo: "#password"
+                }
+            },
+            messages: {
+                userName: {
+                    required: e + "请输入名称",
+                    remote: e + "该用户名已存在"
+                },
+                password:{
+                    required: e + "请输入用户密码"
+                },
+                comfirmPassword:{
+                    required: e + "请确认密码",
+                    equalTo: e + "两次密码不一致"
+                }
+            },
+            submitHandler: function() {
+                $.ajax({
+                    type : "POST",
+                    url:"${ctxPath}/company_user/add_user",
+                    data : $('#viladate_form').serialize(),
+                    success: function(data){
+                        if(data['status']==1){
+                            toastr.success(data['body']);
+                            setTimeout('window.location.href="/company_user/index.html?"',900);
+                        }else{
+                            toastr.success(data['body']);
+                        }
+                    }
+                });
+            }
+        }),$('input[required]').parent().prev().append(
+            '<span style="color:red">*</span>'
+        ),$('.nx').parent().children("span").remove();
+    });
+    <span id="company_user_bank-error" class="help-block m-b-none"><i class="fa fa-times-circle"></i>  必填</span>
+*/
     // 图片上传demo
     jQuery(function() {
 
@@ -236,10 +660,10 @@
 
         function removeFile( obj ) {
             // var fileId = 'WU_FILE_'+$('.upload-state-done').length;
-            // var $li = $('#'+obj.id);
+            // var $li = $('#'+cui.id);
             // $li.off().find('.file-panel').off().end().remove();
-            obj.parent().parent().parent().prev().val('1');
-            obj.parent().parent().remove();
+            cui.parent().parent().parent().prev().val('1');
+            cui.parent().parent().remove();
         }
 
 
@@ -288,6 +712,61 @@
         uploader.on( 'uploadComplete', function( file ) {
             $( '#'+file.id ).find('.progress').remove();
         });
+    });
+
+    function delFamily(v) {
+        $(v).parent().next().remove();
+        $(v).parent().remove();
+    }
+
+    $("#add-family").click(function () {
+        var content = "";
+        content+='<div class="col-sm-12 form-group">';
+        content+='<div class="col-sm-10">';
+        content+='<div class="form-group">';
+        content+='<label class="col-sm-3 control-label">家庭成员关系：</label>';
+        content+='<div class="col-sm-6">';
+        content+='<select name="companyUserFamilyType[]" class="col-sm-4 form-control">';
+        content+='<option value="">--请选择--</option>';
+        content+='<option value="0">子女</option>';
+        content+='<option value="1">配偶</option>';
+        content+='<option value="2">直系亲属</option>';
+        content+='</select>';
+        content+='</div>';
+        content+='</div>';
+        content+='<div class="form-group">';
+        content+='<label class="col-sm-3 control-label">姓名：</label>';
+        content+='<div class="col-sm-6">';
+        content+='<input name="companyUserFamilyName[]" class="form-control" type="text" autocomplete="off">';
+        content+='</div>';
+        content+='</div>';
+        content+='<div class="form-group">';
+        content+='<label class="col-sm-3 control-label">身份证：</label>';
+        content+='<div class="col-sm-6">';
+        content+='<input name="companyUserFamilyCard[]" class="form-control" type="text" autocomplete="off">';
+        content+='</div>';
+        content+='</div>';
+        content+='<div class="form-group">';
+        content+='<label class="col-sm-3 control-label">性别：</label>';
+        content+='<div class="col-sm-6">';
+        content+='<select name="companyUserFamilySex[]" class="col-sm-4 form-control">';
+        content+='<option value="">--请选择--</option>';
+        content+='<option value="0">男</option>';
+        content+='<option value="1">女</option>';
+        content+='</select>';
+        content+='</div>';
+        content+='</div>';
+        content+='</div>';
+        content+='<div class="col-sm-2" onclick="delFamily(this)" style="margin-top: 75px;">';
+        content+='<div class="btn btn-sm btn-danger btn-circle btn-outline">';
+        content+='<i class="fa fa-minus"></i>';
+        content+='</div>';
+        content+='</div>';
+        content+='</div>';
+        content+='<div class="form-group">';
+        content+='<HR align=center width=700 SIZE=10>';
+        content+='</div>';
+        $("#familys").append(content);
     });
 </script>
 </html>

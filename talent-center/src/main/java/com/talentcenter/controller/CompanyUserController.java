@@ -434,16 +434,18 @@ public class CompanyUserController extends BaseController {
             itemTalentContents = itemTalentContentService.select(itemTalentContent);
         }
 
-        for (ItemCertificate ii : itemCertificates) {
-            CompanyUserCertificate companyUserCertificate = new CompanyUserCertificate();
-            companyUserCertificate.setUserId(sessionUser.getUserId());
-            companyUserCertificate.setCertificateId(ii.getCertificateId());
-            List<CompanyUserCertificate> cuc = companyUserCertificateService.select(companyUserCertificate);
-            if(cuc!=null) ii.setCompanyUserCertificates(cuc);
+        if(itemCertificates.size()>0){
+            for (ItemCertificate ii : itemCertificates) {
+                CompanyUserCertificate companyUserCertificate = new CompanyUserCertificate();
+                companyUserCertificate.setUserId(sessionUser.getUserId());
+                companyUserCertificate.setCertificateId(ii.getCertificateId());
+                List<CompanyUserCertificate> cuc = companyUserCertificateService.select(companyUserCertificate);
+                if(cuc!=null) ii.setCompanyUserCertificates(cuc);
+            }
         }
 
-        int monthes = 0;
-        if(ic.getItemConfigContactTime()!=2){
+        /*int monthes = 0;
+        if(ic.getItemConfigContactTime()!="2"){
             int year = getCurrentYear();
             Date lastDay = getYearLast(year);
             Date currentDate = getCurrentDate();
@@ -467,10 +469,21 @@ public class CompanyUserController extends BaseController {
             int endMonth = getCustomMonth(end);
 
             monthes = endMonth - startMonth;
-        }
+        }*/
+        CompanyUserInfo companyUserInfo = new CompanyUserInfo();
+        companyUserInfo.setUserId(sessionUser.getUserId());
+        CompanyUserInfo cui = companyUserInfoService.selectOne(companyUserInfo);
+
+        CompanyUserFamily companyUserFamily = new CompanyUserFamily();
+        companyUserFamily.setUserId(sessionUser.getUserId());
+        List<CompanyUserFamily> companyUserFamilies = companyUserFamilyService.select(companyUserFamily);
+
+        model.addAttribute("companyUserFamilies",companyUserFamilies.size()==0? null:companyUserFamilies);
         model.addAttribute("certificates",itemCertificates);
-        model.addAttribute("monthes",monthes);
+//        model.addAttribute("monthes",monthes);
         model.addAttribute("itemId",itemId);
+        model.addAttribute("ic",ic);
+        model.addAttribute("cui",cui);
         model.addAttribute("talentTypes",itemTalentContents);
 
         Item item = itemService.selectByPrimaryKey(itemId);
@@ -495,9 +508,64 @@ public class CompanyUserController extends BaseController {
                              String amount,
                              String memo,
                              Integer type,
-                             Integer talentType
+                             Integer talentType,
+                             CompanyUserInfo companyUserInfo,
+                             @RequestParam(required = false) String userHouseContractTime,
+                             @RequestParam(required = false) String userSocietySaveTime1,
+                             @RequestParam(required = false) String userSocietySaveTime2,
+                             @RequestParam(required = false) String userIitTime,
+                             @RequestParam(required = false, value = "companyUserFamilyType[]") String[] companyUserFamilyType,
+                             @RequestParam(required = false, value = "companyUserFamilyName[]") String[] companyUserFamilyName,
+                             @RequestParam(required = false, value = "companyUserFamilyCard[]") String[] companyUserFamilyCard,
+                             @RequestParam(required = false, value = "companyUserFamilySex[]") String[] companyUserFamilySex
                              ){
+
+//        CompanyUserInfo companyUserInfo = new CompanyUserInfo();
+
+        if(userHouseContractTime!= null){
+            String[] houseContractTimes = userHouseContractTime.split("至");
+            companyUserInfo.setCompanyUserHouseContractTimeBegin(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserHouseContractTimeEnd(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
+        }
+
+        if(userSocietySaveTime1!=null){
+            String[] userSocietySaveTime1s = userSocietySaveTime1.split("至");
+            companyUserInfo.setCompanyUserSocietySaveTime1Begin(getDate4StrDate(userSocietySaveTime1s[0].trim(), "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserSocietySaveTime1End(getDate4StrDate(userSocietySaveTime1s[1].trim(), "yyyy-MM-dd"));
+        }
+
+        if(userSocietySaveTime2!=null){
+            String[] userSocietySaveTime2s = userSocietySaveTime2.split("至");
+            companyUserInfo.setCompanyUserSocietySaveTime2Begin(getDate4StrDate(userSocietySaveTime2s[0].trim(), "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserSocietySaveTime2End(getDate4StrDate(userSocietySaveTime2s[1].trim(), "yyyy-MM-dd"));
+        }
+
+        if(userIitTime!=null){
+            String[] userIitTimes = userIitTime.split("至");
+            companyUserInfo.setCompanyUserIitBegin(getDate4StrDate(userIitTimes[0].trim(), "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserIitEnd(getDate4StrDate(userIitTimes[1].trim(), "yyyy-MM-dd"));
+        }
+
         Long userId = getSessionUser().getUserId();
+        companyUserInfo.setUserId(userId);
+        companyUserInfoService.updateByUserId(companyUserInfo);
+
+
+        if (companyUserFamilyName != null) {
+            companyUserFamilyService.delByUserId(companyUserInfo.getUserId());
+            List<CompanyUserFamily> companyUserFamilies = new ArrayList<>();
+            for(int i=0;i<companyUserFamilyName.length;i++){
+                CompanyUserFamily companyUserFamily = new CompanyUserFamily();
+                companyUserFamily.setCompanyUserFamilyName(companyUserFamilyName[i]);
+                companyUserFamily.setCompanyUserFamilyCard(companyUserFamilyCard[i]);
+                companyUserFamily.setCompanyUserFamilySex(Integer.parseInt(companyUserFamilySex[i]));
+                companyUserFamily.setCompanyUserFamilyType(Integer.parseInt(companyUserFamilyType[i]));
+                companyUserFamily.setUserId(companyUserInfo.getUserId());
+                companyUserFamilies.add(companyUserFamily);
+            }
+            companyUserFamilyService.insertList(companyUserFamilies);
+        }
+
         RSTFulBody rstFulBody = new RSTFulBody();
         if(!ifPermit(userId,itemId) || !ifHaveOneSubmit(itemId,userId)){
             rstFulBody.fail("不能申请！");
@@ -560,7 +628,7 @@ public class CompanyUserController extends BaseController {
         map.put("type",type);
         map.put("haveSubmit",1);
         map.put("talentType",talentType);
-        map.put("submitTime",getCurrentDate());
+        map.put("submitTime",getCurDateTime());
         if(ccc.getCompanyChecked()==0) map.put("companyChecked",3);
         if(ccc.getStreetChecked()==0) map.put("streetChecked",3);
         if(ccc.getCenterChecked()==0) map.put("centerChecked",3);
@@ -608,6 +676,16 @@ public class CompanyUserController extends BaseController {
     public CompanyUserItem getReason(Long userItemId){
         CompanyUserItem companyUserItem = companyUserItemService.selectByPrimaryKey(userItemId);
         return companyUserItem;
+    }
+
+    @ResponseBody
+    @RequestMapping("/check_info")
+    public Integer checkInfo(){
+        User sessionUser = getSessionUser();
+        CompanyUserInfo companyUserInfo = new CompanyUserInfo();
+        companyUserInfo.setUserId(sessionUser.getUserId());
+        CompanyUserInfo cui = companyUserInfoService.selectOne(companyUserInfo);
+        return cui.getUpdateTimes();
     }
 
     private Boolean ifPermit(Long userId,Long itemId){

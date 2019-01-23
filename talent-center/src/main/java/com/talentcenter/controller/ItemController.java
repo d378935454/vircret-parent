@@ -201,7 +201,8 @@ public class ItemController extends BaseController {
             @RequestParam(required = false) String itemConfigCheckTime,
             @RequestParam(required = false, value = "talentTypeIds[]") String[] talentTypeIds,
             @RequestParam(required = false, value = "talentTypes[]") String[] talentTypes,
-            @RequestParam(required = false, value = "talentTypeNames[]") String[] talentTypeNames
+            @RequestParam(required = false, value = "talentTypeNames[]") String[] talentTypeNames,
+            @RequestParam(required = false, value = "itemConfigContactTimes[]") String[] itemConfigContactTimes
     ) {
 
         String[] acceptTimes = itemConfigAccept.split("至");
@@ -215,6 +216,15 @@ public class ItemController extends BaseController {
         User sessionUser = getSessionUser();
         config.setCreateName(sessionUser.getUserName());
         config.setCreateId(sessionUser.getUserId());
+
+        String ct = "";
+        for(int i=0;i<itemConfigContactTimes.length;i++){
+            ct+=itemConfigContactTimes[i]+",";
+        }
+
+        ct = ct.substring(0, ct.length() - 1);
+
+        config.setItemConfigContactTime(ct);
         int res = itemConfigService.insertSelective(config);
 
         if (config.getItemConfigTType()) {

@@ -116,6 +116,17 @@
             <if test="companyUserSocietySave2 != null">
                 company_user_society_save2 = #{companyUserSocietySave2,jdbcType=DECIMAL},
             </if>
+
+            <if test="companyUserIitBegin != null">
+                company_user_iit_begin = #{companyUserIitBegin,jdbcType=DATE},
+            </if>
+            <if test="companyUserIitEnd != null">
+                company_user_iit_end = #{companyUserIitEnd,jdbcType=DATE},
+            </if>
+            <if test="companyUserIit != null">
+                company_user_iit = #{companyUserIit,jdbcType=DECIMAL},
+            </if>
+
             <if test="companyUserMarriage != null">
                 company_user_marriage = #{companyUserMarriage,jdbcType=BIT},
             </if>
@@ -131,7 +142,14 @@
             <if test="companyUserDegree != null">
                 company_user_degree = #{companyUserDegree,jdbcType=INTEGER},
             </if>
+            <if test="companyUserHouseArea != null">
+                company_user_house_area = #{companyUserHouseArea,jdbcType=FLOAT},
+            </if>
+            <if test="updateTimes != null">
+            update_times = #{updateTimes}
+            </if>
         </set>
+
         where user_id = #{userId,jdbcType=INTEGER}
     </update>
 </mapper>

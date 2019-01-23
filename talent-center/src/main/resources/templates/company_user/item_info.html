@@ -33,7 +33,7 @@
                 </div>
                 <div>
                     @if(ifShowSubmitButton){
-                        <a href="${ctxPath}/company_user/ask_for.html?itemId=${item.itemId}" class="btn btn-primary" type="submit">申请</a>
+                        <a id="submit-btn" class="btn btn-primary" type="submit">申请</a>
                     @}
                     <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                 </div>
@@ -41,4 +41,33 @@
         </div>
 @}
 </body>
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "1500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    $('#submit-btn').click(function () {
+        $.ajax({
+            type:"GET",
+            url:"${ctxPath}/company_user/check_info",
+            success:function (data) {
+                if(data>0){
+                    window.location.href="${ctxPath}/company_user/ask_for.html?itemId=${item.itemId}"
+                }else{
+                    toastr.error("请先完善基本信息后再申请！");
+                }
+            }
+        });
+    });
+</script>
 </html>

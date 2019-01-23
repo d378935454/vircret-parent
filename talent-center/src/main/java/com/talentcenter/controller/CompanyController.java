@@ -496,6 +496,9 @@ public class CompanyController extends BaseController{
             itemTalentContents = itemTalentContentService.select(itemTalentContent);
         }
 
+        List<TalentType> talentTypes = null;
+
+
         TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(ic.getTypeCategoryId());
 
         InfoChange infoChange = new InfoChange();
@@ -573,7 +576,7 @@ public class CompanyController extends BaseController{
         itemUserTimeService.updateItemUserTime(itemUserTime);
 
         companyUserItemService.delByParentId(passJson.getUserItemId());
-        if(passJson.getItems().size()>0){
+        if(passJson.getItems()!=null){
             List<CompanyUserItem> companyUserItems = new ArrayList<>();
             for (ItemJson itemJson : passJson.getItems()) {
                 Item item = itemService.selectByPrimaryKey(itemJson.getItem());

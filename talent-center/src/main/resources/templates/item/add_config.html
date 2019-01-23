@@ -129,13 +129,11 @@
                         <div class="col-sm-3">
                             <div class="i-checks">
                                 <label>
-                                    <input type="checkbox" value="0" checked name="itemConfigContactTime"> <i></i> 劳动合同</label>&nbsp;&nbsp;
+                                    <input type="checkbox" value="0" name="itemConfigContactTimes[]"> <i></i> 劳动合同</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="checkbox" value="1" name="itemConfigContactTime"> <i></i> 租房合同</label>&nbsp;&nbsp;
+                                    <input type="checkbox" value="1" name="itemConfigContactTimes[]"> <i></i> 租房合同</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="checkbox" value="3" name="itemConfigContactTime"> <i></i> 社保记录</label>&nbsp;&nbsp;
-                                <label>
-                                    <input type="checkbox" value="2" name="itemConfigContactTime"> <i></i> 不关联</label>
+                                    <input type="checkbox" value="3" name="itemConfigContactTimes[]"> <i></i> 社保记录</label>
                             </div>
                         </div>
                     </div>
@@ -149,6 +147,58 @@
                                 </label>&nbsp;&nbsp;
                                 <label>
                                     <input type="radio" value="1" name="itemConfigTType"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写住房信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="0" checked name="ifHouse"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="1" name="ifHouse"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写子女信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="0" checked name="ifChild"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="1" name="ifChild"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写社保记录信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="0" checked name="ifSave"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="1" name="ifSave"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写个税记录信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" value="0" checked name="ifTax"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" value="1" name="ifTax"> <i></i> 是</label>
                             </div>
                         </div>
                     </div>

@@ -449,8 +449,12 @@
                                         <label class="pull-left control-label">该期时间段：</label>
                                         <div class="pull-left">
                                             <input id="item-time" placeholder="请选择时间段" type="text"
+                                                   @if(iut==null){
+                                                   value=""
+                                                   @}else{
                                                    value='${iut.startTime,"yyyy-MM-dd"} 至 ${iut.endTime,"yyyy-MM-dd"}'
-                                                   autocomplete="off" style="width: 200px">
+                                                   @}
+                                                   autocomplete="off" style="width: 200px" required>
                                         </div>
                                     </div>
 

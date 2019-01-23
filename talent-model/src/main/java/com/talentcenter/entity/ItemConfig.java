@@ -129,7 +129,15 @@ public class ItemConfig {
      */
     private Long typeCategoryId;
 
-    private Integer itemConfigContactTime;
+    private String itemConfigContactTime;
+
+    private Boolean ifHouse;
+
+    private Boolean ifChild;
+
+    private Boolean ifSave;
+
+    private Boolean ifTax;
 
     /**
      * 状态 0:删除 1:正常

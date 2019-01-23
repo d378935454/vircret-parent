@@ -365,6 +365,24 @@
                                             </tbody>
                                         </table>
                                     </div>
+
+                                    <div class="form-group col-sm-12" style="padding: 0;">
+                                        <label class="pull-left control-label">该期时间段：</label>
+                                        <div class="pull-left">
+                                            <input id="item-time" placeholder="请选择时间段" type="text"
+                                                   @if(iut==null){
+                                                   value=""
+                                                   @}else{
+                                                   value='${iut.startTime,"yyyy-MM-dd"} 至 ${iut.endTime,"yyyy-MM-dd"}'
+                                                   @}
+                                                   autocomplete="off" style="width: 200px" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-sm-12" style="padding: 0;">
+                                        <label class="pull-left control-label">申请提交时间：</label> <div class="pull-left">${companyUserItem.submitTime,"yyyy-MM-dd"}</div>
+                                    </div>
+
                                     @if(item.itemCategory==1){
                                     <div class="table-responsive">
                                         <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;">申请详情</div>
@@ -417,12 +435,6 @@
                                         </div>
                                     </div>
                                     @}
-
-
-
-                                    <div class="form-group col-sm-12" style="padding: 0;">
-                                        <label class="pull-left control-label">申请提交时间：</label> <div class="pull-left">${companyUserItem.submitTime,"yyyy-MM-dd"}</div>
-                                    </div>
 
                                     <div>
                                         <a class="btn btn-primary" id="pass">通过</a>
