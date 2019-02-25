@@ -203,7 +203,7 @@ public class CenterController extends BaseController{
         itemUserTimeService.updateItemUserTime(itemUserTime);
 
         companyUserItemService.delByParentId(passJson.getUserItemId());
-        if(passJson.getItems().size()>0){
+        if(passJson.getItems()!=null && passJson.getItems().size()>0){
             List<CompanyUserItem> companyUserItems = new ArrayList<>();
             for (ItemJson itemJson : passJson.getItems()) {
                 Item item = itemService.selectByPrimaryKey(itemJson.getItem());

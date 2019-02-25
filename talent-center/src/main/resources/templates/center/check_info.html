@@ -27,6 +27,9 @@
         margin-top: 5px;
         display: none;
     }
+    .if-show{
+        display: none;
+    }
 </style>
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
 <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet" type="text/css">
@@ -89,7 +92,7 @@
                                                     class="have-change"
                                                     @}
                                                 >${cui.companyUserCard}
-                                                <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=2" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a></td>
+                                                <a class="if-show" data-toggle="modal" uid="${cui.userId}" cid="2" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=2" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a></td>
                                             </tr>
                                             <tr>
                                                 <th>户籍地址</th>
@@ -104,7 +107,7 @@
                                                     class="have-change"
                                                     @}
                                                     colspan="5">${cui.companyUserHuAddress}
-                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=3" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                    <a class="if-show" uid="${cui.userId}" cid="3"  data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=3" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -119,7 +122,7 @@
                                                     class="have-change"
                                                     @}
                                                 >${cui.companyUserHouseContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserHouseContractTimeEnd,"yyyy-MM-dd"}
-                                                <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=8" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                <a uid="${cui.userId}" cid="8" data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=8" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                                 <th>租房价格</th>
                                                 <td @if(ics.company_user_house_price==1){
@@ -153,7 +156,7 @@
                                                     class="have-change"
                                                     @}
                                                     colspan="2">${cui.companyUserSchool}
-                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=4" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                    <a class="if-show" uid="${cui.userId}" cid="4" data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=4" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                                 <th>毕业时间</th>
                                                 <td @if(ics.company_user_graduation==1){
@@ -191,7 +194,7 @@
                                                     @}else if(cui.companyUserDegree==2){
                                                     博士
                                                     @}
-                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=5" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                    <a class="if-show" uid="${cui.userId}" cid="5" data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=5" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                                 <th>工作年限</th>
                                                 <td @if(ics.company_user_work_length==1){
@@ -207,7 +210,7 @@
                                                      colspan="2">
                                                     ${cui.companyUserSocietySaveTime1Begin,"yyyy-MM-dd"} 至 ${cui.companyUserSocietySaveTime1End,"yyyy-MM-dd"} 基数：${cui.companyUserSocietySave1}<br />
                                                     ${cui.companyUserSocietySaveTime2Begin,"yyyy-MM-dd"} 至 ${cui.companyUserSocietySaveTime2End,"yyyy-MM-dd"} 基数：${cui.companyUserSocietySave2}
-                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=6" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                    <a class="if-show" uid="${cui.userId}" cid="6" data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=6" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
 
                                                 <th>申请前最近18个月个税缴费基数</th>
@@ -216,7 +219,7 @@
                                                      @}
                                                      colspan="2">
                                                     ${cui.companyUserIitBegin,"yyyy-MM-dd"} 至 ${cui.companyUserIitBegin,"yyyy-MM-dd"} 基数：${cui.companyUserIit}
-                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=7" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                    <a class="if-show" uid="${cui.userId}" cid="7" data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=7" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -225,7 +228,7 @@
                                                     class="have-change"
                                                     @}
                                                     colspan="2">${cui.companyUserContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserContractTimeEnd,"yyyy-MM-dd"}
-                                                    <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=9" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
+                                                    <a class="if-show" uid="${cui.userId}" cid="9" data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=9" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -568,6 +571,18 @@
             $('#item-amount').show();
             $('#amount').attr('disabled',false);
         }
+
+        $('.if-show').each(function (i,e) {
+            $.ajax({
+                type:"GET",
+                url: "${ctxPath}/company/if_show?userId="+$(e).attr('uid')+"&certificateId="+$(e).attr('cid'),
+                success:function (data) {
+                    if (data) {
+                        $(e).show();
+                    }
+                }
+            });
+        });
 
         $('.items').each(function (e,i) {
             // $(i).val()

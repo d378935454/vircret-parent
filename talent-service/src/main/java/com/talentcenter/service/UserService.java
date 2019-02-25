@@ -9,4 +9,6 @@ import java.util.Map;
 @Service
 public interface UserService extends BaseService<User> {
     int batchDel(Map<String, Object> map);
+
+    Integer ifCheck(String userName);
 }

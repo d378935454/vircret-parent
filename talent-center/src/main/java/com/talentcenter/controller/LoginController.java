@@ -7,6 +7,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -17,9 +18,25 @@ public class LoginController extends BaseController {
     UserService userService;
 
     @RequestMapping("/login_check.html")
-    public String loginCheck(User user){
+    public String loginCheck(User user,Model model){
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), user.getPassword());
+
+
+        User u = new User();
+        u.setUserName(user.getUserName());
+        User userInfo = userService.selectOne(u);
+        if(userInfo!=null){
+            if(userInfo.getUserNature()==1){
+                Integer ifCheck = userService.ifCheck(user.getUserName());
+                if(ifCheck==0) {
+                    token.clear();
+                    model.addAttribute("error", "请耐心等待审核后再尝试登陆。");
+                    return "/login.html";
+                }
+            }
+        }
+
         try {
             //在调用了login方法后,SecurityManager会收到AuthenticationToken,并将其发送给已配置的Realm执行必须的认证检查
             //每个Realm都能在必要时对提交的AuthenticationTokens作出反应
@@ -43,17 +60,19 @@ public class LoginController extends BaseController {
             return "redirect:/";
         }else{
             token.clear();
-            return "失败";
+            model.addAttribute("error","用户名密码错误");
+            return "/login.html";
         }
     }
 
     @RequestMapping("/login.html")
-    public String login(User user){
+    public String login(User user,Model model){
       /*  GroupTemplate groupTemplate =  new  GroupTemplate();
         Map<String,Object> shareVars = new HashMap<>();
         shareVars.put("school_name","来测试一吓");
         groupTemplate.setSharedVars(shareVars);*/
       User sessionUser = super.getSessionUser();
+        model.addAttribute("error","");
        return "/login.html";
     }
 }

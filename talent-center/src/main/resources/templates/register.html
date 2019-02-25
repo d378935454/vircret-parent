@@ -1,73 +1,138 @@
 <!DOCTYPE html>
 <html>
-@include("/common/_head.html") {}
+@layout("/layout/_form_layout.html"){
 <body class="gray-bg">
 
-    <div class="middle-box text-center loginscreen   animated fadeInDown">
+<div class="middle-box text-center loginscreen  animated fadeInDown">
+    <div>
         <div>
-            <div>
 
-            </div>
-            <h3>欢迎注册 奉贤区人才中心管理系统</h3>
-            <form class="form-horizontal m-t" id="viladate_form" action="/company/reg">
-                <div class="form-group">
-                    <input type="text" name="userName" value="${userName}" id="user_name" class="form-control" placeholder="请输入用户名" required="">
-                    @if(user!=""){
-                        <span id="password-error" class="help-block m-b-none pull-left"><i class="fa fa-times-circle"></i> 该用户名已存在</span>
-                    @}
-                </div>
-                <div class="form-group">
-                    <input type="password" id="password" value="${password}" name="password" class="form-control" placeholder="请输入密码" required="">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="comfirm_password" value="${password}" name="comfirmPassword" class="form-control" placeholder="请再次输入密码" required="">
-                </div>
-
-                <div class="form-group">
-                    <input type="text" name="companyCode" value="${companyCode}" class="form-control" placeholder="请输入企业统一社会信用代码" required="">
-                </div>
-
-                <button type="submit" class="btn btn-primary block full-width m-b" id="submit">注 册</button>
-
-                <p class="text-muted text-center"><small>已经有账户了？</small><a href="login.html">点此登录</a>
-                </p>
-
-            </form>
         </div>
+        <h3>欢迎注册 奉贤区人才中心管理系统</h3>
+        <form class="form-horizontal m-t" action="/company/reg" id="viladate_form">
+            <div class="form-group">
+                <input type="text" name="userName" id="user_name" value="${userName}" class="form-control" placeholder="请输入用于登录的用户名" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="companyCode" id="company_code" class="form-control" value="${companyCode}" placeholder="请输入企业统一社会信用代码" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="companyName" id="company_name" value="${companyName}" class="form-control" placeholder="请输入企业名称" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="password" name="password" class="form-control" placeholder="请输入密码" required="">
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="comfirm_password" name="comfirmPassword" class="form-control" placeholder="请再次输入密码" required>
+            </div>
+
+            <div class="form-group">
+                <select  name="streetId" id="street_id" class="form-control" required>
+                    <option selected="selected" value="">--请选择所属街道--</option>
+                    @for(list in streets){
+                    <option value="${list.streetId}">${list.streetName}</option>
+                    @}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary block full-width m-b">注 册</button>
+            <input hidden id="u-error" value="${uError}">
+            <input hidden id="c-error" value="${cError}">
+
+            <p class="text-muted text-center"><small>已经有账户了？</small><a href="login.html">点此登录</a>
+            </p>
+
+        </form>
     </div>
-    @include("/common/_foot.html") {}
-    <script>
-        if(window.top !== window.self){ window.top.location = window.location;}
-
-        $('#password').blur(function () {
-
-            if($('#password').val()!=$('#comfirm_password').val()){
-                var error = '<span id="password-error" class="help-block m-b-none pull-left"><i class="fa fa-times-circle"></i> 两次密码不一致</span>';
-                $('#comfirm_password').parent().addClass('has-error');
-                $('#comfirm_password').parent().append(error);
-            }
-
-        });
-
-        $('#comfirm_password').on('input propertychange',function(){
-            if($('#password').val()!=$('#comfirm_password').val()){
-                if(!$('#comfirm_password').parent().hasClass('has-error')){
-                    var error = '<span id="password-error" class="help-block m-b-none pull-left"><i class="fa fa-times-circle"></i> 两次密码不一致</span>';
-                    $('#comfirm_password').parent().addClass('has-error');
-                    $('#comfirm_password').parent().append(error);
-                }
-            }else{
-                $('#comfirm_password').next().remove();
-                $('#comfirm_password').parent().removeClass('has-error');
-            }
-        });
-
-        $('#submit').click(function () {
-            if($('.has-error').length>0) return false;
-            else return true;
-        });
-
-    </script>
+</div>
+@}
 </body>
+<script type="text/javascript">
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
 
+    $(document).ready(function () {
+        var uErr = $('#u-error').val();
+        var cErr = $('#c-error').val();
+        if(uErr!=""){
+            $('#user_name').parent().removeClass("has-success");
+            $('#user_name').parent().addClass("has-error");
+            $('#user_name').after('<span id="user_name-error" class="help-block m-b-none pull-left"><i class="fa fa-times-circle"></i> '+uErr+'在</span>')
+        }
+        $('#user_name').on('input propertychange',function(){
+            $('#user_name').next().remove();
+        });
+
+        if(cErr!=""){
+            $('#company_code').parent().removeClass("has-success");
+            $('#company_code').parent().addClass("has-error");
+            $('#company_code').after('<span id="user_name-error" class="help-block m-b-none pull-left"><i class="fa fa-times-circle"></i> '+cErr+'</span>')
+        }
+        $('#company_code').on('input propertychange',function(){
+            $('#company_code').next().remove();
+        });
+    });
+
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        }, success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        }, errorElement: "span", errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent())
+        }, errorClass: "help-block m-b-none pull-left", validClass: "help-block m-b-none pull-left"
+    }), $().ready(function () {
+        // $("#commentForm").validate();
+        $(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#viladate_form").validate({
+            rules: {
+                password:{
+                    required: true
+                },
+                comfirmPassword:{
+                    required: true,
+                    equalTo: "#password"
+                },
+                streetId:{
+                    required: true,
+                }
+            },
+            messages: {
+                userName: {
+                    required: e + "请输入用户名"
+                },
+                password:{
+                    required: e + "请输入用户密码"
+                },
+                comfirmPassword:{
+                    required: e + "请确认密码",
+                    equalTo: e + "两次密码不一致"
+                },
+                streetId:{
+                    required: e + "请选择所属街道"
+                }
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+    });
+</script>
 </html>

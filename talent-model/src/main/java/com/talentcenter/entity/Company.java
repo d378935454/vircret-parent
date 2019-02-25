@@ -107,6 +107,11 @@ public class Company {
      */
     private String memo;
 
+    /**
+     * 0: 人才中心添加 1:企业已提交 2:已审核
+     */
+    private Integer state;
+
     @Transient
     private Boolean checked;
 }

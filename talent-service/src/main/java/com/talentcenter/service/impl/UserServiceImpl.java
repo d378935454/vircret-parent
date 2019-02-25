@@ -84,4 +84,9 @@ public class UserServiceImpl implements UserService {
     public int batchDel(Map<String, Object> map) {
         return userMapper.batchDel(map);
     }
+
+    @Override
+    public Integer ifCheck(String userName){
+        return userMapper.ifCheck(userName);
+    }
 }

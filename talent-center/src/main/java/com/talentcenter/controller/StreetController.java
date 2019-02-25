@@ -72,6 +72,34 @@ public class StreetController extends BaseController{
      * @param model
      * @return
      */
+    @RequestMapping("/check_company.html")
+    public String checkCompany(Model model){
+        return "/street/check_company.html";
+    }
+
+    @RequestMapping("/ajax_check_company")
+    public String ajaxCheckCompany(Model model, int pageNum, int pageSize,
+                            @RequestParam(required = false) String streetName
+    ){
+        //组装搜索条件
+        /*Map<String,Object> map=new HashMap<>();
+        if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
+        if(examId!=null && examId!="") map.put("examId",examId);
+        if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
+        Street street = new Street();
+        street.setDel(true);
+        if(streetName!=null && streetName!="") street.setStreetName(streetName);
+        //分页查询
+        PageHelper.startPage(pageNum, pageSize);
+        List<Street> streets = streetService.select(street);
+
+        PageInfo<Street> pageInfo= new PageInfo<>(streets);
+        String pageStr = makePageHtml(pageInfo);
+        model.addAttribute("page_info",pageInfo);
+        model.addAttribute("pages",pageStr);
+        return "/street/ajax_check_company.html";
+    }
+
     @RequestMapping("/index.html")
     public String index(Model model){
         return "/street/index.html";

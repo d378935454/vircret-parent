@@ -28,7 +28,7 @@ import static util.DateHelper.getDate4StrDate;
 
 @Controller
 @RequestMapping("/company")
-public class CompanyController extends BaseController{
+public class CompanyController extends BaseController {
     @Autowired
     private CompanyService companyService;
 
@@ -81,18 +81,19 @@ public class CompanyController extends BaseController{
 
     /**
      * 企业列表页
+     *
      * @param model
      * @return
      */
     @RequestMapping("/index.html")
-    public String index(Model model){
+    public String index(Model model) {
         return "/company/index.html";
     }
 
     @RequestMapping("/ajax_index")
     public String ajaxIndex(Model model, int pageNum, int pageSize,
                             @RequestParam(required = false) String companyName
-    ){
+    ) {
         //组装搜索条件
         /*Map<String,Object> map=new HashMap<>();
         if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
@@ -100,27 +101,27 @@ public class CompanyController extends BaseController{
         if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
         Company company = new Company();
         company.setDel(true);
-        if(companyName!=null && companyName!="") company.setCompanyName(companyName);
+        if (companyName != null && companyName != "") company.setCompanyName(companyName);
 
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<Company> companys = companyService.select(company);
 
-        PageInfo<Company> pageInfo= new PageInfo<>(companys);
+        PageInfo<Company> pageInfo = new PageInfo<>(companys);
         String pageStr = makePageHtml(pageInfo);
-        model.addAttribute("page_info",pageInfo);
-        model.addAttribute("pages",pageStr);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
         return "/company/ajax_index.html";
     }
 
     @RequestMapping("add.html")
     public String addUI(Model model) {
         List<CompanyNature> companyNatures = companyNatureService.selectAll();
-        model.addAttribute("companyNatures",companyNatures);
+        model.addAttribute("companyNatures", companyNatures);
         List<CompanyType> companyTypes = companyTypeService.selectAll();
-        model.addAttribute("companyTypes",companyTypes);
+        model.addAttribute("companyTypes", companyTypes);
         List<Street> streets = streetService.selectAll();
-        model.addAttribute("streets",streets);
+        model.addAttribute("streets", streets);
         List<Item> items = itemService.selectAll();
         model.addAttribute("items", items);
 
@@ -139,10 +140,22 @@ public class CompanyController extends BaseController{
         company.setCompanyTypeName(companyType.getCompanyTypeName());
         Street street = streetService.selectByPrimaryKey(company.getStreetId());
         company.setStreetName(street.getStreetName());
-        int res = companyService.insertSelective(company);
-/**
- * 政策添加
- */
+
+        Company checkCompany = new Company();
+        checkCompany.setCompanyCode(company.getCompanyCode());
+
+        Company check = companyService.selectOne(checkCompany);
+
+        Integer res = null;
+        if (check != null) {
+            company.setCompanyId(check.getCompanyId());
+            res = companyService.updateByPrimaryKeySelective(company);
+        } else {
+            res = companyService.insertSelective(company);
+        }
+        /**
+         * 政策添加
+         */
         ArrayList<CompanyItem> companyItems = new ArrayList<>();
         for (String item : itemId) {
             CompanyItem companyItem = new CompanyItem();
@@ -163,14 +176,14 @@ public class CompanyController extends BaseController{
     @RequestMapping("edit.html")
     public String editUI(Model model, String companyId) {
         Company company = companyService.selectByPrimaryKey((long) Integer.parseInt(companyId));
-        model.addAttribute("companyId",companyId);
-        model.addAttribute("obj",company);
+        model.addAttribute("companyId", companyId);
+        model.addAttribute("obj", company);
         List<CompanyNature> companyNatures = companyNatureService.selectAll();
-        model.addAttribute("companyNatures",companyNatures);
+        model.addAttribute("companyNatures", companyNatures);
         List<CompanyType> companyTypes = companyTypeService.selectAll();
-        model.addAttribute("companyTypes",companyTypes);
+        model.addAttribute("companyTypes", companyTypes);
         List<Street> streets = streetService.selectAll();
-        model.addAttribute("streets",streets);
+        model.addAttribute("streets", streets);
 
         CompanyItem companyItem = new CompanyItem();
         companyItem.setCompanyId((long) Integer.parseInt(companyId));
@@ -193,7 +206,7 @@ public class CompanyController extends BaseController{
 
     @ResponseBody
     @RequestMapping("edit")
-    public RSTFulBody edit(Company company,@RequestParam(value = "itemId[]") String[] itemId) {
+    public RSTFulBody edit(Company company, @RequestParam(value = "itemId[]") String[] itemId) {
         User sessionUser = getSessionUser();
         company.setUpdateId(sessionUser.getUserId());
         company.setUpdateName(sessionUser.getUserName());
@@ -206,7 +219,7 @@ public class CompanyController extends BaseController{
         Street street = streetService.selectByPrimaryKey(company.getStreetId());
         company.setStreetName(street.getStreetName());
 
-        int del  = companyItemService.delByCompanyId(company.getCompanyId());
+        int del = companyItemService.delByCompanyId(company.getCompanyId());
         /**
          * 政策编辑
          */
@@ -228,7 +241,7 @@ public class CompanyController extends BaseController{
     }
 
     @RequestMapping("del.html")
-    public String delUser(Company company){
+    public String delUser(Company company) {
         company.setDel(false);
         int res = companyService.updateByPrimaryKeySelective(company);
         return "redirect:/company/index.html";
@@ -236,46 +249,47 @@ public class CompanyController extends BaseController{
 
     @ResponseBody
     @RequestMapping("batch_del")
-    public RSTFulBody batchDel(@RequestParam(required = true) String ids){
+    public RSTFulBody batchDel(@RequestParam(required = true) String ids) {
 
         Map<String, Object> map = new HashMap<>();
-        map.put("ids",ids);
+        map.put("ids", ids);
         int res = companyService.batchDel(map);
-        RSTFulBody rstFulBody=new RSTFulBody();
-        if(res>0) rstFulBody.success(res);
-        else  rstFulBody.fail("删除失败！");
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if (res > 0) rstFulBody.success(res);
+        else rstFulBody.fail("删除失败！");
         return rstFulBody;
     }
+
     @RequestMapping("/nature.html")
-    public String type(Model model)
-    {
+    public String type(Model model) {
         return "/company/nature.html";
     }
 
-   @RequestMapping("/ajax_nature")
+    @RequestMapping("/ajax_nature")
     public String ajaxType(Model model, int pageNum, int pageSize,
-                            @RequestParam(required = false) String companyNatureName
-    ){
+                           @RequestParam(required = false) String companyNatureName
+    ) {
         //组装搜索条件
       /*  Map<String,Object> map=new HashMap<>();
         if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
         if(examId!=null && examId!="") map.put("examId",examId);
         if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
-       CompanyNature companyNature = new CompanyNature();
-       companyNature.setDel(true);
-        if(companyNatureName!=null && companyNatureName!="") companyNature.setCompanyNatureName(companyNatureName);
+        CompanyNature companyNature = new CompanyNature();
+        companyNature.setDel(true);
+        if (companyNatureName != null && companyNatureName != "") companyNature.setCompanyNatureName(companyNatureName);
 
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
 
         List<CompanyNature> companyNatures = companyNatureService.select(companyNature);
 
-        PageInfo<CompanyNature> pageInfo= new PageInfo<>(companyNatures);
+        PageInfo<CompanyNature> pageInfo = new PageInfo<>(companyNatures);
         String pageStr = makePageHtml(pageInfo);
-        model.addAttribute("page_info",pageInfo);
-        model.addAttribute("pages",pageStr);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
         return "/company/ajax_nature.html";
     }
+
     @RequestMapping("add_nature.html")
     public String addNature(Model model) {
 
@@ -299,7 +313,7 @@ public class CompanyController extends BaseController{
     @RequestMapping("edit_nature.html")
     public String editNature(Model model, String companyNatureId) {
         CompanyNature companyNature = companyNatureService.selectByPrimaryKey((long) Integer.parseInt(companyNatureId));
-        model.addAttribute("obj",companyNature);
+        model.addAttribute("obj", companyNature);
         return "/company/edit_nature.html";
     }
 
@@ -316,22 +330,23 @@ public class CompanyController extends BaseController{
         else rstFulBody.fail("修改失败！");
         return rstFulBody;
     }
+
     @RequestMapping("del_nature.html")
-    public String delUser(CompanyNature companyNature){
+    public String delUser(CompanyNature companyNature) {
         companyNature.setDel(false);
         int res = companyNatureService.updateByPrimaryKeySelective(companyNature);
         return "redirect:/company/nature.html";
     }
+
     @RequestMapping("/type.html")
-    public String nature(Model model)
-    {
+    public String nature(Model model) {
         return "/company/type.html";
     }
 
     @RequestMapping("/ajax_type")
     public String ajaxNature(Model model, int pageNum, int pageSize,
                              @RequestParam(required = false) String companyTypeName
-    ){
+    ) {
         //组装搜索条件
       /*  Map<String,Object> map=new HashMap<>();
         if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
@@ -339,19 +354,20 @@ public class CompanyController extends BaseController{
         if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
         CompanyType companyType = new CompanyType();
         companyType.setDel(true);
-        if(companyTypeName!=null && companyTypeName!="") companyType.setCompanyTypeName(companyTypeName);
+        if (companyTypeName != null && companyTypeName != "") companyType.setCompanyTypeName(companyTypeName);
 
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
 
         List<CompanyType> companyTypes = companyTypeService.select(companyType);
 
-        PageInfo<CompanyType> pageInfo= new PageInfo<>(companyTypes);
+        PageInfo<CompanyType> pageInfo = new PageInfo<>(companyTypes);
         String pageStr = makePageHtml(pageInfo);
-        model.addAttribute("page_info",pageInfo);
-        model.addAttribute("pages",pageStr);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
         return "/company/ajax_type.html";
     }
+
     @RequestMapping("add_type.html")
     public String addType(Model model) {
 
@@ -375,7 +391,7 @@ public class CompanyController extends BaseController{
     @RequestMapping("edit_type.html")
     public String editType(Model model, String companyTypeId) {
         CompanyType companyType = companyTypeService.selectByPrimaryKey((long) Integer.parseInt(companyTypeId));
-        model.addAttribute("obj",companyType);
+        model.addAttribute("obj", companyType);
         return "/company/edit_type.html";
     }
 
@@ -392,84 +408,124 @@ public class CompanyController extends BaseController{
         else rstFulBody.fail("修改失败！");
         return rstFulBody;
     }
+
     @RequestMapping("del_type.html")
-    public String delUser(CompanyType companyType){
+    public String delUser(CompanyType companyType) {
         companyType.setDel(false);
         int res = companyTypeService.updateByPrimaryKeySelective(companyType);
         return "redirect:/company/type.html";
     }
 
 
-
     @RequestMapping("register.html")
-    public String register(Model model){
-        model.addAttribute("user","");
-        model.addAttribute("userName","");
-        model.addAttribute("password","");
-        model.addAttribute("companyCode","");
+    public String register(Model model) {
+        List<Street> streets = streetService.selectAll();
+        model.addAttribute("streets", streets);
+        model.addAttribute("user", "");
+        model.addAttribute("userName", "");
+        model.addAttribute("password", "");
+        model.addAttribute("companyCode", "");
+        model.addAttribute("uError", "");
+        model.addAttribute("cError", "");
+        model.addAttribute("companyName", "");
         return "/register.html";
     }
 
     @RequestMapping("reg")
-    public String reg(String userName,String password,String companyCode,Model model){
+    public String reg(String userName, String password, String companyCode, Long streetId, String companyName, Model model) {
         User user = new User();
         user.setUserName(userName);
         User u = userService.selectOne(user);
-        if(u!=null){
-            model.addAttribute("user","用户名已存在");
-            model.addAttribute("userName",userName);
-            model.addAttribute("password",password);
-            model.addAttribute("companyCode",companyCode);
+
+        Company cCode = new Company();
+        cCode.setCompanyCode(companyCode);
+        cCode.setState(2);
+        Company checkCode = companyService.selectOne(cCode);
+
+        String uError = u==null ? "":"该用户名已存在";
+        String cError = checkCode==null ? "":"该信誉代码已审核，请勿重复注册";
+
+        if(uError!="" || cError!=""){
+            List<Street> streets = streetService.selectAll();
+            model.addAttribute("streets", streets);
+            model.addAttribute("uError", uError);
+            model.addAttribute("cError", cError);
+            model.addAttribute("userName", userName);
+            model.addAttribute("companyName", companyName);
+            model.addAttribute("streetId", streetId);
+            model.addAttribute("password", password);
+            model.addAttribute("companyCode", companyCode);
             return "/register.html";
-        }else {
-            Company company = new Company();
-            company.setCompanyCode(companyCode);
-            Company c = companyService.selectOne(company);
-            User uu = new User();
-            uu.setUserName(userName);
-            uu.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
-            uu.setUserNature(1);
-            int res = userService.insertSelective(uu);
-            Company cc = new Company();
-            if(c!=null){
-                cc.setCompanyId(c.getCompanyId());
-                cc.setUserId(uu.getUserId());
-                companyService.updateByPrimaryKeySelective(cc);
-            }else{
-                cc.setUserId(uu.getUserId());
-                companyService.insertSelective(cc);
-            }
-            return "/login.html";
         }
-    }
+
+        /*if (u != null) {
+
+        }
+
+        if (checkCode != null) {
+            List<Street> streets = streetService.selectAll();
+            model.addAttribute("streets", streets);
+            model.addAttribute("cError", "该信誉代码已审核，请勿重复注册");
+            model.addAttribute("userName", userName);
+            model.addAttribute("companyName", companyName);
+            model.addAttribute("streetId", streetId);
+            model.addAttribute("password", password);
+            model.addAttribute("companyCode", companyCode);
+            return "/register.html";
+        }*/
+
+
+        Company company = new Company();
+        company.setCompanyCode(companyCode);
+        Company c = companyService.selectOne(company);
+        User uu = new User();
+        uu.setUserName(userName);
+        uu.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+        uu.setUserNature(1);
+        int res = userService.insertSelective(uu);
+        Company cc = new Company();
+        cc.setCompanyName(companyName);
+        cc.setStreetId(streetId);
+        cc.setUserId(uu.getUserId());
+        if (c != null) {
+            cc.setCompanyId(c.getCompanyId());
+            cc.setState(1);
+            companyService.updateByPrimaryKeySelective(cc);
+        } else {
+            cc.setCompanyCode(companyCode);
+            cc.setState(1);
+            companyService.insertSelective(cc);
+        }
+        return "/login.html";
+}
 
     @RequestMapping("check_item.html")
-    public String checkItem(Model model){
+    public String checkItem(Model model) {
         List<Item> items = itemService.selectAll();
-        model.addAttribute("items",items);
+        model.addAttribute("items", items);
         return "/company/check_item.html";
     }
 
     @RequestMapping("check_item")
     public String ajaxCheckItem(Model model,
                                 @RequestParam(required = false) Long itemId,
-                                @RequestParam(required = false) Integer companyChecked){
+                                @RequestParam(required = false) Integer companyChecked) {
 
-        Map<String,Object> map = new HashMap<>();
-        map.put("companyChecked",3);
-        map.put("companyId",getSessionUser().getCompanyId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("companyChecked", 3);
+        map.put("companyId", getSessionUser().getCompanyId());
 
-        List<Map<String,Object>> maps = companyService.selectCompanyCheckedItem(map);
+        List<Map<String, Object>> maps = companyService.selectCompanyCheckedItem(map);
 
-        PageInfo<Map<String,Object>> pageInfo= new PageInfo<>(maps);
+        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(maps);
         String pageStr = makePageHtml(pageInfo);
-        model.addAttribute("page_info",pageInfo);
-        model.addAttribute("pages",pageStr);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
         return "/company/ajax_items.html";
     }
 
     @RequestMapping("check_info.html")
-    public String checkInfo(Long companyUserItemId,Model model){
+    public String checkInfo(Long companyUserItemId, Model model) {
         CompanyUserItem companyUserItem = companyUserItemService.selectByPrimaryKey(companyUserItemId);
         User user = userService.selectByPrimaryKey(companyUserItem.getUserId());
         CompanyUserInfo companyUserInfo = new CompanyUserInfo();
@@ -480,7 +536,7 @@ public class CompanyController extends BaseController{
         Company c = companyService.selectOne(company);
         CompanyUserFamily companyUserFamily = new CompanyUserFamily();
         companyUserFamily.setUserId(user.getUserId());
-        List<CompanyUserFamily> cuf= companyUserFamilyService.select(companyUserFamily);
+        List<CompanyUserFamily> cuf = companyUserFamilyService.select(companyUserFamily);
 
 //        ItemConfig itemConfig = item
         ItemConfig itemConfig = new ItemConfig();
@@ -489,7 +545,7 @@ public class CompanyController extends BaseController{
         ItemConfig ic = itemConfigService.selectOne(itemConfig);
 //        TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(ic.getTypeCategoryId());
         List<ItemTalentContent> itemTalentContents = null;
-        if(ic.getItemConfigTType()){
+        if (ic.getItemConfigTType()) {
             ItemTalentContent itemTalentContent = new ItemTalentContent();
             itemTalentContent.setItemConfigId(ic.getItemConfigId());
 //            talentTypes = talentTypeService.select(talentType);
@@ -504,14 +560,14 @@ public class CompanyController extends BaseController{
         InfoChange infoChange = new InfoChange();
         infoChange.setUserId(user.getUserId());
         List<InfoChange> infoChanges = infoChangeService.select(infoChange);
-        Map<String,Object> ics = new HashMap<>();
+        Map<String, Object> ics = new HashMap<>();
         for (InfoChange change : infoChanges) {
-            ics.put(change.getFiledName(),1);
+            ics.put(change.getFiledName(), 1);
         }
 
         Item item = itemService.selectByPrimaryKey(companyUserItem.getItemId());
-        List<CompanyUserItem> childUserItem=null;
-        if(item.getItemCategory()==1){
+        List<CompanyUserItem> childUserItem = null;
+        if (item.getItemCategory() == 1) {
             CompanyUserItem ccui = new CompanyUserItem();
             ccui.setParentId(companyUserItem.getCompanyUserItemId());
             childUserItem = companyUserItemService.select(ccui);
@@ -526,37 +582,50 @@ public class CompanyController extends BaseController{
         ii.setItemCategory(0);
         List<Item> items = itemService.select(ii);
 
-        model.addAttribute("user",user);
-        model.addAttribute("cui",cui);
-        model.addAttribute("company",c);
-        model.addAttribute("cufs",cuf);
-        model.addAttribute("ic",ic);
-        model.addAttribute("itcs",itemTalentContents);
-        model.addAttribute("items",items);
-        model.addAttribute("tc",typeCategory);
-        model.addAttribute("ics",ics);
-        model.addAttribute("item",item);
-        model.addAttribute("companyUserItem",companyUserItem);
-        model.addAttribute("childUserItems",childUserItem);
-        model.addAttribute("iut",iut);
+        model.addAttribute("user", user);
+        model.addAttribute("cui", cui);
+        model.addAttribute("company", c);
+        model.addAttribute("cufs", cuf);
+        model.addAttribute("ic", ic);
+        model.addAttribute("itcs", itemTalentContents);
+        model.addAttribute("items", items);
+        model.addAttribute("tc", typeCategory);
+        model.addAttribute("ics", ics);
+        model.addAttribute("item", item);
+        model.addAttribute("companyUserItem", companyUserItem);
+        model.addAttribute("childUserItems", childUserItem);
+        model.addAttribute("iut", iut);
         return "/company/check_info.html";
     }
 
     @RequestMapping("/modal_content")
-    public String modalContent(Model model,Long userId,Long certificateId){
+    public String modalContent(Model model, Long userId, Long certificateId) {
         CompanyUserCertificate companyUserCertificate = new CompanyUserCertificate();
         companyUserCertificate.setUserId(userId);
         companyUserCertificate.setCertificateId(certificateId);
         List<CompanyUserCertificate> companyUserCertificates = companyUserCertificateService.select(companyUserCertificate);
-        model.addAttribute("cucs",companyUserCertificates);
+        model.addAttribute("cucs", companyUserCertificates);
         return "/company/modal_content.html";
     }
 
     @ResponseBody
-    @RequestMapping("/pass")
-    public Boolean pass(@RequestBody JSONObject jsonParam){
+    @RequestMapping("/if_show")
+    public Boolean ifShow(Long userId, Long certificateId) {
+        Boolean res = false;
+        CompanyUserCertificate companyUserCertificate = new CompanyUserCertificate();
+        companyUserCertificate.setUserId(userId);
+        companyUserCertificate.setCertificateId(certificateId);
+        List<CompanyUserCertificate> companyUserCertificates = companyUserCertificateService.select(companyUserCertificate);
+        if (companyUserCertificates.size() > 0) res = true;
+        return res;
+    }
 
-        PassJson passJson = JSON.parseObject(jsonParam.toJSONString(), new TypeReference<PassJson>() {});
+    @ResponseBody
+    @RequestMapping("/pass")
+    public Boolean pass(@RequestBody JSONObject jsonParam) {
+
+        PassJson passJson = JSON.parseObject(jsonParam.toJSONString(), new TypeReference<PassJson>() {
+        });
         CompanyUserItem cui = companyUserItemService.selectByPrimaryKey(passJson.getUserItemId());
         CompanyUserItem companyUserItem = new CompanyUserItem();
         companyUserItem.setCompanyUserItemId(passJson.getUserItemId());
@@ -576,7 +645,7 @@ public class CompanyController extends BaseController{
         itemUserTimeService.updateItemUserTime(itemUserTime);
 
         companyUserItemService.delByParentId(passJson.getUserItemId());
-        if(passJson.getItems()!=null){
+        if (passJson.getItems() != null) {
             List<CompanyUserItem> companyUserItems = new ArrayList<>();
             for (ItemJson itemJson : passJson.getItems()) {
                 Item item = itemService.selectByPrimaryKey(itemJson.getItem());
@@ -590,7 +659,7 @@ public class CompanyController extends BaseController{
                 c.setConfigId(ic.getItemConfigId());
                 c.setItemName(item.getItemName());
                 c.setUserId(cui.getUserId());
-                if(itemJson.getTypeContent()!=null) c.setTalentTypeContent(itemJson.getTypeContent());
+                if (itemJson.getTypeContent() != null) c.setTalentTypeContent(itemJson.getTypeContent());
                 companyUserItems.add(c);
             }
             companyUserItemService.insertList(companyUserItems);
@@ -601,7 +670,7 @@ public class CompanyController extends BaseController{
 
     @ResponseBody
     @RequestMapping("/back_npass_pass")
-    public Boolean backNPassPass(Integer state,Long userItemId,String reason){
+    public Boolean backNPassPass(Integer state, Long userItemId, String reason) {
         CompanyUserItem companyUserItem = new CompanyUserItem();
         companyUserItem.setCompanyUserItemId(userItemId);
         companyUserItem.setCompanyChecked(state);

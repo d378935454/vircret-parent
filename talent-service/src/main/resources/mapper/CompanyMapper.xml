@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.talentcenter.dao.CompanyMapper">
+
+	<resultMap id="BaseResultMap" type="com.talentcenter.entity.Street">
+		<id column="company_id" jdbcType="INTEGER" property="companyId" />
+		<result column="company_name" jdbcType="VARCHAR" property="companyName" />
+		<result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+		<result column="company_contactor" jdbcType="VARCHAR" property="companyContactor" />
+		<result column="company_contactor_phone" jdbcType="VARCHAR" property="companyContactorPhone" />
+		<result column="company_nature_id" jdbcType="VARCHAR" property="companyNatureId" />
+		<result column="company_nature_name" jdbcType="VARCHAR" property="companyNatureName" />
+		<result column="company_type_id" jdbcType="VARCHAR" property="companyTypeId" />
+		<result column="company_type_name" jdbcType="VARCHAR" property="companyTypeName" />
+		<result column="street_id" jdbcType="VARCHAR" property="streetId" />
+		<result column="street_name" jdbcType="VARCHAR" property="streetName" />
+		<result column="company_address" jdbcType="VARCHAR" property="companyAddress" />
+		<result column="del" jdbcType="BIT" property="del" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="create_id" jdbcType="INTEGER" property="createId" />
+		<result column="create_name" jdbcType="VARCHAR" property="createName" />
+		<result column="update_id" jdbcType="INTEGER" property="updateId" />
+		<result column="update_name" jdbcType="VARCHAR" property="updateName" />
+		<result column="memo" jdbcType="VARCHAR" property="memo" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+    company_id, user_id, company_name, company_code, company_contactor, company_contactor_phone,
+    company_nature_id, company_nature_name, company_type_id, company_type_name, street_id,
+    street_name, company_address, del, create_time, update_time, create_id, create_name,
+    update_id, update_name, memo, `state`
+  	</sql>
+
     <delete id="batchDel" parameterType="Map">
     UPDATE talent_company SET del=0 WHERE company_id IN (${ids});
   </delete>
@@ -23,4 +54,12 @@ AND tcui.parent_id = 0
 AND tcui.have_submit = 1
 AND tu.company_id = #{companyId,jdbcType=BIGINT}
     </select>
+
+	<select id="selectCheckCompany" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List"/>
+		from talent_talent_company
+		WHERE
+		street_id = #{_parameter} AND state = 1
+	</select>
 </mapper>

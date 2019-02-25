@@ -6,8 +6,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 50mb
-      max-request-size: 50mb
+      max-file-size: 1mb
+      max-request-size: 1mb
 #  jmx:
 #    enabled: false
 beetlsql:
@@ -54,9 +54,9 @@ spring:
     datasource:
        type: com.alibaba.druid.pool.DruidDataSource
        platform: mysql
-       url: jdbc:mysql://localhost:3307/talent?characterEncoding=utf-8
+       url: jdbc:mysql://localhost:3306/talent?characterEncoding=utf-8
        username: root
-       password: Wanbang123321
+       password: rencaiR2019!
        driver-class-name: com.mysql.jdbc.Driver
        # 初始化大小，最小，最大
        druid:
@@ -65,7 +65,7 @@ spring:
          max-active: 20
          max-wait: 60000
 server:
-    port: 8181
+    port: 8070
 ---
 spring:
     profiles: lined
@@ -83,7 +83,3 @@ spring:
          max-wait: 60000
 server:
   port: 8080
-
-
-
-

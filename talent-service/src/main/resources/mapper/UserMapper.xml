@@ -62,4 +62,10 @@
   <delete id="batchDel" parameterType="Map">
     UPDATE talent_user SET del=0 WHERE user_id IN (${ids});
   </delete>
+
+  <select id="ifCheck" resultType="Integer" parameterType="java.lang.String">
+    SELECT COUNT(1) from talent_user u
+    left join talent_company c on u.user_id=c.user_id
+    where user_name = #{_parameter} AND c.state=2 AND u.user_nature=1
+  </select>
 </mapper>

@@ -1,9 +1,16 @@
 <style>
-
+    .img-circle{
+        width: 6.35rem;
+    }
 </style>
 <li class="nav-header">
     <div class="dropdown profile-element">
-        <span><img alt="image" class="img-circle" src="/img/profile_small.jpg" /></span>
+        <span><img alt="image" class="img-circle" @if(user.headImg==null){
+                   src="/img/logo.jpg"
+                   @}else{
+                   src="/talent/${user.headImg}"
+                   @}
+        /></span>
         <a class="dropdown-toggle" href="#">
             <span class="clear">
                 <span class="block m-t-xs"><strong class="font-bold">${user.userName}</strong></span>

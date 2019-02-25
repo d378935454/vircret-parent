@@ -206,12 +206,15 @@ public class ItemController extends BaseController {
     ) {
 
         String[] acceptTimes = itemConfigAccept.split("至");
-        String[] checkTimes = itemConfigCheckTime.split("至");
         config.setItemConfigAcceptBegin(getDate4StrDate(acceptTimes[0], "MM-dd"));
         config.setItemConfigAcceptEnd(getDate4StrDate(acceptTimes[1], "MM-dd"));
 
-        config.setItemConfigCheckBegin(getDate4StrDate(checkTimes[0], "MM-dd"));
-        config.setItemConfigCheckEnd(getDate4StrDate(checkTimes[1], "MM-dd"));
+        //需要判断一下是否为空
+        if(itemConfigCheckTime!=null && itemConfigCheckTime!=""){
+            String[] checkTimes = itemConfigCheckTime.split("至");
+            config.setItemConfigCheckBegin(getDate4StrDate(checkTimes[0], "MM-dd"));
+            config.setItemConfigCheckEnd(getDate4StrDate(checkTimes[1], "MM-dd"));
+        }
 
         User sessionUser = getSessionUser();
         config.setCreateName(sessionUser.getUserName());

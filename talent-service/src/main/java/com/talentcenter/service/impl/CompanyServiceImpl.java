@@ -89,4 +89,9 @@ public class CompanyServiceImpl implements CompanyService {
     public List<Map<String, Object>> selectCompanyCheckedItem(Map<String, Object> map) {
         return companyMapper.selectCompanyCheckedItem(map);
     }
+
+    @Override
+    public List<Company> selectCheckCompany(String streetId) {
+        return companyMapper.selectCheckCompany(streetId);
+    }
 }

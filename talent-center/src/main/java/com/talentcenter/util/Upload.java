@@ -40,11 +40,12 @@ public class Upload {
             //上传目录地址
             String os = System.getProperty("os.name");
             String uploadDir = "";
+            String dateStr = DateHelper.getCurDate();
             if (os.toLowerCase().startsWith("win")) {
                 String[] path = ClassUtils.getDefaultClassLoader().getResource("").getPath().split("/");
-                uploadDir = path[1] + "/talent/upload/"+DateHelper.getCurDate()+"/";
+                uploadDir = path[1] + "/talent/upload/"+dateStr+"/";
             }else{
-                uploadDir = "/usr/talent/upload/"+DateHelper.getCurDate()+"/";
+                uploadDir = "/usr/talent/upload/"+dateStr+"/";
             }
 //            System.out.println(path[]);
 
@@ -59,7 +60,7 @@ public class Upload {
             }
             //调用上传方法
             String fileName = executeUpload(uploadDir+"",file,type);
-            map.put("fileInfo","/upload/"+DateHelper.getCurDate()+"/"+fileName);
+            map.put("fileInfo","/upload/"+dateStr+"/"+fileName);
         }catch (Exception e)
         {
             //打印错误堆栈信息

@@ -13,4 +13,6 @@ public interface CompanyService extends BaseService<Company> {
     int batchDel(Map<String, Object> map);
 
     List<Map<String,Object>> selectCompanyCheckedItem(Map<String,Object> map);
+
+    List<Company> selectCheckCompany(String streetId);
 }

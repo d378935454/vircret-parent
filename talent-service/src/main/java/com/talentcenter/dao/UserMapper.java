@@ -11,4 +11,6 @@ import java.util.Map;
 public interface UserMapper extends BaseMapper<User> {
 
     int batchDel(Map<String, Object> map);
+
+    Integer ifCheck(String userName);
 }

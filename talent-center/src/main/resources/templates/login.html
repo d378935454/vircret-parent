@@ -2,7 +2,7 @@
 <html>
     @include("/common/_head.html") {}
 <body class="gray-bg">
-
+<link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <div class="middle-box text-center loginscreen  animated fadeInDown" style="width: 350px;">
         <div>
             <div>
@@ -26,6 +26,7 @@
                 <!--<p class="text-muted text-center"> <a href="login.html#"><small>忘记密码了？</small></a> | <a href="register.html">注册一个新账号</a>-->
                 <!--</p>-->
                 <p class="text-muted"><a class="pull-left" href="/company/register.html">企业注册</a></p>
+                <input type="hidden" id="error" value="${error}" />
 
             </form>
         </div>
@@ -33,5 +34,29 @@
     @include("/common/_foot.html") {}
     <script>if(window.top !== window.self){ window.top.location = window.location;}</script>
 </body>
+    <script src="/js/plugins/toastr/toastr.min.js"></script>
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "1500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    $(document).ready(function () {
+        if($('#error').val()!==''){
+            toastr.error($('#error').val());
+        }
+    });
+
+</script>
 
 </html>
