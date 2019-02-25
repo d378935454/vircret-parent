@@ -4,10 +4,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -183,4 +180,7 @@ public class ItemConfig {
      * 状态 0:停止 1:启用
      */
     private Boolean itemConfigState;
+
+    @Transient
+    private String itemName;
 }

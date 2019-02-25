@@ -107,6 +107,7 @@
                                                     <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=3" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                             </tr>
+                                            @if(ic.ifHouse){
                                             <tr>
                                                 <th>住房性质</th>
                                                 @if(cui.companyUserHouseType==0){
@@ -138,6 +139,7 @@
                                                     colspan="2">${cui.companyUserHousePrice}</td>
                                                 @}
                                             </tr>
+                                            @}
                                             <tr>
                                                 <th>单位全称</th>
                                                 <td colspan="3">${company.companyName}</td>
@@ -199,6 +201,7 @@
                                                     @}
                                                 >${cui.companyUserWorkLength}</td>
                                             </tr>
+                                            @if(ic.ifSave){
                                             <tr>
                                                 <th>申请前最近18个月社保缴费基数</th>
                                                 <td  @if(ics.company_user_society_save_time1_begin==1 || ics.company_user_society_save_time1_end==1 || ics.company_user_society_save_time2_begin==1 || ics.company_user_society_save_time2_end==1 || ics.company_user_society_save1==1 || ics.company_user_society_save2==1){
@@ -219,6 +222,7 @@
                                                     <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=7" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                             </tr>
+                                            @}
                                             <tr>
                                                 <th>本次劳动合同期限</th>
                                                 <td @if(ics.company_user_contract_time_begin==1 || ics.company_user_contract_time_end==1){
@@ -228,6 +232,7 @@
                                                     <a data-toggle="modal" href="${ctxPath}/company/modal_content?userId=${cui.userId}&certificateId=9" data-target=".bs-modal-lg"><i class="fa fa-photo"></i></a>
                                                 </td>
                                             </tr>
+                                            @if(ic.ifHouse){
                                             <tr>
                                                 <th>本人及购房合同其余人员在上海是否被限制购房</th>
                                                 <td @if(ics.company_user_not_buy_house==1){
@@ -245,13 +250,17 @@
                                                     class="have-change"
                                                     @}
                                                     colspan="2">
-                                                    @if(cui.companyUserHaveAccept){
+                                                    @if(cui.companyUserHaveAccept!=null && cui.companyUserHaveAccept){
                                                     是
                                                     @}else{
                                                     否
                                                     @}
                                                 </td>
+
                                             </tr>
+                                            @}
+
+                                            @if(ic.ifChild){
                                             <tr>
                                                 <th colspan="6">家庭成员基本情况（配偶及子女）</th></tr>
                                             <tr>
@@ -276,6 +285,8 @@
                                                 <td colspan="2">${cuf.companyUserFamilyCard}</td>
                                             </tr>
                                             @}
+                                            @}
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -365,7 +376,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-
+                                    @if(companyUserItem.companyChecked==3){
                                     <div class="form-group col-sm-12" style="padding: 0;">
                                         <label class="pull-left control-label">该期时间段：</label>
                                         <div class="pull-left">
@@ -378,6 +389,10 @@
                                                    autocomplete="off" style="width: 200px" required>
                                         </div>
                                     </div>
+                                    @}else{
+
+                                    @}
+
 
                                     <div class="form-group col-sm-12" style="padding: 0;">
                                         <label class="pull-left control-label">申请提交时间：</label> <div class="pull-left">${companyUserItem.submitTime,"yyyy-MM-dd"}</div>
@@ -437,9 +452,48 @@
                                     @}
 
                                     <div>
+                                        @if(companyUserItem.companyChecked==3){
                                         <a class="btn btn-primary" id="pass">通过</a>
                                         <a class="btn btn-warning" data-toggle="modal" data-target="#npass-modal" id="npass">不通过</a>
                                         <a class="btn btn-danger" data-toggle="modal" data-target="#back-modal" id="back">退回</a>
+                                        @}else{
+                                        当前状态
+                                        <b>
+                                            @if(companyUserItem.centerChecked!=3 && companyUserItem.centerChecked!=null){
+                                                @if(companyUserItem.centerChecked==4){
+                                                    审核完成
+                                                @}else if(companyUserItem.centerChecked==3){
+                                                    人才中心 窗口已审核 等待 管理员审核
+                                                @}else if(companyUserItem.centerChecked==0){
+                                                    人才中心 不通过 原因 ${companyUserItem.centerReason}
+                                                @}else{
+                                                    人才中心 退回 原因 ${companyUserItem.centerReason}
+                                                @}
+                                            @}else{
+                                                @if(companyUserItem.streetChecked!=3 && companyUserItem.streetChecked!=null){
+                                                    @if(companyUserItem.streetChecked==4){
+                                                        人才工作站 管理员已审核 等待 人才中心审核
+                                                    @}else if(companyUserItem.streetChecked==3){
+                                                        人才工作站 窗口已审核 等待 管理员审核
+                                                    @}else if(companyUserItem.streetChecked==0){
+                                                        人才工作站 不通过  ${companyUserItem.streetReason}
+                                                    @}else{
+                                                        人才工作站 退回 ${companyUserItem.streetReason}
+                                                    @}
+                                            @}else{
+                                                @if(companyUserItem.companyChecked!=3 && companyUserItem.companyChecked!=null){
+                                                        @if(companyUserItem.companyChecked==2){
+                                                            本公司审核完成 等待 人才工作站审核
+                                                        @}else if(companyUserItem.companyChecked==0){
+                                                            本公司 不通过 ${companyUserItem.companyReason}
+                                                        @}else{
+                                                            本公司 退回 ${companyUserItem.companyReason}
+                                                        @}
+                                                    @}
+                                                @}
+                                            @}
+                                        @}
+                                    </b>
                                         <input type="hidden" id="user-item-id" value="${companyUserItem.companyUserItemId}">
                                     </div>
                                 </div>

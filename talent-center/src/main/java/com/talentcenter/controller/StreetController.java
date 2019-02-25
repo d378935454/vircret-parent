@@ -315,7 +315,7 @@ public class StreetController extends BaseController{
     @RequestMapping("check_item")
     public String ajaxCheckItem(Model model,
                                 @RequestParam(required = false) Long itemId,
-                                @RequestParam(required = false) Integer companyChecked){
+                                @RequestParam(required = false) Integer streetChecked){
 
         User sessionUser = getSessionUser();
         Map<String,Object> map = new HashMap<>();
@@ -324,6 +324,9 @@ public class StreetController extends BaseController{
         }else if(sessionUser.getUserType()==1){
             map.put("streetChecked",2);
         }
+
+        if(itemId!=null) map.put("itemId",itemId);
+        if(streetChecked!=null) map.put("streetChecked",streetChecked);
 
         Company company = new Company();
         company.setStreetId(sessionUser.getStreetId());

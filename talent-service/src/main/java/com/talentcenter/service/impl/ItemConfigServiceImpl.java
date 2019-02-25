@@ -85,5 +85,10 @@ public class ItemConfigServiceImpl implements ItemConfigService {
         return itemConfigMapper.batchDel(map);
     }
 
+    @Override
+    public List<ItemConfig> selectActive() {
+        return itemConfigMapper.selectActive();
+    }
+
 
 }

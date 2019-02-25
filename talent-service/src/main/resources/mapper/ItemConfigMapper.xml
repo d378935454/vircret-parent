@@ -34,6 +34,7 @@
         <result column="update_id" jdbcType="INTEGER" property="updateId" />
         <result column="update_name" jdbcType="VARCHAR" property="updateName" />
         <result column="memo" jdbcType="VARCHAR" property="memo" />
+        <result column="item_name" jdbcType="VARCHAR" property="itemName" />
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -50,6 +51,21 @@
         select
         <include refid="Base_Column_List"/>
         from talent_item_config ORDER BY item_config_id DESC LIMIT 1
+    </select>
+
+    <select id="selectActive"  resultMap="BaseResultMap">
+        select
+        item_config_id, ic.item_id, item_config_accept_begin, item_config_accept_end, item_config_check_begin,
+    item_config_check_end, item_config_effect, item_config_face, item_config_type, item_config_amount_total,
+    item_config_amount_per, item_config_send_type, item_config_send_rate, item_config_service,
+    item_config_content, item_config_conetent_attachment, attachment_name, item_config_company_check,
+    item_config_street_check, item_config_center_check, item_config_target, item_config_t_type,
+    type_category_id, ic.del, ic.create_time, ic.update_time, ic.create_id, ic.create_name, ic.update_id,
+    ic.update_name, ic.memo,i.item_name
+        from talent_item_config ic
+        left join talent_item i on ic.item_id = i.item_id
+        where item_config_state=1
+        ORDER BY item_config_accept_begin desc
     </select>
 
     <delete id="batchDel" parameterType="Map">

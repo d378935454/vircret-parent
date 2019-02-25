@@ -56,8 +56,7 @@
                         </div>
                     </div>
                     @}
-
-                    @if(ic.ifHouse!=null){
+                    @if(ic.ifHouse){
                     <div style="width: 1200px;">
                         <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
                         <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
@@ -111,12 +110,12 @@
                         <div class="col-sm-6">
                             <div class="i-checks">
                                 <label>
-                                    <input type="radio" value="1" @if(cui.companyUserNotBuyHouse || cui.companyUserNotBuyHouse==null){
+                                    <input type="radio" value="1" @if(cui.companyUserNotBuyHouse==null || cui.companyUserNotBuyHouse){
                                            checked
                                            @}
                                            name="companyUserNotBuyHouse"> <i></i> 是</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="radio" value="0" @if(!cui.companyUserNotBuyHouse){
+                                    <input type="radio" value="0" @if(cui.companyUserNotBuyHouse!=null && !cui.companyUserNotBuyHouse){
                                            checked
                                            @}
                                            name="companyUserNotBuyHouse"> <i></i> 否</label>&nbsp;&nbsp;
@@ -128,12 +127,12 @@
                         <div class="col-sm-6">
                             <div class="i-checks">
                                 <label>
-                                    <input type="radio" value="1" @if(cui.companyUserHaveAccept || cui.companyUserHaveAccept==null){
+                                    <input type="radio" value="1" @if(cui.companyUserHaveAccept==null || cui.companyUserHaveAccept){
                                            checked
                                            @}
                                            name="companyUserHaveAccept"> <i></i> 是</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="radio" value="0" @if(!cui.companyUserHaveAccept){
+                                    <input type="radio" value="0" @if(cui.companyUserHaveAccept!=null && !cui.companyUserHaveAccept){
                                            checked
                                            @}
                                            name="companyUserHaveAccept"> <i></i> 否</label>&nbsp;&nbsp;
@@ -142,7 +141,7 @@
                     </div>
                     @}
 
-                    @if(ic.ifSave!=null){
+                    @if(ic.ifSave){
                     <div style="width: 1200px;">
                         <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
                         <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
@@ -184,7 +183,7 @@
                     </div>
                     @}
 
-                    @if(ic.ifTax!=null){
+                    @if(ic.ifTax){
                     <div style="width: 1200px;">
                         <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
                         <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">
@@ -210,7 +209,7 @@
                     </div>
                     @}
 
-                    @if(ic.ifChild!=null){
+                    @if(ic.ifChild){
                     <div style="width: 1200px;">
                         <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
                         <div style="font-size: 14px;color: rgba(12,30,38,0.28); font-weight: bold; padding-left: 20px;">

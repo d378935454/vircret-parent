@@ -65,5 +65,11 @@ AND tcui.parent_id = 0
 AND tcui.have_submit = 1
 AND tcui.company_checked = 2
 AND tu.company_id IN (${companyIds})
+        <if test="itemId !=null and itemId != ''">
+            AND tcui.item_id = #{itemId,jdbcType=BIGINT}
+        </if>
+        <if test="streetChecked !=null and streetChecked != ''">
+            AND tcui.street_checked = #{streetChecked,jdbcType=INTEGER}
+        </if>
     </select>
 </mapper>

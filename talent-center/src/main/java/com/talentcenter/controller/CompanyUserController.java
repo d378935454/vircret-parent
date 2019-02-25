@@ -615,10 +615,11 @@ public class CompanyUserController extends BaseController {
         for (Long v : newCertificateId) {
             String change = request.getParameter("change_"+v);
             if(change.equals("1")){
+                String fileName = infoMap.get(v+"")==""? "iii": infoMap.get(v+"");
                 InfoChange infoChange = new InfoChange();
-                infoChange.setFiledName(infoMap.get(v+""));
+                infoChange.setFiledName(fileName);
                 infoChange.setUserId(userId);
-                InfoChange i = infoChangeService.selectOne(infoChange);
+                List<InfoChange> i = infoChangeService.select(infoChange);
                 if(i==null) infoChangeService.insert(infoChange);
             }
         }

@@ -53,6 +53,13 @@ WHERE
 AND tcui.parent_id = 0
 AND tcui.have_submit = 1
 AND tu.company_id = #{companyId,jdbcType=BIGINT}
+
+		<if test="itemId !=null and itemId != ''">
+			AND tcui.item_id = #{itemId,jdbcType=BIGINT}
+		</if>
+		<if test="companyChecked !=null and companyChecked != ''">
+			AND tcui.company_checked = #{companyChecked,jdbcType=INTEGER}
+		</if>
     </select>
 
 	<select id="selectCheckCompany" parameterType="java.lang.String" resultMap="BaseResultMap">

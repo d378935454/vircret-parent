@@ -86,6 +86,9 @@ public class CenterController extends BaseController{
         }else if(sessionUser.getUserType()==1 || sessionUser.getUserType()==0){
             map.put("centerChecked",2);
         }
+        if(itemId!=null) map.put("itemId",itemId);
+        if(centerChecked!=null) map.put("centerChecked",centerChecked);
+
         List<Map<String,Object>> maps = centerService.selectCenterItemCheckedItem(map);
         PageInfo<Map<String,Object>> pageInfo= new PageInfo<>(maps);
         String pageStr = makePageHtml(pageInfo);

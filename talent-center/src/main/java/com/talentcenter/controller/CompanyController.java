@@ -510,9 +510,12 @@ public class CompanyController extends BaseController {
                                 @RequestParam(required = false) Long itemId,
                                 @RequestParam(required = false) Integer companyChecked) {
 
+        User s = getSessionUser();
         Map<String, Object> map = new HashMap<>();
         map.put("companyChecked", 3);
-        map.put("companyId", getSessionUser().getCompanyId());
+        map.put("companyId", getSessionUser().getUserId());
+        if(itemId!=null) map.put("itemId",itemId);
+        if(companyChecked!=null) map.put("companyChecked",companyChecked);
 
         List<Map<String, Object>> maps = companyService.selectCompanyCheckedItem(map);
 

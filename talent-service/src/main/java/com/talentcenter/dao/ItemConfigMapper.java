@@ -4,6 +4,7 @@ import com.talentcenter.entity.ItemConfig;
 import mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -13,4 +14,5 @@ public interface ItemConfigMapper extends BaseMapper<ItemConfig> {
 
     ItemConfig selectNewRecord();
 
+    List<ItemConfig> selectActive();
 }

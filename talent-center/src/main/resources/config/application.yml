@@ -68,6 +68,24 @@ server:
     port: 8070
 ---
 spring:
+    profiles: testprod
+    datasource:
+       type: com.alibaba.druid.pool.DruidDataSource
+       platform: mysql
+       url: jdbc:mysql://localhost:3307/talent?characterEncoding=utf-8
+       username: root
+       password: Wanbang123321
+       driver-class-name: com.mysql.jdbc.Driver
+       # 初始化大小，最小，最大
+       druid:
+         initial-size: 5
+         min-idle: 3
+         max-active: 20
+         max-wait: 60000
+server:
+    port: 8070
+---
+spring:
     profiles: lined
     datasource:
        type: com.alibaba.druid.pool.DruidDataSource

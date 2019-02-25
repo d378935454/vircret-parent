@@ -185,10 +185,12 @@ public class ItemController extends BaseController {
         certificate.setDel(true);
         List<Certificate> certificates = certificateService.select(certificate);
         List<TypeCategory> typeCategories = typeCategoryService.selectAll();
+        List<ItemConfig> itemConfigs = itemConfigService.selectActive();
         model.addAttribute("item_length", item.getItemLength());
         model.addAttribute("itemId", itemId);
         model.addAttribute("certificates", certificates);
         model.addAttribute("typeCategories", typeCategories);
+        model.addAttribute("activeConfig", itemConfigs);
         return "/item/add_config.html";
     }
 

@@ -271,7 +271,7 @@
                     <div class="form-group">
                         <label for="item_config_content" class="col-sm-2 control-label">政策详情：</label>
                         <div class="col-sm-10">
-                            <textarea id="editor" name="itemConfigContent" id="item_config_content" placeholder="政策详情" autofocus></textarea>
+                            <textarea id="editor" name="itemConfigContent" id="item_config_content" placeholder="政策详情"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -337,51 +337,19 @@
                         <table data-toggle="table" data-height="460">
                             <thead>
                             <tr>
-                                <th>受理时间</th>
                                 <th>政策</th>
+                                <th>受理时间</th>
+                                <th>审核时间</th>
                             </tr>
                             </thead>
                             <tbody>
+                            @for(config in activeConfig){
                             <tr>
-                                <td>02-01 至 03-31</td>
-                                <td>购房补贴</td>
+                                <td>${config.itemName}</td>
+                                <td>${config.itemConfigAcceptBegin,'MM-dd'} 至 ${config.itemConfigAcceptEnd,'MM-dd'}</td>
+                                <td>${config.itemConfigCheckBegin,'MM-dd'} 至 ${config.itemConfigCheckEnd,'MM-dd'}</td>
                             </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
+                            @}
                             </tbody>
                         </table>
                     </div>
