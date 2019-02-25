@@ -79,25 +79,39 @@ public class StreetController extends BaseController{
 
     @RequestMapping("/ajax_check_company")
     public String ajaxCheckCompany(Model model, int pageNum, int pageSize,
-                            @RequestParam(required = false) String streetName
+                            @RequestParam(required = false) String companyName
     ){
         //组装搜索条件
         /*Map<String,Object> map=new HashMap<>();
         if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
         if(examId!=null && examId!="") map.put("examId",examId);
         if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
-        Street street = new Street();
-        street.setDel(true);
-        if(streetName!=null && streetName!="") street.setStreetName(streetName);
+        User sessionUser = getSessionUser();
+        Company company = new Company();
+        company.setDel(true);
+        company.setStreetId(sessionUser.getStreetId());
+        company.setState(1);
+        if(companyName!=null && companyName!="") company.setCompanyName(companyName);
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
-        List<Street> streets = streetService.select(street);
+        List<Company> companies = companyService.select(company);
+//        List<Street> streets = streetService.select(street);
 
-        PageInfo<Street> pageInfo= new PageInfo<>(streets);
+        PageInfo<Company> pageInfo= new PageInfo<>(companies);
         String pageStr = makePageHtml(pageInfo);
         model.addAttribute("page_info",pageInfo);
         model.addAttribute("pages",pageStr);
         return "/street/ajax_check_company.html";
+    }
+
+    @ResponseBody
+    @RequestMapping("check")
+    public Boolean check(Long companyId){
+        Company company = new Company();
+        company.setState(2);
+        company.setCompanyId(companyId);
+        int res = companyService.updateByPrimaryKeySelective(company);
+        return true;
     }
 
     @RequestMapping("/index.html")

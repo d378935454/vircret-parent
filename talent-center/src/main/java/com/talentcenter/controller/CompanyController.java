@@ -416,7 +416,6 @@ public class CompanyController extends BaseController {
         return "redirect:/company/type.html";
     }
 
-
     @RequestMapping("register.html")
     public String register(Model model) {
         List<Street> streets = streetService.selectAll();

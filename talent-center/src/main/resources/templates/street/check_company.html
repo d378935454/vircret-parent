@@ -2,6 +2,7 @@
 <html>
 @layout("/layout/_list_layout.html"){
 <link href="/css/plugins/layer/laydate.css" rel="stylesheet" type="text/css">
+<link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <body class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="ibox float-e-margins">
@@ -9,7 +10,7 @@
                 <form id="search-form">
                     <div class="ibox-content">
                         <div class="row">
-                            <div class="col-lg-2 pull-left">
+                            <!--<div class="col-lg-2 pull-left">
                                 <div class="input-group">
                                     <input type="text" name="streetName" id="street_name" placeholder="街道名称" class="input-sm form-control">
                                 </div>
@@ -21,7 +22,7 @@
                             <div class="col-lg-2 pull-right text-right">
                                 <a href="${ctxPath}/street/add.html" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></a>
                                 <span id="batch_del" class="btn btn-sm btn-primary"><i class="fa fa-trash-o"></i></span>
-                            </div>
+                            </div>-->
                         </div>
                         <div class="table-responsive" id="ajax_return">
 
@@ -35,7 +36,24 @@
 @}
 </body>
 <script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/plugins/toastr/toastr.min.js"></script>
 <script type="text/javascript">
+
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "1500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
     var cur_page=1;
     $(document).ready(function(){
         ajax_get_table('search-form',1);
@@ -50,7 +68,7 @@
         cur_page = page; //当前页面 保存为全局变量
         $.ajax({
             type : "POST",
-            url:"${ctxPath}/street/ajax_index?pageNum="+page+"&pageSize=20",//+tab,
+            url:"${ctxPath}/street/ajax_check_company?pageNum="+page+"&pageSize=20",//+tab,
             data : $('#'+tab).serialize(),// 你的formid
             success: function(data){
                 $("#ajax_return").html('');
