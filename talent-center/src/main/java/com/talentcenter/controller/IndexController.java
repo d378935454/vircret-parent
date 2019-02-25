@@ -57,6 +57,8 @@ public class IndexController extends BaseController {
         m.setMenuType(1);
         m.setMenuNature(sessionUser.getUserNature());
         m.setDel(1);
+
+
         /*map.put("parentId","0");
         map.put("menuType",1);
         map.put("del",1);
