@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static util.DateHelper.getDate4StrDate;
 
@@ -135,9 +132,9 @@ public class ItemController extends BaseController {
     }
 
     @RequestMapping("del.html")
-    public String delConfig(Item item) {
+    public String del(ItemConfig item) {
         item.setDel(false);
-        int res = itemService.updateByPrimaryKeySelective(item);
+        int res = itemConfigService.updateByPrimaryKeySelective(item);
         return "redirect:/item/index.html";
     }
 
@@ -169,6 +166,7 @@ public class ItemController extends BaseController {
         //分页查询
         ItemConfig itemConfig = new ItemConfig();
         itemConfig.setItemId((long) Integer.parseInt(itemId));
+        itemConfig.setDel(true);
         PageHelper.startPage(pageNum, pageSize);
         List<ItemConfig> config = itemConfigService.select(itemConfig);
         PageInfo<ItemConfig> pageInfo = new PageInfo<>(config);
@@ -179,8 +177,8 @@ public class ItemController extends BaseController {
     }
 
     @RequestMapping("add_config.html")
-    public String addConfig(Model model, String itemId) {
-        Item item = itemService.selectByPrimaryKey((long) Integer.parseInt(itemId));
+    public String addConfig(Model model, Long itemId) {
+        Item item = itemService.selectByPrimaryKey(itemId);
         Certificate certificate = new Certificate();
         certificate.setDel(true);
         List<Certificate> certificates = certificateService.select(certificate);
@@ -223,11 +221,12 @@ public class ItemController extends BaseController {
         config.setCreateId(sessionUser.getUserId());
 
         String ct = "";
-        for(int i=0;i<itemConfigContactTimes.length;i++){
-            ct+=itemConfigContactTimes[i]+",";
+        if(itemConfigContactTimes!=null && itemConfigContactTimes.length>0){
+            for(int i=0;i<itemConfigContactTimes.length;i++){
+                ct+=itemConfigContactTimes[i]+",";
+            }
+            ct = ct.substring(0, ct.length() - 1);
         }
-
-        ct = ct.substring(0, ct.length() - 1);
 
         config.setItemConfigContactTime(ct);
         int res = itemConfigService.insertSelective(config);
@@ -257,6 +256,7 @@ public class ItemController extends BaseController {
         ItemCertificate itemCertificate = new ItemCertificate();
         itemCertificate.setItemConfigId(config.getItemConfigId());
         List<ItemCertificate> itemCertificates = itemCertificateService.select(itemCertificate);
+        List<ItemConfig> itemConfigs = itemConfigService.selectActive();
 
         for (Certificate c : certificates) {
             c.setChecked(false);
@@ -268,9 +268,16 @@ public class ItemController extends BaseController {
             }
         }
 
+        String[] strArr = config.getItemConfigContactTime().split(",");
+
         List<TypeCategory> typeCategories = typeCategoryService.selectAll();
         model.addAttribute("certificates", certificates);
         model.addAttribute("typeCategories", typeCategories);
+        model.addAttribute("activeConfig", itemConfigs);
+        model.addAttribute("ld",Arrays.asList(strArr).contains("0"));
+        model.addAttribute("zf",Arrays.asList(strArr).contains("1"));
+        model.addAttribute("sb",Arrays.asList(strArr).contains("3"));
+        model.addAttribute("gs",Arrays.asList(strArr).contains("4"));
         model.addAttribute("obj", config);
         return "/item/edit_config.html";
     }
@@ -284,19 +291,33 @@ public class ItemController extends BaseController {
             @RequestParam(required = false) String itemConfigCheckTime,
             @RequestParam(required = false, value = "talentTypeIds[]") String[] talentTypeIds,
             @RequestParam(required = false, value = "talentTypes[]") String[] talentTypes,
-            @RequestParam(required = false, value = "talentTypeNames[]") String[] talentTypeNames) {
+            @RequestParam(required = false, value = "talentTypeNames[]") String[] talentTypeNames,
+            @RequestParam(required = false, value = "itemConfigContactTimes[]") String[] itemConfigContactTimes) {
 
         String[] acceptTimes = itemConfigAccept.split("至");
         String[] checkTimes = itemConfigCheckTime.split("至");
         config.setItemConfigAcceptBegin(getDate4StrDate(acceptTimes[0], "MM-dd"));
         config.setItemConfigAcceptEnd(getDate4StrDate(acceptTimes[1], "MM-dd"));
 
-        config.setItemConfigCheckBegin(getDate4StrDate(checkTimes[0], "MM-dd"));
-        config.setItemConfigCheckEnd(getDate4StrDate(checkTimes[1], "MM-dd"));
+        if(itemConfigCheckTime!=null && itemConfigCheckTime!="") {
+            config.setItemConfigCheckBegin(getDate4StrDate(checkTimes[0], "MM-dd"));
+            config.setItemConfigCheckEnd(getDate4StrDate(checkTimes[1], "MM-dd"));
+        }
 
         User sessionUser = getSessionUser();
         config.setCreateName(sessionUser.getUserName());
         config.setCreateId(sessionUser.getUserId());
+
+        String ct = "";
+        if(itemConfigContactTimes!=null && itemConfigContactTimes.length>0){
+            for(int i=0;i<itemConfigContactTimes.length;i++){
+                ct+=itemConfigContactTimes[i]+",";
+            }
+            ct = ct.substring(0, ct.length() - 1);
+        }
+
+        config.setItemConfigContactTime(ct);
+        config.setDel(true);
 
         int res = itemConfigService.updateByPrimaryKey(config);
 

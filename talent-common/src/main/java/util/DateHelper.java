@@ -242,6 +242,20 @@ public class DateHelper {
 
     /**
      * <p>
+     * 获取某个月后的日期格式（yyyyMMdd）
+     * </p>
+     *
+     * @return
+     */
+    public static Date getAfterCustomMonth(Date date,int monthNum) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, monthNum);
+        return calendar.getTime();
+    }
+
+    /**
+     * <p>
      * 返回日期（格式yyyyMMdd）
      * </p>
      *
@@ -622,6 +636,21 @@ public class DateHelper {
      */
     public static Date getFristDayOfMonth() {
         Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        return calendar.getTime();
+
+    }
+
+    /**
+     * 得到本月第一天
+     * @return
+     */
+    public static Date getFristDayOfCustomMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.SECOND, 0);

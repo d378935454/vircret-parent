@@ -547,7 +547,7 @@ public class CompanyController extends BaseController {
         ItemConfig ic = itemConfigService.selectOne(itemConfig);
 //        TypeCategory typeCategory = typeCategoryService.selectByPrimaryKey(ic.getTypeCategoryId());
         List<ItemTalentContent> itemTalentContents = null;
-        if (ic.getItemConfigTType()) {
+        if (ic.getItemConfigTType()!=null && ic.getItemConfigTType()) {
             ItemTalentContent itemTalentContent = new ItemTalentContent();
             itemTalentContent.setItemConfigId(ic.getItemConfigId());
 //            talentTypes = talentTypeService.select(talentType);

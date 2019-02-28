@@ -43,7 +43,12 @@
                         <div class="col-sm-3">
                             <input id="item_config_check_time" placeholder="请选择审核时间" name="itemConfigCheckTime"
                                    class="form-control" type="text"
+                                   @if(obj.itemConfigCheckBegin!=null && obj.itemConfigCheckBegin!=""){
                                    value='${obj.itemConfigCheckBegin,"MM-dd"} 至 ${obj.itemConfigCheckEnd,"MM-dd"}'
+                                   @}else{
+                                   value=''
+                                   @}
+
                                    >
                         </div>
                     </div>
@@ -178,25 +183,25 @@
                         <div class="col-sm-3">
                             <div class="i-checks">
                                 <label>
-                                    <input type="checkbox" value="0" @if(obj.itemConfigContactTime==0){
+                                    <input type="checkbox" value="0" @if(ld){
                                            checked
                                            @}
-                                           checked name="itemConfigContactTime"> <i></i> 劳动合同</label>&nbsp;&nbsp;
+                                           name="itemConfigContactTimes[]"> <i></i> 劳动合同</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="checkbox" value="1" @if(obj.itemConfigContactTime==1){
+                                    <input type="checkbox" value="1" @if(zf){
                                            checked
                                            @}
-                                           name="itemConfigContactTime"> <i></i> 租房合同</label>&nbsp;&nbsp;
+                                           name="itemConfigContactTimes[]"> <i></i> 租房合同</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="checkbox" value="3" @if(obj.itemConfigContactTime==1){
+                                    <input type="checkbox" value="3" @if(sb){
                                            checked
                                            @}
-                                           name="itemConfigContactTime"> <i></i> 社保记录</label>&nbsp;&nbsp;
+                                           name="itemConfigContactTimes[]"> <i></i> 社保记录</label>&nbsp;&nbsp;
                                 <label>
-                                    <input type="checkbox" value="2" @if(obj.itemConfigContactTime==2){
+                                    <input type="checkbox" value="4" @if(gs){
                                            checked
                                            @}
-                                           name="itemConfigContactTime"> <i></i> 不关联</label>
+                                           name="itemConfigContactTimes[]"> <i></i> 个税记录</label>
                             </div>
                         </div>
                     </div>
@@ -219,6 +224,102 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写住房信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" @if(!obj.ifHouse){
+                                           checked
+                                           @}
+                                           value="0" checked name="ifHouse"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" @if(obj.ifHouse){
+                                           checked
+                                           @}
+                                           value="1" name="ifHouse"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写购房限制信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" @if(!obj.ifCantHouse){
+                                           checked
+                                           @}
+                                           value="0" checked name="ifCantHouse"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" @if(obj.ifCantHouse){
+                                           checked
+                                           @}
+                                           value="1" name="ifCantHouse"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写子女信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" @if(!obj.ifChild){
+                                           checked
+                                           @}
+                                           value="0" checked name="ifChild"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" @if(obj.ifChild){
+                                           checked
+                                           @}
+                                           value="1" name="ifChild"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写社保记录信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" @if(!obj.ifSave){
+                                           checked
+                                           @}
+                                           value="0" checked name="ifSave"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" @if(obj.ifSave){
+                                           checked
+                                           @}
+                                           value="1" name="ifSave"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top: 2px;">需填写个税记录信息：</label>
+                        <div class="col-sm-3">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="radio" @if(!obj.ifTax){
+                                           checked
+                                           @}
+                                           value="0" checked name="ifTax"> <i></i> 否
+                                </label>&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" @if(obj.ifTax){
+                                           checked
+                                           @}
+                                           value="1" name="ifTax"> <i></i> 是</label>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="form-group">
                         <label for="item_config_send_rate" class="col-sm-2 control-label">发放频率：</label>
@@ -297,7 +398,7 @@
                         <label for="item_config_content" class="col-sm-2 control-label">政策详情：</label>
                         <div class="col-sm-10">
                             <textarea id="editor" name="itemConfigContent" id="item_config_content" placeholder="政策详情"
-                                      autofocus> ${obj.itemConfigContent}</textarea>
+                                      > ${obj.itemConfigContent}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -377,51 +478,25 @@
                         <table data-toggle="table" data-height="460">
                             <thead>
                             <tr>
-                                <th>受理时间</th>
                                 <th>政策</th>
+                                <th>受理时间</th>
+                                <th>审核时间</th>
                             </tr>
                             </thead>
                             <tbody>
+                            @for(config in activeConfig){
                             <tr>
-                                <td>02-01 至 03-31</td>
-                                <td>购房补贴</td>
+                                <td>${config.itemName}</td>
+                                <td>${config.itemConfigAcceptBegin,'MM-dd'} 至 ${config.itemConfigAcceptEnd,'MM-dd'}</td>
+                                <td>
+                                    @if(config.itemConfigCheckBegin!=null && config.itemConfigCheckBegin!=""){
+                                    ${obj.itemConfigCheckBegin,"MM-dd"} 至 ${obj.itemConfigCheckEnd,"MM-dd"}
+                                    @}else{
+
+                                    @}
+                                </td>
                             </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
-                            <tr>
-                                <td>04-01 至 06-31</td>
-                                <td>人才公寓</td>
-                            </tr>
+                            @}
                             </tbody>
                         </table>
                     </div>
@@ -595,6 +670,7 @@
         var type = $('input[name="itemConfigType"]:checked').val();
         var tType = $('input[name="itemConfigTType"]:checked').val();
 
+        // console.log(type);
         if (type == 0) {
             $("#item_config_service").attr("required", true);
             $("#item_config_amount_total,#item_config_amount_per").attr("readonly", true);
@@ -602,8 +678,8 @@
             $("#item_config_amount_total,#item_config_amount_per").attr("required", true);
             $("#item_config_service").attr("readonly", true);
         } else if (type == 1 && tType == 1) {
-            $("#item_config_service").attr("required", true);
-            $("#item_config_amount_total,#item_config_amount_per").attr("readonly", true);
+            $("#item_config_service").attr("required", false);
+            $("#item_config_amount_total,#item_config_amount_per,#item_config_service").attr("readonly", true);
         }
 
         // itemConfigTType
