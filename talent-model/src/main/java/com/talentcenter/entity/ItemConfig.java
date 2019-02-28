@@ -130,6 +130,8 @@ public class ItemConfig {
 
     private Boolean ifHouse;
 
+    private Boolean ifCantHouse;
+
     private Boolean ifChild;
 
     private Boolean ifSave;

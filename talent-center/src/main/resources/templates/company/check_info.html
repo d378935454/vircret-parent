@@ -389,6 +389,22 @@
                                                    autocomplete="off" style="width: 200px" required>
                                         </div>
                                     </div>
+                                    @if(ic.typeCategoryId!=null){
+                                    <div class="form-group col-sm-12" style="padding: 0;">
+                                        <label class="pull-left control-label">该人才所属分类：</label>
+                                        <div class="pull-left">
+                                            <select id="curr-user">
+                                                @for(itc in itcs){
+                                                <option @if(itc.talentTypeId==companyUserItem.talentTypeContent){
+                                                        selected
+                                                        @}
+                                                        value="${itc.talentTypeId}">${itc.talentTypeName}</option>
+                                                @}
+                                            </select>
+                                            <input id="talent-amount" value="">
+                                        </div>
+                                    </div>
+                                    @}
                                     @}else{
 
                                     @}

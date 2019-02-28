@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import util.DateHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static util.DateHelper.*;
@@ -63,6 +65,9 @@ public class CompanyUserController extends BaseController {
 
     @Autowired
     private ItemTalentContentService itemTalentContentService;
+
+    @Autowired
+    private SendLogService sendLogService;
 
     private final Map<String,String> infoMap = new HashMap<String,String>(){{
         put("1", "company_user_card");
@@ -372,7 +377,7 @@ public class CompanyUserController extends BaseController {
     }
 
     @RequestMapping("/item_info.html")
-    public String itemInfo(Model model,Long itemId){
+    public String itemInfo(Model model,Long itemId) throws ParseException {
         User sessionUser = getSessionUser();
         if(!ifPermit(sessionUser.getUserId(),itemId)){
             return "redirect:/company_user/items.html";
@@ -381,6 +386,7 @@ public class CompanyUserController extends BaseController {
         ItemConfig itemConfig = new ItemConfig();
         itemConfig.setItemId(itemId);
         itemConfig.setItemConfigState(true);
+        itemConfig.setDel(true);
         ItemConfig ic = itemConfigService.selectOne(itemConfig);
 
         Boolean ifShowSubmitButton=ifHaveOneSubmit(itemId,sessionUser.getUserId());
@@ -399,29 +405,55 @@ public class CompanyUserController extends BaseController {
             }
         }
 
+//        String begin =
 //        ItemConfig itemConfig = itemConfigService.
 //        itemConfigService.se
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String beginMD =formatter.format(ic.getItemConfigAcceptBegin());
+        String endMD =formatter.format(ic.getItemConfigAcceptEnd());
+        String begin = getCurrentYear()+"-"+beginMD;
+        String end = getCurrentYear()+"-"+endMD;
+
+        Date beginDate = sdf.parse(begin);
+        Date endDate = sdf.parse(end);
         model.addAttribute("item",item);
         model.addAttribute("ifShowSubmitButton",ifShowSubmitButton);
         model.addAttribute("itemConfig",ic);
         model.addAttribute("userItemTeam",userItemTeam);
+        model.addAttribute("ifShow",checkTime(beginDate,endDate));
         return "/company_user/item_info.html";
     }
 
     @RequestMapping("/ask_for.html")
-    public String askForUI(Model model,Long itemId){
+    public String askForUI(Model model,Long itemId) throws ParseException {
 
         String url = "/company_user/ask_for.html";
         //判断是否有资格申请该补助
         User sessionUser = getSessionUser();
-        if(!ifPermit(sessionUser.getUserId(),itemId) || !ifHaveOneSubmit(itemId,sessionUser.getUserId())){
-            return "redirect:/company_user/items.html";
-        }
+
         ItemConfig itemConfig = new ItemConfig();
         itemConfig.setItemId(itemId);
         itemConfig.setItemConfigState(true);
+        itemConfig.setDel(true);
         ItemConfig ic = itemConfigService.selectOne(itemConfig);
 
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String beginMD =formatter.format(ic.getItemConfigAcceptBegin());
+        String endMD =formatter.format(ic.getItemConfigAcceptEnd());
+        String begin = getCurrentYear()+"-"+beginMD;
+        String end = getCurrentYear()+"-"+endMD;
+
+        Date beginDate = sdf.parse(begin);
+        Date endDate = sdf.parse(end);
+
+        if(!ifPermit(sessionUser.getUserId(),itemId) ||
+            !ifHaveOneSubmit(itemId,sessionUser.getUserId()) ||
+            !checkTime(beginDate,endDate)){
+            return "redirect:/company_user/items.html";
+        }
         ItemCertificate itemCertificate = new ItemCertificate();
         itemCertificate.setItemConfigId(ic.getItemConfigId());
         List<ItemCertificate> itemCertificates = itemCertificateService.select(itemCertificate);
@@ -518,28 +550,30 @@ public class CompanyUserController extends BaseController {
                              @RequestParam(required = false, value = "companyUserFamilyName[]") String[] companyUserFamilyName,
                              @RequestParam(required = false, value = "companyUserFamilyCard[]") String[] companyUserFamilyCard,
                              @RequestParam(required = false, value = "companyUserFamilySex[]") String[] companyUserFamilySex
-                             ){
+                             ) throws ParseException {
 
 //        CompanyUserInfo companyUserInfo = new CompanyUserInfo();
 
+
+        //租房合同
         if(userHouseContractTime!= null){
             String[] houseContractTimes = userHouseContractTime.split("至");
             companyUserInfo.setCompanyUserHouseContractTimeBegin(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
             companyUserInfo.setCompanyUserHouseContractTimeEnd(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
         }
-
+        //社保
         if(userSocietySaveTime1!=null){
             String[] userSocietySaveTime1s = userSocietySaveTime1.split("至");
             companyUserInfo.setCompanyUserSocietySaveTime1Begin(getDate4StrDate(userSocietySaveTime1s[0].trim(), "yyyy-MM-dd"));
             companyUserInfo.setCompanyUserSocietySaveTime1End(getDate4StrDate(userSocietySaveTime1s[1].trim(), "yyyy-MM-dd"));
         }
-
+        //社保2
         if(userSocietySaveTime2!=null){
             String[] userSocietySaveTime2s = userSocietySaveTime2.split("至");
             companyUserInfo.setCompanyUserSocietySaveTime2Begin(getDate4StrDate(userSocietySaveTime2s[0].trim(), "yyyy-MM-dd"));
             companyUserInfo.setCompanyUserSocietySaveTime2End(getDate4StrDate(userSocietySaveTime2s[1].trim(), "yyyy-MM-dd"));
         }
-
+        //税单
         if(userIitTime!=null){
             String[] userIitTimes = userIitTime.split("至");
             companyUserInfo.setCompanyUserIitBegin(getDate4StrDate(userIitTimes[0].trim(), "yyyy-MM-dd"));
@@ -548,8 +582,110 @@ public class CompanyUserController extends BaseController {
 
         Long userId = getSessionUser().getUserId();
         companyUserInfo.setUserId(userId);
+
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.setItemId(itemId);
+        itemConfig.setItemConfigState(true);
+        itemConfig.setDel(true);
+        ItemConfig ic = itemConfigService.selectOne(itemConfig);
+        CompanyUserItem cui = new CompanyUserItem();
+        cui.setItemId(itemId);
+        cui.setUserId(userId);
+        CompanyUserItem ccc = companyUserItemService.selectOne(cui);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String beginMD =formatter.format(ic.getItemConfigAcceptBegin());
+        String endMD =formatter.format(ic.getItemConfigAcceptEnd());
+        String begin = getCurrentYear()+"-"+beginMD;
+        String end = getCurrentYear()+"-"+endMD;
+
+        Date beginDate = sdf.parse(begin);
+        Date endDate = sdf.parse(end);
+
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if(!ifPermit(userId,itemId) ||
+            !ifHaveOneSubmit(itemId,userId) ||
+            !checkTime(beginDate,endDate)){
+            rstFulBody.fail("不能申请！");
+            return rstFulBody;
+        }
+
         companyUserInfoService.updateByUserId(companyUserInfo);
 
+        CompanyUserInfo conditionUI = new CompanyUserInfo();
+        conditionUI.setUserId(userId);
+
+        CompanyUserInfo UI = companyUserInfoService.selectOne(conditionUI);
+
+        Item item = itemService.selectByPrimaryKey(itemId);
+
+        //关联时间计算该期起始时间 0:劳动合同 1:租房合同 3:社保记录 4:缴税记录
+        if(ic.getItemConfigContactTime()!=null && ic.getItemConfigContactTime().length()!=0 && ic.getItemConfigType()==1){
+            String[] strArr = ic.getItemConfigContactTime().split(",");
+            ArrayList<Long> startDateList = new ArrayList<>();
+            ArrayList<Long> endDateList = new ArrayList<>();
+            if(Arrays.asList(strArr).contains("0")){
+                startDateList.add(UI.getCompanyUserContractTimeBegin().getTime());
+                endDateList.add(UI.getCompanyUserContractTimeEnd().getTime());
+            }
+
+            if(Arrays.asList(strArr).contains("1")){
+                startDateList.add(UI.getCompanyUserHouseContractTimeBegin().getTime());
+                endDateList.add(UI.getCompanyUserHouseContractTimeEnd().getTime());
+            }
+
+            if(Arrays.asList(strArr).contains("3")){
+                startDateList.add(UI.getCompanyUserSocietySaveTime1Begin().getTime());
+                endDateList.add(UI.getCompanyUserSocietySaveTime1End().getTime());
+            }
+
+            if(Arrays.asList(strArr).contains("4")){
+                startDateList.add(UI.getCompanyUserIitBegin().getTime());
+                endDateList.add(UI.getCompanyUserIitEnd().getTime());
+            }
+
+            Long s = Collections.max(startDateList); //该期第一天
+            Long e = Collections.min(endDateList); //该期最后一天
+            Date ss = new Date(s);
+            Date ee = new Date(e);
+
+            int startMonth = getCustomMonth(ss);
+            int endMonth = getCustomMonth(ee);
+
+            int monthes = endMonth-startMonth+1;
+
+            SendLog conditionSL = new SendLog();
+//            conditionSL.setSendState(true);
+            conditionSL.setUserId(userId);
+            conditionSL.setItemConfigId(ic.getItemConfigId());
+
+            int count = sendLogService.selectCount(conditionSL);
+            //该期申请月数+已申请月数 大于 总月数时
+            if(count+monthes>item.getItemLength()){
+                int differ = count+monthes - item.getItemLength();
+
+                int differ1 = monthes - differ;
+                if(differ1<=0) {
+                    rstFulBody.fail("不能申请！");
+                    return rstFulBody;
+                }else {
+                    monthes = monthes-differ;
+                }
+            }
+
+            ArrayList<SendLog> insertList = new ArrayList<>();
+            for(int i=0;i<monthes;i++){
+                SendLog sl = new SendLog();
+//                sl.setCompanyUserItmeId();
+                sl.setItemConfigId(ic.getItemConfigId());
+                sl.setSendState(false);
+                sl.setMonth(getAfterCustomMonth(getFristDayOfCustomMonth(ss),i));
+                sl.setUserId(userId);
+                insertList.add(sl);
+            }
+            sendLogService.insertList(insertList);
+        }
 
         if (companyUserFamilyName != null) {
             companyUserFamilyService.delByUserId(companyUserInfo.getUserId());
@@ -565,20 +701,6 @@ public class CompanyUserController extends BaseController {
             }
             companyUserFamilyService.insertList(companyUserFamilies);
         }
-
-        RSTFulBody rstFulBody = new RSTFulBody();
-        if(!ifPermit(userId,itemId) || !ifHaveOneSubmit(itemId,userId)){
-            rstFulBody.fail("不能申请！");
-            return rstFulBody;
-        }
-        ItemConfig itemConfig = new ItemConfig();
-        itemConfig.setItemId(itemId);
-        itemConfig.setItemConfigState(true);
-        ItemConfig ic = itemConfigService.selectOne(itemConfig);
-        CompanyUserItem cui = new CompanyUserItem();
-        cui.setItemId(itemId);
-        cui.setUserId(userId);
-        CompanyUserItem ccc = companyUserItemService.selectOne(cui);
 
         companyUserItemService.delByParentId(ccc.getCompanyUserItemId());
         if(items!=null){
@@ -630,9 +752,9 @@ public class CompanyUserController extends BaseController {
         map.put("haveSubmit",1);
         map.put("talentType",talentType);
         map.put("submitTime",getCurDateTime());
-        if(ccc.getCompanyChecked()==0) map.put("companyChecked",3);
-        if(ccc.getStreetChecked()==0) map.put("streetChecked",3);
-        if(ccc.getCenterChecked()==0) map.put("centerChecked",3);
+        if(ccc.getCompanyChecked()!=null && ccc.getCompanyChecked()==0) map.put("companyChecked",3);
+        if(ccc.getStreetChecked()!=null && ccc.getStreetChecked()==0) map.put("streetChecked",3);
+        if(ccc.getCenterChecked()!=null && ccc.getCenterChecked()==0) map.put("centerChecked",3);
         if(amount!=null && amount!="") map.put("amount",amount);
         if(memo!=null && memo!="") map.put("memo",memo);
         companyUserItemService.updateByItemIdAndUserId(map);
@@ -734,6 +856,19 @@ public class CompanyUserController extends BaseController {
                     break;
                 }
             }
+        }
+        return res;
+    }
+
+
+    private Boolean checkTime(Date begin,Date end) throws ParseException {
+        Boolean res = false;
+
+        String nowStr = getDateTime_I(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = sdf.parse(nowStr);
+        if(begin.getTime()<=now.getTime() && end.getTime()>=now.getTime()){
+            res = true;
         }
         return res;
     }

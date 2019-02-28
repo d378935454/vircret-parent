@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.talentcenter.dao.SendLogMapper">
+  <resultMap id="BaseResultMap" type="com.talentcenter.entity.SendLog">
+    <id column="send_id" jdbcType="INTEGER" property="sendId" />
+    <result column="month" jdbcType="DATE" property="month" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="item_id" jdbcType="INTEGER" property="itemId" />
+    <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+    <result column="item_config_id" jdbcType="INTEGER" property="itemConfigId" />
+    <result column="send_state" jdbcType="BIT" property="sendState" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="company_user_itme_id" jdbcType="INTEGER" property="companyUserItmeId" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    send_id, `month`, user_id, item_id, item_name, item_config_id, send_state, amount, 
+    company_user_itme_id
+  </sql>
+
+</mapper>
