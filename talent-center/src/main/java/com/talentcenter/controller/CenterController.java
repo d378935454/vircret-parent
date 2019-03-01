@@ -198,9 +198,12 @@ public class CenterController extends BaseController{
         companyUserItemService.updateByPrimaryKeySelective(companyUserItem);
 
         ItemUserTime itemUserTime = new ItemUserTime();
-        String[] houseContractTimes = passJson.getItemTime().split("至");
-        itemUserTime.setStartTime(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
-        itemUserTime.setEndTime(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
+        if(passJson.getItemTime().length()>0){
+            String[] houseContractTimes = passJson.getItemTime().split("至");
+            itemUserTime.setStartTime(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
+            itemUserTime.setEndTime(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
+        }
+
         itemUserTime.setCompanyUserItemId(passJson.getUserItemId());
         itemUserTime.setUserId(cui.getUserId());
         itemUserTimeService.updateItemUserTime(itemUserTime);
