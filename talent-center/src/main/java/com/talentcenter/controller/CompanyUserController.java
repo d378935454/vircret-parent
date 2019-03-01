@@ -621,7 +621,7 @@ public class CompanyUserController extends BaseController {
         Item item = itemService.selectByPrimaryKey(itemId);
 
         //关联时间计算该期起始时间 0:劳动合同 1:租房合同 3:社保记录 4:缴税记录
-        if(ic.getItemConfigContactTime()!=null && ic.getItemConfigContactTime().length()!=0 && ic.getItemConfigType()==1){
+        /*if(ic.getItemConfigContactTime()!=null && ic.getItemConfigContactTime().length()!=0 && ic.getItemConfigType()==1){
             String[] strArr = ic.getItemConfigContactTime().split(",");
             ArrayList<Long> startDateList = new ArrayList<>();
             ArrayList<Long> endDateList = new ArrayList<>();
@@ -685,7 +685,7 @@ public class CompanyUserController extends BaseController {
                 insertList.add(sl);
             }
             sendLogService.insertList(insertList);
-        }
+        }*/
 
         if (companyUserFamilyName != null) {
             companyUserFamilyService.delByUserId(companyUserInfo.getUserId());

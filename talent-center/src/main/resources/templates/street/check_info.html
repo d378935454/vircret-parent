@@ -234,7 +234,7 @@
                                                     class="have-change"
                                                     @}
                                                     colspan="2">
-                                                    @if(cui.companyUserNotBuyHouse){
+                                                    @if(!isEmpty(cui.companyUserNotBuyHouse) && cui.companyUserNotBuyHouse){
                                                     是
                                                     @}else{
                                                     否
@@ -245,7 +245,7 @@
                                                     class="have-change"
                                                     @}
                                                     colspan="2">
-                                                    @if(cui.companyUserHaveAccept){
+                                                    @if(!isEmpty(cui.companyUserHaveAccept) && cui.companyUserHaveAccept){
                                                     是
                                                     @}else{
                                                     否
