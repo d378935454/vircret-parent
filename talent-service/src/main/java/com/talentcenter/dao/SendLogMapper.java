@@ -4,7 +4,9 @@ import com.talentcenter.entity.SendLog;
 import mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Map;
+
 @Mapper
 public interface SendLogMapper extends BaseMapper<SendLog> {
-
+    int updateAmount(Map<String,Object> map);
 }

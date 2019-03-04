@@ -79,4 +79,9 @@ public class SendLogServiceImpl implements SendLogService {
     public List<SendLog> selectByInfo(Map<String, Object> map) {
         return null;
     }
+
+    @Override
+    public int updateAmount(Map<String,Object> map){
+        return sendLogMapper.updateAmount(map);
+    }
 }

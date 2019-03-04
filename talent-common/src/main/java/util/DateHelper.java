@@ -645,10 +645,10 @@ public class DateHelper {
     }
 
     /**
-     * 得到本月第一天
+     * 获取指定月份第一天
      * @return
      */
-    public static Date getFristDayOfCustomMonth(Date date) {
+    public static Date getFirstDayOfCustomMonth(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -665,8 +665,23 @@ public class DateHelper {
      */
     public static Date getLastDayOfMonth() {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
+//        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DATE));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        return calendar.getTime();
+    }
+
+    /**
+     * add by zhaoy
+     * 获取某年中某月最后一天
+     * @return
+     */
+    public static Date getLastDayOfCustMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DATE));
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -842,6 +857,18 @@ public class DateHelper {
         calendar.roll(Calendar.DAY_OF_YEAR, -1);
         Date currYearLast = calendar.getTime();
         return currYearLast;
+    }
+
+    /**
+     * 获取某年第一天
+     * @param year
+     * @return
+     */
+    public static Date getYearFirst(int year){
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR, year);
+        return calendar.getTime();
     }
 
     /**

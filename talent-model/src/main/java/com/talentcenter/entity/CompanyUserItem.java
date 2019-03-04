@@ -1,6 +1,7 @@
 package com.talentcenter.entity;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.GeneratedValue;
@@ -78,9 +79,15 @@ public class CompanyUserItem {
 
     private String memo;
 
-    private Long talentTypeContent;
+    private Long talentType;
 
+    private String talentTypeContent;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date submitTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date start;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date end;
 
     private Long configId;
 }

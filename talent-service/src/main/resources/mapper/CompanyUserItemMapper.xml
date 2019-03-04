@@ -71,7 +71,10 @@
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
             <if test="talentType != null">
-                talent_type_content = #{talentType,jdbcType=BIGINT},
+                talent_type = #{talentType,jdbcType=BIGINT},
+            </if>
+            <if test="talentTypeContent != null">
+                talent_type_content = #{talentTypeContent,jdbcType=BIGINT},
             </if>
             <if test="submitTime != null">
                 submit_time = #{submitTime,jdbcType=DATE},
@@ -93,6 +96,12 @@
             </if>
             <if test="centerChecked != null">
                 center_reason = null ,
+            </if>
+            <if test="start != null">
+                start = #{start,jdbcType=DATE} ,
+            </if>
+            <if test="end != null">
+                end = #{end,jdbcType=DATE} ,
             </if>
         </set>
          where user_id = #{userId,jdbcType=BIGINT} and item_id= #{itemId,jdbcType=BIGINT}

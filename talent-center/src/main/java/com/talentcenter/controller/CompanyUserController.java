@@ -21,6 +21,7 @@ import java.util.*;
 
 import static util.DateHelper.*;
 import static util.DateHelper.getDate4StrDate;
+import static util.DateHelper.getFirstDayOfCustomMonth;
 
 @Controller
 @RequestMapping("/company_user")
@@ -540,7 +541,7 @@ public class CompanyUserController extends BaseController {
                              String amount,
                              String memo,
                              Integer type,
-                             Integer talentType,
+                             Long talentType,
                              CompanyUserInfo companyUserInfo,
                              @RequestParam(required = false) String userHouseContractTime,
                              @RequestParam(required = false) String userSocietySaveTime1,
@@ -620,33 +621,60 @@ public class CompanyUserController extends BaseController {
 
         Item item = itemService.selectByPrimaryKey(itemId);
 
+
+        ItemTalentContent citc = new ItemTalentContent();
+        citc.setItemConfigId(ic.getItemConfigId());
+        citc.setTalentTypeId(talentType);
+        ItemTalentContent itc = itemTalentContentService.selectOne(citc);
+
         //关联时间计算该期起始时间 0:劳动合同 1:租房合同 3:社保记录 4:缴税记录
-        /*if(ic.getItemConfigContactTime()!=null && ic.getItemConfigContactTime().length()!=0 && ic.getItemConfigType()==1){
+        Date startCUI = null;
+        Date endCUI = null;
+        if(ic.getItemConfigContactTime()!=null && ic.getItemConfigContactTime().length()!=0 && ic.getItemConfigType()==1){
             String[] strArr = ic.getItemConfigContactTime().split(",");
             ArrayList<Long> startDateList = new ArrayList<>();
             ArrayList<Long> endDateList = new ArrayList<>();
+            String error = "";
             if(Arrays.asList(strArr).contains("0")){
                 startDateList.add(UI.getCompanyUserContractTimeBegin().getTime());
                 endDateList.add(UI.getCompanyUserContractTimeEnd().getTime());
+                error +="劳动合同 ";
             }
 
             if(Arrays.asList(strArr).contains("1")){
                 startDateList.add(UI.getCompanyUserHouseContractTimeBegin().getTime());
                 endDateList.add(UI.getCompanyUserHouseContractTimeEnd().getTime());
+                error +="租房合同 ";
             }
 
             if(Arrays.asList(strArr).contains("3")){
                 startDateList.add(UI.getCompanyUserSocietySaveTime1Begin().getTime());
                 endDateList.add(UI.getCompanyUserSocietySaveTime1End().getTime());
+                error +="社保记录 ";
             }
 
             if(Arrays.asList(strArr).contains("4")){
                 startDateList.add(UI.getCompanyUserIitBegin().getTime());
                 endDateList.add(UI.getCompanyUserIitEnd().getTime());
+                error +="缴税记录 ";
+            }
+
+            if(itemId==1){
+                startDateList.add(getYearFirst(getCurrentYear()+1).getTime());
+                endDateList.add(getYearLast(getCurrentYear()+1).getTime());
+            }else{
+                startDateList.add(getYearFirst(getCurrentYear()-1).getTime());
+                endDateList.add(getYearLast(getCurrentYear()-1).getTime());
             }
 
             Long s = Collections.max(startDateList); //该期第一天
             Long e = Collections.min(endDateList); //该期最后一天
+
+            if(s-e>=0){
+                rstFulBody.fail(error+"不满足条件");
+                return rstFulBody;
+            }
+
             Date ss = new Date(s);
             Date ee = new Date(e);
 
@@ -674,18 +702,30 @@ public class CompanyUserController extends BaseController {
                 }
             }
 
+            CompanyUserItem ccui = new CompanyUserItem();
+            ccui.setUserId(userId);
+            ccui.setConfigId(ic.getItemConfigId());
+
+            CompanyUserItem rcui = companyUserItemService.selectOne(ccui);
+
             ArrayList<SendLog> insertList = new ArrayList<>();
             for(int i=0;i<monthes;i++){
                 SendLog sl = new SendLog();
 //                sl.setCompanyUserItmeId();
                 sl.setItemConfigId(ic.getItemConfigId());
                 sl.setSendState(false);
-                sl.setMonth(getAfterCustomMonth(getFristDayOfCustomMonth(ss),i));
+                sl.setMonth(getAfterCustomMonth(getFirstDayOfCustomMonth(ss),i));
+                sl.setCompanyUserItmeId(rcui.getCompanyUserItemId());
+                sl.setItemConfigId(rcui.getConfigId());
+                sl.setAmount(itc.getItemTalentContent());
                 sl.setUserId(userId);
                 insertList.add(sl);
             }
             sendLogService.insertList(insertList);
-        }*/
+
+            startCUI = getFirstDayOfCustomMonth(ss);
+            endCUI = getLastDayOfCustMonth(ee);
+        }
 
         if (companyUserFamilyName != null) {
             companyUserFamilyService.delByUserId(companyUserInfo.getUserId());
@@ -713,7 +753,7 @@ public class CompanyUserController extends BaseController {
                 companyUserItem.setParentId(ccc.getCompanyUserItemId());
                 companyUserItem.setConfigId(ic.getItemConfigId());
                 String talent = request.getParameter("talentType"+items[i]);
-                if(talent!=null) companyUserItem.setTalentTypeContent((long)Integer.parseInt(talent));
+//                if(talent!=null) companyUserItem.setTalentTypeContent((long)Integer.parseInt(talent));
                 childItems.add(companyUserItem);
             }
 
@@ -745,13 +785,17 @@ public class CompanyUserController extends BaseController {
                 if(i==null) infoChangeService.insert(infoChange);
             }
         }
+
         Map<String,Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("itemId",itemId);
         map.put("type",type);
         map.put("haveSubmit",1);
         map.put("talentType",talentType);
+        map.put("talentTypeContent",itc.getItemTalentContent());
         map.put("submitTime",getCurDateTime());
+        map.put("start",startCUI);
+        map.put("end",endCUI);
         if(ccc.getCompanyChecked()!=null && ccc.getCompanyChecked()==0) map.put("companyChecked",3);
         if(ccc.getStreetChecked()!=null && ccc.getStreetChecked()==0) map.put("streetChecked",3);
         if(ccc.getCenterChecked()!=null && ccc.getCenterChecked()==0) map.put("centerChecked",3);

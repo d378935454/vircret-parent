@@ -32,7 +32,7 @@ public class SendLog{
 
     private Boolean sendState;
 
-    private BigDecimal amount;
+    private String amount;
 
     private Long companyUserItmeId;
 }

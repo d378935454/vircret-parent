@@ -60,16 +60,18 @@ FROM
 	talent_company_user_item tcui
 LEFT JOIN talent_user tu ON tcui.user_id=tu.user_id
 WHERE
-	tcui.street_checked = #{streetChecked,jdbcType=INTEGER}
-AND tcui.parent_id = 0
+ tcui.parent_id = 0
 AND tcui.have_submit = 1
 AND tcui.company_checked = 2
 AND tu.company_id IN (${companyIds})
         <if test="itemId !=null and itemId != ''">
             AND tcui.item_id = #{itemId,jdbcType=BIGINT}
         </if>
-        <if test="streetChecked !=null and streetChecked != ''">
+        <if test="streetChecked !=null and streetChecked != '' and streetChecked !=2">
             AND tcui.street_checked = #{streetChecked,jdbcType=INTEGER}
+        </if>
+        <if test="streetChecked !=null and streetChecked != '' and streetChecked ==2">
+            AND tcui.street_checked = 2 OR tcui.street_checked = 4
         </if>
     </select>
 </mapper>

@@ -18,4 +18,9 @@
     company_user_itme_id
   </sql>
 
+  <update id="updateAmount" parameterType="Map">
+    UPDATE talent_send_log SET amount = #{amount,jdbcType=DECIMAL}
+    WHERE user_id = #{userId,jdbcType=BIGINT} AND company_user_itme_id=#{companyUserItmeId,jdbcType=BIGINT}
+  </update>
+
 </mapper>

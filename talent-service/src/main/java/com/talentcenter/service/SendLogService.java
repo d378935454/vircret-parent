@@ -10,4 +10,6 @@ import java.util.Map;
 @Service
 public interface SendLogService extends BaseService<SendLog> {
 
+    int updateAmount(Map<String,Object> mpa);
+
 }

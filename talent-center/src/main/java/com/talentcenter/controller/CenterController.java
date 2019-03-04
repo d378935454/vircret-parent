@@ -62,10 +62,10 @@ public class CenterController extends BaseController{
     private CompanyUserCertificateService companyUserCertificateService;
 
     @Autowired
-    private ItemUserTimeService itemUserTimeService;
+    private CenterService centerService;
 
     @Autowired
-    private CenterService centerService;
+    private SendLogService sendLogService;
 
 
     @RequestMapping("check_item.html")
@@ -143,11 +143,11 @@ public class CenterController extends BaseController{
             childUserItem = companyUserItemService.select(ccui);
         }
 
-        ItemUserTime itemUserTime = new ItemUserTime();
+        /*ItemUserTime itemUserTime = new ItemUserTime();
         itemUserTime.setUserId(user.getUserId());
         itemUserTime.setCompanyUserItemId(companyUserItem.getCompanyUserItemId());
         ItemUserTime iut = itemUserTimeService.selectOne(itemUserTime);
-
+*/
         Item ii = new Item();
         ii.setItemCategory(0);
         List<Item> items = itemService.select(ii);
@@ -157,14 +157,13 @@ public class CenterController extends BaseController{
         model.addAttribute("company",c);
         model.addAttribute("cufs",cuf);
         model.addAttribute("ic",ic);
-        model.addAttribute("talentTypes",itemTalentContents);
+        model.addAttribute("itcs",itemTalentContents);
         model.addAttribute("items",items);
         model.addAttribute("tc",typeCategory);
         model.addAttribute("ics",ics);
         model.addAttribute("item",item);
         model.addAttribute("companyUserItem",companyUserItem);
         model.addAttribute("childUserItems",childUserItem);
-        model.addAttribute("iut",iut);
         return "/center/check_info.html";
     }
 
@@ -189,27 +188,27 @@ public class CenterController extends BaseController{
         companyUserItem.setType(passJson.getType());
         companyUserItem.setAmount(passJson.getAmount());
         companyUserItem.setMemo(passJson.getMemo());
-        companyUserItem.setTalentTypeContent(passJson.getTalentType());
+        companyUserItem.setTalentType((long)Integer.parseInt(passJson.getTalentType()));
+        companyUserItem.setTalentTypeContent(passJson.getTalentTypeContent());
         if(getSessionUser().getUserType()==2) {
             companyUserItem.setCenterChecked(2);
         }else if(getSessionUser().getUserType()==1 || getSessionUser().getUserType()==0){
             companyUserItem.setCenterChecked(4);
         }
-        companyUserItemService.updateByPrimaryKeySelective(companyUserItem);
-
-        ItemUserTime itemUserTime = new ItemUserTime();
         if(passJson.getItemTime().length()>0){
             String[] houseContractTimes = passJson.getItemTime().split("至");
-            itemUserTime.setStartTime(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
-            itemUserTime.setEndTime(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
+            companyUserItem.setStart(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
+            companyUserItem.setEnd(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
         }
 
-        itemUserTime.setCompanyUserItemId(passJson.getUserItemId());
-        itemUserTime.setUserId(cui.getUserId());
-        itemUserTimeService.updateItemUserTime(itemUserTime);
-
+        companyUserItemService.updateUserItem(companyUserItem);
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",cui.getUserId());
+        map.put("companyUserItmeId",cui.getCompanyUserItemId());
+        map.put("amount",passJson.getTalentTypeContent());
+        sendLogService.updateAmount(map);
         companyUserItemService.delByParentId(passJson.getUserItemId());
-        if(passJson.getItems()!=null && passJson.getItems().size()>0){
+        /*if(passJson.getItems()!=null && passJson.getItems().size()>0){
             List<CompanyUserItem> companyUserItems = new ArrayList<>();
             for (ItemJson itemJson : passJson.getItems()) {
                 Item item = itemService.selectByPrimaryKey(itemJson.getItem());
@@ -227,7 +226,7 @@ public class CenterController extends BaseController{
                 companyUserItems.add(c);
             }
             companyUserItemService.insertList(companyUserItems);
-        }
+        }*/
         infoChangeService.deleteByUserId(cui.getUserId());
         return true;
     }

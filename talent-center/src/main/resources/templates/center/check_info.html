@@ -368,98 +368,36 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    @if(item.itemCategory==1){
-                                    <div class="table-responsive">
-                                        <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;">申请详情</div>
-                                        <div class="form-group col-sm-12" style="padding: 0">
-                                            <label class="pull-left control-label">卓越人才申请内容：</label>
-                                            <div class="pull-left m-r-lg">
-                                                <label class="pull-left control-label">类型：</label>
-                                                <select  id="type" class="pull-left">
-                                                    <option @if(companyUserItem.type==0){
-                                                            selected
-                                                            @}
-                                                            value="0">服务</option>
-                                                    <option @if(companyUserItem.type==1){
-                                                            selected
-                                                            @}
-                                                            value="1">现金</option>
-                                                </select>
-                                            </div>
-
-                                            <div id="item-amount">
-                                                <label class="pull-left control-label">申请金额：</label>
-                                                <div class="pull-left">
-                                                    <input id="amount" placeholder="申请金额" value="${companyUserItem.amount}" class="pull-left" type="text" >
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-12 m-t-sm" style="padding: 0;">
-                                                <label class="control-label">申请描述：</label>
-                                                <textarea name="memo" class="form-control" id="memo" rows="5" cols="70">${companyUserItem.memo}</textarea>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-sm-12" style="padding: 0;">
-                                            <label class="pull-left control-label">卓越人才额外政策：</label>
-                                            <div class="pull-left">
-                                                @for(item in items){
-                                                @for(childUserItem in childUserItems){
-                                                <div class="checkbox checkbox-inline" id="item-${item.itemId}">
-                                                    <input @if(item.itemId == childUserItem.itemId){
-                                                           checked
-                                                           @}
-                                                           type="checkbox" @if(childUserItem.talentTypeContent!=null){
-                                                           cuid="${childUserItem.talentTypeContent}"
-                                                           @}
-                                                            id="c_${item.itemId}" class="items" value="${item.itemId}">
-                                                    <label for="c_${item.itemId}"> ${item.itemName} </label>
-                                                </div>
-                                                @}
-                                                @}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @}else {
-                                    <div class="table-responsive">
-                                        <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;">申请详情</div>
-                                        @if(talentTypes!=null){
-                                        <div class="form-group">
-                                            <label class="pull-left control-label">人才分类：</label>
-                                            <div class="form-group col-sm-12" style="padding: 0;">
-                                                @for(talentType in talentTypes){
-                                                <div class="checkbox checkbox-info checkbox-circle checkbox-inline">
-                                                    <input type="radio" @if(talentType.talentTypeId==companyUserItem.talentTypeContent){
-                                                           checked
-                                                           @}
-                                                           id="i_${talentType.talentTypeId}" name="talentType" value="${talentType.talentTypeId}">
-                                                    <label for="i_${talentType.talentTypeId}"> ${talentType.talentTypeName}
-                                                        <br />
-                                                        @if(talentType.payType){
-                                                        月工资的 ${talentType.itemTalentContent}
-                                                        @}else{
-                                                        ￥${talentType.itemTalentContent}
-                                                        @}
-                                                    </label>
-                                                </div>
-                                                @}
-                                            </div>
-                                        </div>
-                                        @}
-                                    </div>
-                                    @}
-
                                     <div class="form-group col-sm-12" style="padding: 0;">
                                         <label class="pull-left control-label">该期时间段：</label>
                                         <div class="pull-left">
                                             <input id="item-time" placeholder="请选择时间段" type="text"
-                                                   @if(iut==null){
+                                                   @if(companyUserItem.start==null){
                                                    value=""
                                                    @}else{
-                                                   value='${iut.startTime,"yyyy-MM-dd"} 至 ${iut.endTime,"yyyy-MM-dd"}'
+                                                   value='${companyUserItem.start,"yyyy-MM-dd"} 至 ${companyUserItem.end,"yyyy-MM-dd"}'
                                                    @}
                                                    autocomplete="off" style="width: 200px" required>
                                         </div>
                                     </div>
+                                    @if(ic.typeCategoryId!=null){
+                                    <div class="form-group col-sm-12" style="padding: 0;">
+                                        <label class="pull-left control-label">该人才所属分类：</label>
+                                        <div class="pull-left">
+                                            <select id="curr-user-type">
+                                                @for(itc in itcs){
+                                                <option @if(itc.talentTypeId==companyUserItem.talentType){
+                                                        selected
+                                                        @}
+                                                        value="${itc.talentTypeId}">${itc.talentTypeName}</option>
+                                                @}
+                                            </select>
+                                            <input id="talent-amount" value="">
+                                            <input type="hidden" id="configID_1" value="${ic.itemConfigId}" />
+                                        </div>
+                                    </div>
+                                    @}
+
 
                                     <div class="form-group col-sm-12" style="padding: 0;">
                                         <label class="pull-left control-label">申请提交时间：</label> <div class="pull-left">${companyUserItem.submitTime,"yyyy-MM-dd"}</div>
@@ -571,6 +509,26 @@
             $('#item-amount').show();
             $('#amount').attr('disabled',false);
         }
+
+        if($('#curr-user-type').val()!=undefined){
+            $.ajax({
+                type:"GET",
+                url: "${ctxPath}/item/type_content?typeId="+$('#curr-user-type').val()+"&configId="+${ic.itemConfigId},
+                success:function (data) {
+                    $('#talent-amount').val(data.itemTalentContent);
+                }
+            });
+        }
+
+        $('#curr-user-type').change(function () {
+            $.ajax({
+                type:"GET",
+                url: "${ctxPath}/item/type_content?typeId="+$(this).val()+"&configId="+${ic.itemConfigId},
+                success:function (data) {
+                    $('#talent-amount').val(data.itemTalentContent);
+                }
+            });
+        });
 
         $('.if-show').each(function (i,e) {
             $.ajax({
@@ -733,7 +691,9 @@
             var talentType = ${ic.itemConfigTType};
             var data = {
                 userItemId:userItemId,
-                itemTime:$('#item-time').val()
+                itemTime:$('#item-time').val(),
+                talentType: $('#curr-user-type').val(),
+                talentTypeContent: $('#talent-amount').val()
             };
             if($('input[class="items"]:checked').length>0) {
                 var dataTemp = [];

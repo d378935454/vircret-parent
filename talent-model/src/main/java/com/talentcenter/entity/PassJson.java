@@ -3,6 +3,7 @@ package com.talentcenter.entity;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,7 +20,13 @@ public class PassJson {
 
     private BigDecimal amount;
 
-    private Long talentType;
+    private String talentType;
+
+    private String talentTypeContent;
+
+    private Date start;
+
+    private Date end;
 
     private Integer type;
 

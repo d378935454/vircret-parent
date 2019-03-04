@@ -362,7 +362,7 @@
         "positionClass": "toast-top-center",
         "showDuration": "400",
         "hideDuration": "1000",
-        "timeOut": "500",
+        "timeOut": "3500",
         "extendedTimeOut": "1000",
         "showEasing": "swing",
         "hideEasing": "linear",
@@ -406,7 +406,7 @@
                         toastr.success(data['body']);
                         setTimeout('window.location.href="/company_user/items.html"', 1000);
                     } else {
-                        toastr.success(data['body']);
+                        toastr.error(data['body']);
                     }
                 }
             });

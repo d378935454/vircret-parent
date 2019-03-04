@@ -75,8 +75,11 @@ public class CompanyController extends BaseController {
     private CompanyUserCertificateService companyUserCertificateService;
 
     @Autowired
+    private SendLogService sendLogService;
+
+    /* @Autowired
     private ItemUserTimeService itemUserTimeService;
-   /* @Autowired
+   @Autowired
     private RoleCompanyService roleCompanyService;*/
 
     /**
@@ -578,7 +581,6 @@ public class CompanyController extends BaseController {
         ItemUserTime itemUserTime = new ItemUserTime();
         itemUserTime.setUserId(user.getUserId());
         itemUserTime.setCompanyUserItemId(companyUserItem.getCompanyUserItemId());
-        ItemUserTime iut = itemUserTimeService.selectOne(itemUserTime);
 
         Item ii = new Item();
         ii.setItemCategory(0);
@@ -596,7 +598,6 @@ public class CompanyController extends BaseController {
         model.addAttribute("item", item);
         model.addAttribute("companyUserItem", companyUserItem);
         model.addAttribute("childUserItems", childUserItem);
-        model.addAttribute("iut", iut);
         return "/company/check_info.html";
     }
 
@@ -634,22 +635,24 @@ public class CompanyController extends BaseController {
         companyUserItem.setType(passJson.getType());
         companyUserItem.setAmount(passJson.getAmount());
         companyUserItem.setMemo(passJson.getMemo());
-        companyUserItem.setTalentTypeContent(passJson.getTalentType());
+        companyUserItem.setTalentType((long)Integer.parseInt(passJson.getTalentType()));
+        companyUserItem.setTalentTypeContent(passJson.getTalentTypeContent());
         companyUserItem.setCompanyChecked(2);
-        companyUserItemService.updateUserItem(companyUserItem);
 
-        ItemUserTime itemUserTime = new ItemUserTime();
         if(passJson.getItemTime().length()>0){
             String[] houseContractTimes = passJson.getItemTime().split("至");
-            itemUserTime.setStartTime(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
-            itemUserTime.setEndTime(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
+            companyUserItem.setStart(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
+            companyUserItem.setEnd(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
         }
-        itemUserTime.setCompanyUserItemId(passJson.getUserItemId());
-        itemUserTime.setUserId(cui.getUserId());
-        itemUserTimeService.updateItemUserTime(itemUserTime);
 
+        companyUserItemService.updateUserItem(companyUserItem);
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",cui.getUserId());
+        map.put("companyUserItmeId",cui.getCompanyUserItemId());
+        map.put("amount",passJson.getTalentTypeContent());
+        sendLogService.updateAmount(map);
         companyUserItemService.delByParentId(passJson.getUserItemId());
-        if (passJson.getItems() != null) {
+        /*if (passJson.getItems() != null) {
             List<CompanyUserItem> companyUserItems = new ArrayList<>();
             for (ItemJson itemJson : passJson.getItems()) {
                 Item item = itemService.selectByPrimaryKey(itemJson.getItem());
@@ -667,7 +670,7 @@ public class CompanyController extends BaseController {
                 companyUserItems.add(c);
             }
             companyUserItemService.insertList(companyUserItems);
-        }
+        }*/
 
         return true;
     }

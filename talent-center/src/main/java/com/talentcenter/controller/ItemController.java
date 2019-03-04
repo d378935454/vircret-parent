@@ -407,6 +407,17 @@ public class ItemController extends BaseController {
         return rstFulBody;
     }
 
+    @ResponseBody
+    @RequestMapping("type_content")
+    public ItemTalentContent typeContent(Long typeId,Long configId){
+        ItemTalentContent citc = new ItemTalentContent();
+        citc.setItemConfigId(configId);
+        citc.setTalentTypeId(typeId);
+        ItemTalentContent itc = itemTalentContentService.selectOne(citc);
+
+        return itc;
+    }
+
     private Boolean updateItemTalentContent(
             String[] talentTypes,
             String[] talentTypeIds,

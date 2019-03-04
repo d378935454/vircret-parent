@@ -417,55 +417,87 @@
                                         </div>
                                     </div>
                                     @}else {
-                                    <div class="table-responsive">
-                                        <div style="font-weight: bold;font-size: 16px;margin-bottom: 5px;">申请详情</div>
-                                        @if(talentTypes!=null){
-                                        <div class="form-group">
-                                            <label class="pull-left control-label">人才分类：</label>
-                                            <div class="form-group col-sm-12" style="padding: 0;">
-                                                @for(talentType in talentTypes){
-                                                <div class="checkbox checkbox-info checkbox-circle checkbox-inline">
-                                                    <input type="radio" @if(talentType.talentTypeId==companyUserItem.talentTypeContent){
-                                                           checked
-                                                           @}
-                                                           id="i_${talentType.talentTypeId}" name="talentType" value="${talentType.talentTypeId}">
-                                                    <label for="i_${talentType.talentTypeId}"> ${talentType.talentTypeName}
-                                                        <br />
-                                                        @if(talentType.payType){
-                                                        月工资的 ${talentType.itemTalentContent}
-                                                        @}else{
-                                                        ￥${talentType.itemTalentContent}
-                                                        @}
-                                                    </label>
-                                                </div>
-                                                @}
-                                            </div>
-                                        </div>
-                                        @}
-                                    </div>
-                                    @}
 
+                                    @}
+                                    @if(companyUserItem.companyChecked==3){
                                     <div class="form-group col-sm-12" style="padding: 0;">
                                         <label class="pull-left control-label">该期时间段：</label>
                                         <div class="pull-left">
                                             <input id="item-time" placeholder="请选择时间段" type="text"
-                                                   @if(iut==null){
+                                                   @if(companyUserItem.start==null){
                                                    value=""
                                                    @}else{
-                                                   value='${iut.startTime,"yyyy-MM-dd"} 至 ${iut.endTime,"yyyy-MM-dd"}'
+                                                   value='${companyUserItem.start,"yyyy-MM-dd"} 至 ${companyUserItem.end,"yyyy-MM-dd"}'
                                                    @}
                                                    autocomplete="off" style="width: 200px" required>
                                         </div>
                                     </div>
 
+                                    @if(ic.typeCategoryId!=null){
+                                    <div class="form-group col-sm-12" style="padding: 0;">
+                                        <label class="pull-left control-label">该人才所属分类：</label>
+                                        <div class="pull-left">
+                                            <select id="curr-user-type">
+                                                @for(itc in itcs){
+                                                <option @if(itc.talentTypeId==companyUserItem.talentType){
+                                                        selected
+                                                        @}
+                                                        value="${itc.talentTypeId}">${itc.talentTypeName}</option>
+                                                @}
+                                            </select>
+                                            <input id="talent-amount" value="">
+                                            <input type="hidden" id="configID_1" value="${ic.itemConfigId}" />
+                                        </div>
+                                    </div>
+                                    @}
+                                    @}
                                     <div class="form-group col-sm-12" style="padding: 0;">
                                         <label class="pull-left control-label">申请提交时间：</label> <div class="pull-left">${companyUserItem.submitTime,"yyyy-MM-dd"}</div>
                                     </div>
 
                                     <div>
+                                        @if(companyUserItem.streetChecked==3){
                                         <a class="btn btn-primary" id="pass">通过</a>
                                         <a class="btn btn-warning" data-toggle="modal" data-target="#npass-modal" id="npass">不通过</a>
                                         <a class="btn btn-danger" data-toggle="modal" data-target="#back-modal" id="back">退回</a>
+                                        @}else{
+                                        当前状态
+                                        <b>
+                                            @if(companyUserItem.centerChecked!=3 && companyUserItem.centerChecked!=null){
+                                            @if(companyUserItem.centerChecked==4){
+                                            审核完成
+                                            @}else if(companyUserItem.centerChecked==3){
+                                            人才中心 窗口已审核 等待 管理员审核
+                                            @}else if(companyUserItem.centerChecked==0){
+                                            人才中心 不通过 原因 ${companyUserItem.centerReason}
+                                            @}else{
+                                            人才中心 退回 原因 ${companyUserItem.centerReason}
+                                            @}
+                                            @}else{
+                                            @if(companyUserItem.streetChecked!=3 && companyUserItem.streetChecked!=null){
+                                            @if(companyUserItem.streetChecked==4){
+                                            人才工作站 管理员已审核 等待 人才中心审核
+                                            @}else if(companyUserItem.streetChecked==3){
+                                            人才工作站 窗口已审核 等待 管理员审核
+                                            @}else if(companyUserItem.streetChecked==0){
+                                            人才工作站 不通过  ${companyUserItem.streetReason}
+                                            @}else{
+                                            人才工作站 退回 ${companyUserItem.streetReason}
+                                            @}
+                                            @}else{
+                                            @if(companyUserItem.companyChecked!=3 && companyUserItem.companyChecked!=null){
+                                            @if(companyUserItem.companyChecked==2){
+                                            本公司审核完成 等待 人才工作站审核
+                                            @}else if(companyUserItem.companyChecked==0){
+                                            本公司 不通过 ${companyUserItem.companyReason}
+                                            @}else{
+                                            本公司 退回 ${companyUserItem.companyReason}
+                                            @}
+                                            @}
+                                            @}
+                                            @}
+                                            @}
+                                        </b>
                                         <input type="hidden" id="user-item-id" value="${companyUserItem.companyUserItemId}">
                                     </div>
                                 </div>
@@ -549,6 +581,27 @@
     });
 
     $(document).ready(function () {
+
+        if($('#curr-user-type').val()!=undefined){
+            $.ajax({
+                type:"GET",
+                url: "${ctxPath}/item/type_content?typeId="+$('#curr-user-type').val()+"&configId="+${ic.itemConfigId},
+                success:function (data) {
+                    $('#talent-amount').val(data.itemTalentContent);
+                }
+            });
+        }
+
+        $('#curr-user-type').change(function () {
+            $.ajax({
+                type:"GET",
+                url: "${ctxPath}/item/type_content?typeId="+$(this).val()+"&configId="+${ic.itemConfigId},
+                success:function (data) {
+                    $('#talent-amount').val(data.itemTalentContent);
+                }
+            });
+        });
+
 
         $('#type').change(function () {
             if($(this).val()==0){
@@ -718,7 +771,9 @@
             var talentType = ${ic.itemConfigTType};
             var data = {
                 userItemId:userItemId,
-                itemTime:$('#item-time').val()
+                itemTime:$('#item-time').val(),
+                talentType: $('#curr-user-type').val(),
+                talentTypeContent: $('#talent-amount').val()
             };
             if($('input[class="items"]:checked').length>0) {
                 var dataTemp = [];
@@ -748,6 +803,7 @@
                 data['type']=$('#type').val();
                 data['memo']=$('#memo').val();
             }
+            // debugger;
             $.ajax({
                 type:"POST",
                 url:"${ctxPath}/street/pass",
