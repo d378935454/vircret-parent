@@ -66,19 +66,25 @@ public class CenterController extends BaseController{
 
     @Autowired
     private CenterService centerService;
-
+    @Autowired
+    private StreetService streetService;
 
     @RequestMapping("check_item.html")
     public String checkItem(Model model){
         List<Item> items = itemService.selectAll();
         model.addAttribute("items",items);
+        Street street = new Street();
+        street.setDel(true);
+        List<Street> streets=streetService.select(street);
+        model.addAttribute("streets",streets);
         return "/center/check_item.html";
     }
 
     @RequestMapping("check_item")
     public String ajaxCheckItem(Model model,
                                 @RequestParam(required = false) Long itemId,
-                                @RequestParam(required = false) Integer centerChecked){
+                                @RequestParam(required = false) Integer centerChecked,
+                                @RequestParam(required = false) String companyName){
         User sessionUser = getSessionUser();
         Map<String,Object> map = new HashMap<>();
         if(sessionUser.getUserType()==2) {
@@ -88,7 +94,9 @@ public class CenterController extends BaseController{
         }
         if(itemId!=null) map.put("itemId",itemId);
         if(centerChecked!=null) map.put("centerChecked",centerChecked);
-
+        Company company = new Company();
+        if(companyName!=null && companyName!="") company.setCompanyName(companyName);
+        company.setStreetId(sessionUser.getStreetId());
         List<Map<String,Object>> maps = centerService.selectCenterItemCheckedItem(map);
         PageInfo<Map<String,Object>> pageInfo= new PageInfo<>(maps);
         String pageStr = makePageHtml(pageInfo);

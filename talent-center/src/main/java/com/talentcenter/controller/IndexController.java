@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Decoder;
+//import sun.misc.BASE64Decoder;
 import util.DateHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -128,7 +128,7 @@ public class IndexController extends BaseController {
         return map;
     }
 
-    @ResponseBody
+   /* @ResponseBody
     @RequestMapping("upload_avatar")
     public String uploadAvatar(String base64) {
 
@@ -173,7 +173,52 @@ public class IndexController extends BaseController {
             return "error";
         }
 
-    }
+    }*//* @ResponseBody
+    @RequestMapping("upload_avatar")
+    public String uploadAvatar(String base64) {
+
+        User sessionUser = getSessionUser();
+        String imgPath="";
+        BASE64Decoder decoder = new BASE64Decoder();
+        try {
+            //去掉头data:image/jpeg;base64,
+            String imagebasefile = base64.substring(23);
+            // Base64解码
+            byte[] bytes = decoder.decodeBuffer(imagebasefile);
+            for (int i = 0; i < bytes.length; ++i) {
+                if (bytes[i] < 0) {// 调整异常数据
+                    bytes[i] += 256;
+                }
+            }
+            //生成JPEG图片输出流，名字，保存路径
+            String filename = sessionUser.getUserName() + "-avatar.jpeg";
+
+            String os = System.getProperty("os.name");
+            String uploadDir = "";
+            String dateStr = DateHelper.getCurDate();
+            if (os.toLowerCase().startsWith("win")) {
+                String[] path = ClassUtils.getDefaultClassLoader().getResource("").getPath().split("/");
+                uploadDir = path[1] + "/talent/upload/avatar/" + dateStr + "/";
+            } else {
+                uploadDir = "/usr/talent/upload/avatar/" + dateStr + "/";
+            }
+            File dir = new File(uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            imgPath = uploadDir + filename;
+            FileOutputStream out = new FileOutputStream(imgPath);
+            //更新用户头像URL
+            out.write(bytes);
+            out.flush();
+            out.close();
+            return "/upload/avatar/" + dateStr + "/" + filename;
+        } catch (Exception e) {
+            return "error";
+        }
+
+    }*/
 
     @ResponseBody
     @RequestMapping("provinces")
