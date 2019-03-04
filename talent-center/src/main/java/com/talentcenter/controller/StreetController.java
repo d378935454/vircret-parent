@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.jws.WebParam;
+/*import javax.jws.WebParam;*/
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -312,13 +312,18 @@ public class StreetController extends BaseController{
     public String checkItem(Model model){
         List<Item> items = itemService.selectAll();
         model.addAttribute("items",items);
+       /* Street street = new Street();
+        street.setDel(true);
+        List<Street> streets = streetService.select(street);
+        model.addAttribute("streets",streets);*/
         return "/street/check_item.html";
     }
 
     @RequestMapping("check_item")
     public String ajaxCheckItem(Model model,
                                 @RequestParam(required = false) Long itemId,
-                                @RequestParam(required = false) Integer streetChecked){
+                                @RequestParam(required = false) Integer streetChecked,
+                                @RequestParam(required = false) String companyName){
 
         User sessionUser = getSessionUser();
         Map<String,Object> map = new HashMap<>();
@@ -327,21 +332,26 @@ public class StreetController extends BaseController{
         }else if(sessionUser.getUserType()==1){
             map.put("streetChecked",2);
         }
-
         if(itemId!=null) map.put("itemId",itemId);
         if(streetChecked!=null) map.put("streetChecked",streetChecked);
-
         Company company = new Company();
+//        if(companyName!=null && companyName!="") map.put("companyName",companyName);
+        if(companyName!=null && companyName!="") company.setCompanyName(companyName);
         company.setStreetId(sessionUser.getStreetId());
         List<Company> companies = companyService.select(company);
-        String companyIds = "";
-        for (Company c : companies) {
-            companyIds+=c.getUserId()+",";
-        }
-        companyIds = companyIds.substring(0,companyIds.length() - 1);
-        map.put("companyIds",companyIds);
 
-        List<Map<String,Object>> maps = streetService.selectStreetItems(map);
+        List<Map<String,Object>> maps = new ArrayList<>();
+        if(companies.size()>0){
+            String companyIds = "";
+            for (Company c : companies) {
+                companyIds+=c.getUserId()+",";
+            }
+            companyIds = companyIds.substring(0,companyIds.length() - 1);
+            map.put("companyIds",companyIds);
+
+            maps = streetService.selectStreetItems(map);
+        }
+
 
         PageInfo<Map<String,Object>> pageInfo= new PageInfo<>(maps);
         String pageStr = makePageHtml(pageInfo);
