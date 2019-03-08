@@ -94,4 +94,9 @@ public class CompanyServiceImpl implements CompanyService {
     public List<Company> selectCheckCompany(String streetId) {
         return companyMapper.selectCheckCompany(streetId);
     }
+
+    @Override
+    public List<Company> selectByName(Company company){
+        return companyMapper.selectByCompanyName(company);
+    }
 }

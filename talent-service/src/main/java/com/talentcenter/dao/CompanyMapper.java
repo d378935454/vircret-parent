@@ -15,4 +15,6 @@ public interface CompanyMapper extends BaseMapper<Company> {
     List<Map<String,Object>> selectCompanyCheckedItem(Map<String,Object> map);
 
     List<Company> selectCheckCompany(String streetId);
+
+    List<Company> selectByCompanyName(Company company);
 }

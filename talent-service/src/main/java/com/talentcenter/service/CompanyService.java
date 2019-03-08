@@ -15,4 +15,6 @@ public interface CompanyService extends BaseService<Company> {
     List<Map<String,Object>> selectCompanyCheckedItem(Map<String,Object> map);
 
     List<Company> selectCheckCompany(String streetId);
+
+    List<Company> selectByName(Company company);
 }

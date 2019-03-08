@@ -70,6 +70,15 @@ public class StreetController extends BaseController{
 
     @Autowired
     private SendLogService sendLogService;
+
+    @Autowired
+    private CompanyNatureService companyNatureService;
+
+    @Autowired
+    private CompanyTypeService companyTypeService;
+
+    @Autowired
+    private CompanyItemService companyItemService;
     /**
      * 证书列表页
      * @param model
@@ -148,6 +157,85 @@ public class StreetController extends BaseController{
     @RequestMapping("add.html")
     public String addUI() {
         return "/street/add.html";
+    }
+
+    @RequestMapping("/company.html")
+    public String company(Model model) {
+        return "/street/company.html";
+    }
+
+    @RequestMapping("/ajax_company")
+    public String ajaxCompany(Model model, int pageNum, int pageSize,
+                            @RequestParam(required = false) String companyName
+    ) {
+        //组装搜索条件
+        /*Map<String,Object> map=new HashMap<>();
+        if(userTrueName!=null && userTrueName!="") map.put("userTrueName",userTrueName);
+        if(examId!=null && examId!="") map.put("examId",examId);
+        if(userSex!=null && userSex!="") map.put("userSex",userSex);*/
+        Company company = new Company();
+        company.setDel(true);
+        company.setStreetId(getSessionUser().getStreetId());
+        if (companyName != null && companyName != "") company.setCompanyName(companyName);
+
+        //分页查询
+        PageHelper.startPage(pageNum, pageSize);
+        List<Company> companys = companyService.selectByName(company);
+
+        PageInfo<Company> pageInfo = new PageInfo<>(companys);
+        String pageStr = makePageHtml(pageInfo);
+        model.addAttribute("page_info", pageInfo);
+        model.addAttribute("pages", pageStr);
+        return "/street/ajax_company.html";
+    }
+
+    @RequestMapping("edit_company.html")
+    public String editCompany(Model model, String companyId) {
+        Company company = companyService.selectByPrimaryKey((long) Integer.parseInt(companyId));
+        model.addAttribute("companyId", companyId);
+        model.addAttribute("obj", company);
+        List<CompanyNature> companyNatures = companyNatureService.selectAll();
+        model.addAttribute("companyNatures", companyNatures);
+        List<CompanyType> companyTypes = companyTypeService.selectAll();
+        model.addAttribute("companyTypes", companyTypes);
+        List<Street> streets = streetService.selectAll();
+        model.addAttribute("streets", streets);
+
+        CompanyItem companyItem = new CompanyItem();
+        companyItem.setCompanyId((long) Integer.parseInt(companyId));
+        List<CompanyItem> companyItems = companyItemService.select(companyItem);
+        List<Item> items = itemService.selectAll();
+
+        model.addAttribute("obj", company);
+        return "/street/edit_company.html";
+    }
+
+    @ResponseBody
+    @RequestMapping("edit_company")
+    public RSTFulBody edit(Company company,String password) {
+        User sessionUser = getSessionUser();
+        company.setUpdateId(sessionUser.getUserId());
+        company.setUpdateName(sessionUser.getUserName());
+        company.setUpdateTime(DateHelper.getCurrentDate());
+
+        CompanyNature companyNature = companyNatureService.selectByPrimaryKey(company.getCompanyNatureId());
+        company.setCompanyNatureName(companyNature.getCompanyNatureName());
+        CompanyType companyType = companyTypeService.selectByPrimaryKey(company.getCompanyTypeId());
+        company.setCompanyTypeName(companyType.getCompanyTypeName());
+        int res = companyService.updateByPrimaryKeySelective(company);
+
+        if(password!=null && password!=""){
+//            user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+            User updateUser = new User();
+            updateUser.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+            Company c = companyService.selectByPrimaryKey(company.getCompanyId());
+            updateUser.setUserId(c.getUserId());
+            userService.updateByPrimaryKeySelective(updateUser);
+        }
+        RSTFulBody rstFulBody = new RSTFulBody();
+        if (res > 0) rstFulBody.success("修改成功！");
+        else rstFulBody.fail("修改失败！");
+        return rstFulBody;
     }
 
     @ResponseBody
@@ -338,7 +426,7 @@ public class StreetController extends BaseController{
 //        if(companyName!=null && companyName!="") map.put("companyName",companyName);
         if(companyName!=null && companyName!="") company.setCompanyName(companyName);
         company.setStreetId(sessionUser.getStreetId());
-        List<Company> companies = companyService.select(company);
+        List<Company> companies = companyService.selectByName(company);
 
         List<Map<String,Object>> maps = new ArrayList<>();
         if(companies.size()>0){

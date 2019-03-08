@@ -108,7 +108,7 @@ public class CompanyController extends BaseController {
 
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
-        List<Company> companys = companyService.select(company);
+        List<Company> companys = companyService.selectByName(company);
 
         PageInfo<Company> pageInfo = new PageInfo<>(companys);
         String pageStr = makePageHtml(pageInfo);
@@ -209,7 +209,9 @@ public class CompanyController extends BaseController {
 
     @ResponseBody
     @RequestMapping("edit")
-    public RSTFulBody edit(Company company, @RequestParam(value = "itemId[]") String[] itemId) {
+    public RSTFulBody edit(Company company,
+                           @RequestParam(value = "itemId[]") String[] itemId,
+                           String password) {
         User sessionUser = getSessionUser();
         company.setUpdateId(sessionUser.getUserId());
         company.setUpdateName(sessionUser.getUserName());
@@ -237,6 +239,14 @@ public class CompanyController extends BaseController {
         }
         companyItemService.insertList(companyItems);
         int res = companyService.updateByPrimaryKeySelective(company);
+
+        if(password!=null && password!=""){
+            User updateUser = new User();
+            updateUser.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+            Company c = companyService.selectByPrimaryKey(company.getCompanyId());
+            updateUser.setUserId(c.getUserId());
+            userService.updateByPrimaryKeySelective(updateUser);
+        }
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("修改成功！");
         else rstFulBody.fail("修改失败！");

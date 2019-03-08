@@ -38,7 +38,7 @@ spring:
        type: com.alibaba.druid.pool.DruidDataSource
        url: jdbc:mysql://localhost:3306/talent?characterEncoding=utf-8
        username: root
-       password: root
+       password:
        driver-class-name: com.mysql.jdbc.Driver
        # 初始化大小，最小，最大
        druid:

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.talentcenter.dao.CompanyMapper">
 
-	<resultMap id="BaseResultMap" type="com.talentcenter.entity.Street">
+	<resultMap id="BaseResultMap" type="com.talentcenter.entity.Company">
 		<id column="company_id" jdbcType="INTEGER" property="companyId" />
 		<result column="company_name" jdbcType="VARCHAR" property="companyName" />
 		<result column="company_code" jdbcType="VARCHAR" property="companyCode" />
@@ -65,8 +65,22 @@ AND tu.company_id = #{companyId,jdbcType=BIGINT}
 	<select id="selectCheckCompany" parameterType="java.lang.String" resultMap="BaseResultMap">
 		SELECT
 		<include refid="Base_Column_List"/>
-		from talent_talent_company
+		from talent_company
 		WHERE
 		street_id = #{_parameter} AND state = 1
+	</select>
+
+	<select id="selectByCompanyName" parameterType="com.talentcenter.entity.Company" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List"/>
+		from talent_company
+		<where>
+		<if test="streetId!=null and streetId!=''">
+			AND street_id = #{streetId,jdbcType=BIGINT}
+		</if>
+		<if test="companyName!=null and companyName!=''">
+			AND company_name LIKE concat(concat('%',#{companyName}),'%')
+		</if>
+		</where>
 	</select>
 </mapper>
