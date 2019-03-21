@@ -146,7 +146,11 @@
                 company_user_house_area = #{companyUserHouseArea,jdbcType=FLOAT},
             </if>
             <if test="updateTimes != null">
-            update_times = #{updateTimes}
+            update_times = #{updateTimes},
+            </if>
+
+            <if test="companyUserHuType != null">
+                company_user_hu_type = #{companyUserHuType},
             </if>
         </set>
 

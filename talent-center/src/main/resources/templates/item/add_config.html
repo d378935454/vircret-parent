@@ -24,6 +24,11 @@
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
+                <div class="col-lg-12">
+                    <h2 class="col-sm-offset-1" style="margin-bottom: 20px;">
+                        ${item.itemName}
+                    </h2>
+                </div>
                 <form class="form-horizontal m-t" id="viladate_form">
 
                     <div class="form-group">
@@ -53,7 +58,7 @@
                     <div class="form-group">
                         <label for="item_config_effect" class="col-sm-2 control-label">政策年份：</label>
                         <div class="col-sm-3">
-                            <input id="item_year" placeholder="政策年份" name="itemConfigEffect"
+                            <input id="item_year" placeholder="政策年份" name="itemYear"
                                    class="form-control" type="text" required autocomplete="off">
                         </div>
                     </div>
@@ -61,7 +66,7 @@
                     <div class="form-group">
                         <label for="item_config_effect" class="col-sm-2 control-label">关联年份：</label>
                         <div class="col-sm-3">
-                            <input id="effect_year" placeholder="关联年份" name="itemConfigEffect"
+                            <input id="item_need_year" placeholder="关联年份" name="itemNeedYear"
                                    class="form-control" type="text" required autocomplete="off">
                         </div>
                     </div>
@@ -363,7 +368,7 @@
                             <div class="btn btn-white" onclick="window.history.go(-1)">取消</div>
                         </div>
                     </div>
-                    <div id="date-table" style="position: absolute;height: 460px; top:20px;left:43.666668%;" class="col-sm-6">
+                    <div id="date-table" style="position: absolute;height: 460px; top:65px;left:43.666668%;" class="col-sm-6">
 
                         <table data-toggle="table" data-height="460">
                             <thead>

@@ -6,8 +6,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 1mb
-      max-request-size: 1mb
+      max-file-size: 4mb
+      max-request-size: 4mb
 #  jmx:
 #    enabled: false
 beetlsql:
@@ -47,7 +47,7 @@ spring:
          max-active: 20
          max-wait: 60000
 server:
-  port: 8081
+  port: 8080
 ---
 spring:
     profiles: prod

@@ -12,6 +12,11 @@
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
+                <div class="col-lg-12">
+                    <h2 class="col-sm-offset-1" style="margin-bottom: 20px;">
+                        ${item.itemName}
+                    </h2>
+                </div>
                 <form class="form-horizontal m-t" id="viladate_form">
                     @for(certificate in certificates){
                     <div class="form-group">
@@ -149,7 +154,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">最近18个月社保缴费基数：</label>
+                        <label class="col-sm-3 control-label">社保缴费基数：</label>
                         <div class="col-sm-4">
                             <input placeholder="请选择起始时间" id="user-society-save-time1" name="userSocietySaveTime1"
                                    class="form-control user_society_save_time nx" type="text"
@@ -159,13 +164,14 @@
                                    value=""
                                    @}
                                    required>
+                            <div class="help-block m-b-none"><i class="fa fa-info-circle"></i> 请填写${ic.itemNeedYear}年度的社保缴费情况</div>
                         </div>
                         <div class="col-sm-3">
                             <input placeholder="缴费基数" name="companyUserSocietySave1"
                                    class="form-control nx" type="text" value="${cui.companyUserSocietySave1}" required>
                         </div>
 
-                        <div class="col-sm-4 col-sm-offset-3" style="margin-top: 10px;">
+                        <!--<div class="col-sm-4 col-sm-offset-3" style="margin-top: 10px;">
                             <input placeholder="请选择起始时间" id="user-society-save-time2" name="userSocietySaveTime2"
                                    class="form-control user_society_save_time nx" type="text"
                                    @if(cui.companyUserSocietySaveTime2Begin!=null && cui.companyUserSocietySaveTime2End!=null){
@@ -179,7 +185,7 @@
                         <div class="col-sm-3" style="margin-top: 10px;">
                             <input placeholder="缴费基数" name="companyUserSocietySave2"
                                    class="form-control nx" type="text" value="${cui.companyUserSocietySave2}" required>
-                        </div>
+                        </div>-->
                     </div>
                     @}
 
@@ -191,7 +197,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">最近18个月个税缴费基数：</label>
+                        <label class="col-sm-3 control-label">个税缴费基数：</label>
                         <div class="col-sm-4">
                             <input placeholder="请选择起始时间" id="user-iit" name="userIitTime"
                                    class="form-control nx" type="text"
@@ -201,6 +207,7 @@
                                    value=""
                                    @}
                                    required>
+                            <div class="m-t3 help-block m-b-none"><i class="fa fa-info-circle"></i> 请填写${ic.itemNeedYear}年度的个税缴费基数</div>
                         </div>
                         <div class="col-sm-3">
                             <input placeholder="缴费基数" name="companyUserIit"
@@ -424,28 +431,30 @@
     laydate.render({
         elem: '#user-house-contract-time',
         range: '至',
-        format: 'yyyy-MM-dd'
+        format: 'yyyy-MM-dd',
+        min: '${ic.itemNeedYear}-1-1'
+        ,max: '${ic.itemNeedYear}-12-31'
     });
     laydate.render({
         elem: '#user-society-save-time1',
         range: '至',
         format: 'yyyy-MM-dd',
-        min: '2017-1-1'
-        ,max: '2017-12-31'
+        min: '${ic.itemNeedYear}-1-1'
+        ,max: '${ic.itemNeedYear}-12-31'
     });
     laydate.render({
         elem: '#user-society-save-time2',
         range: '至',
         format: 'yyyy-MM-dd',
-        min: '2017-1-1'
-        ,max: '2017-12-31'
+        min: '${ic.itemNeedYear}-1-1'
+        ,max: '${ic.itemNeedYear}-12-31'
     });
     laydate.render({
         elem: '#user-iit',
         range: '至',
         format: 'yyyy-MM-dd',
-        min: '2017-1-1'
-        ,max: '2017-12-31'
+        min: '${ic.itemNeedYear}-1-1'
+        ,max: '${ic.itemNeedYear}-12-31'
     });
 
     $('#company-user-house-type').change(function () {

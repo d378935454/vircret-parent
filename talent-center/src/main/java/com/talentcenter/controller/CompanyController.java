@@ -432,6 +432,8 @@ public class CompanyController extends BaseController {
     @RequestMapping("register.html")
     public String register(Model model) {
         List<Street> streets = streetService.selectAll();
+        List<CompanyNature> companyNatures = companyNatureService.selectAll();
+        model.addAttribute("companyNatures", companyNatures);
         model.addAttribute("streets", streets);
         model.addAttribute("user", "");
         model.addAttribute("userName", "");

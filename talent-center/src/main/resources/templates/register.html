@@ -39,6 +39,15 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <select  name="companyNatureId" id="company_nature_id" class="form-control">
+                    <option selected="selected" value="">--请选择企业性质--</option>
+                    @for(list in companyNatures){
+                    <option value="${list.companyNatureId}">${list.companyNatureName}</option>
+                    @}
+                </select>
+            </div>
+
             <button type="submit" class="btn btn-primary block full-width m-b">注 册</button>
             <input hidden id="u-error" value="${uError}">
             <input hidden id="c-error" value="${cError}">
@@ -112,6 +121,9 @@
                 },
                 streetId:{
                     required: true,
+                },
+                companyNatureId:{
+                    required: true,
                 }
             },
             messages: {
@@ -127,6 +139,9 @@
                 },
                 streetId:{
                     required: e + "请选择所属街道"
+                },
+                companyNatureId:{
+                    required: e + "请选择企业性质"
                 }
             },
             submitHandler: function(form) {

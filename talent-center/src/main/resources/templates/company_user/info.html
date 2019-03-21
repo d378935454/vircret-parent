@@ -123,10 +123,28 @@
                             </select>
                         </div>
                         <label class="col-sm-4 control-label"></label>-->
-                        <div class="col-sm-8">
+                        <div class="col-sm-5">
                             <input id="company_user_hu_address" placeholder="在沪详细地址" name="companyUserHuAddress"
                                    value="${obj.companyUserHuAddress}"
                                    class="form-control" type="text" required>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="checkbox checkbox-inline">
+                                <input type="radio" id="hu-type-1" name="companyUserHuType" @if(obj.companyUserHuType==1){
+                                       checked
+                                       @}
+                                       value="1">
+                                <label for="hu-type-1"> 自有 </label>
+                            </div>
+
+                            <div class="checkbox checkbox-inline">
+                                <input type="radio" id="hu-type-0" name="companyUserHuType"  @if(obj.companyUserHuType==0){
+                                       checked
+                                       @}
+                                       value="0">
+                                <label for="hu-type-0"> 租房 </label>
+                            </div>
                         </div>
                     </div>
 
@@ -224,8 +242,8 @@
                     <div class="form-group">
                         <label for="company_user_positional" class="col-sm-4 control-label">最高职称：</label>
                         <div class="col-sm-8">
-                            <select name="companyUserPositional" id="company_user_positional" class="form-control">
-                                <option value="">--请选择--</option>
+                            <select name="companyUserPositional" id="company_user_positional" class="form-control" required>
+                                <option value="3"> 无 </option>
                                 <option @if(obj.companyUserPositional==0){
                                         selected
                                         @}
@@ -280,6 +298,7 @@
                             <input id="company_user_bank_no" name="companyUserBankNo" class="form-control" type="number"
                                    value="${obj.companyUserBankNo}"
                                    required>
+                            <span class="m-t3 help-block m-b-none"><i class="fa fa-info-circle"></i> 请填写本人在上海市开通的一类储蓄卡账号</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -288,6 +307,7 @@
                             <input id="company_user_bank" name="companyUserBank" class="form-control" type="text"
                                    value="${obj.companyUserBank}"
                                    required>
+                            <span class="m-t3 help-block m-b-none"><i class="fa fa-info-circle"></i> 开户行全称请填写完整</span>
                         </div>
                     </div>
 

@@ -185,4 +185,8 @@ public class ItemConfig {
 
     @Transient
     private String itemName;
+
+    private String itemYear;
+
+    private String itemNeedYear;
 }

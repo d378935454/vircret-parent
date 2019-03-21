@@ -201,4 +201,6 @@ public class CompanyUserInfo implements Serializable {
     private Integer updateTimes;
 
     private Float companyUserHouseArea;
+
+    private Integer companyUserHuType;
 }

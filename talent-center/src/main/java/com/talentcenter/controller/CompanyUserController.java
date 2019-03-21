@@ -337,7 +337,7 @@ public class CompanyUserController extends BaseController {
 
         int res= companyUserInfoService.updateByUserId(companyUserInfo);
 
-        companyUserFamilyService.delByUserId(companyUserInfo.getUserId());
+        /*companyUserFamilyService.delByUserId(companyUserInfo.getUserId());
         if (companyUserFamilyName != null) {
             List<CompanyUserFamily> companyUserFamilies = new ArrayList<>();
             for(int i=0;i<companyUserFamilyName.length;i++){
@@ -350,7 +350,7 @@ public class CompanyUserController extends BaseController {
                 companyUserFamilies.add(companyUserFamily);
             }
             companyUserFamilyService.insertList(companyUserFamilies);
-        }
+        }*/
 
         RSTFulBody rstFulBody = new RSTFulBody();
         if (res > 0) rstFulBody.success("提交成功！");
@@ -511,15 +511,16 @@ public class CompanyUserController extends BaseController {
         companyUserFamily.setUserId(sessionUser.getUserId());
         List<CompanyUserFamily> companyUserFamilies = companyUserFamilyService.select(companyUserFamily);
 
+        Item item = itemService.selectByPrimaryKey(itemId);
+
         model.addAttribute("companyUserFamilies",companyUserFamilies.size()==0? null:companyUserFamilies);
         model.addAttribute("certificates",itemCertificates);
 //        model.addAttribute("monthes",monthes);
         model.addAttribute("itemId",itemId);
+        model.addAttribute("item",item);
         model.addAttribute("ic",ic);
         model.addAttribute("cui",cui);
         model.addAttribute("talentTypes",itemTalentContents);
-
-        Item item = itemService.selectByPrimaryKey(itemId);
         if(item.getItemCategory()!=0) {
             Item i = new Item();
             i.setItemCategory(0);
@@ -555,6 +556,14 @@ public class CompanyUserController extends BaseController {
 
 //        CompanyUserInfo companyUserInfo = new CompanyUserInfo();
 
+        Long userId = getSessionUser().getUserId();
+        companyUserInfo.setUserId(userId);
+
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.setItemId(itemId);
+        itemConfig.setItemConfigState(true);
+        itemConfig.setDel(true);
+        ItemConfig ic = itemConfigService.selectOne(itemConfig);
 
         //租房合同
         if(userHouseContractTime!= null){
@@ -581,14 +590,8 @@ public class CompanyUserController extends BaseController {
             companyUserInfo.setCompanyUserIitEnd(getDate4StrDate(userIitTimes[1].trim(), "yyyy-MM-dd"));
         }
 
-        Long userId = getSessionUser().getUserId();
-        companyUserInfo.setUserId(userId);
 
-        ItemConfig itemConfig = new ItemConfig();
-        itemConfig.setItemId(itemId);
-        itemConfig.setItemConfigState(true);
-        itemConfig.setDel(true);
-        ItemConfig ic = itemConfigService.selectOne(itemConfig);
+
         CompanyUserItem cui = new CompanyUserItem();
         cui.setItemId(itemId);
         cui.setUserId(userId);
@@ -658,6 +661,9 @@ public class CompanyUserController extends BaseController {
                 endDateList.add(UI.getCompanyUserIitEnd().getTime());
                 error +="缴税记录 ";
             }
+
+            startDateList.add(getDate4StrDate(ic.getItemNeedYear()+"01-01","yyy-MM-dd").getTime());
+            endDateList.add(getDate4StrDate(ic.getItemNeedYear()+"12-31","yyy-MM-dd").getTime());
 
             if(itemId==1){
                 startDateList.add(getYearFirst(getCurrentYear()+1).getTime());

@@ -186,6 +186,7 @@ public class ItemController extends BaseController {
         List<ItemConfig> itemConfigs = itemConfigService.selectActive();
         model.addAttribute("item_length", item.getItemLength());
         model.addAttribute("itemId", itemId);
+        model.addAttribute("item", item);
         model.addAttribute("certificates", certificates);
         model.addAttribute("typeCategories", typeCategories);
         model.addAttribute("activeConfig", itemConfigs);
@@ -271,9 +272,12 @@ public class ItemController extends BaseController {
         String[] strArr = config.getItemConfigContactTime().split(",");
 
         List<TypeCategory> typeCategories = typeCategoryService.selectAll();
+
+        Item item = itemService.selectByPrimaryKey(config.getItemId());
         model.addAttribute("certificates", certificates);
         model.addAttribute("typeCategories", typeCategories);
         model.addAttribute("activeConfig", itemConfigs);
+        model.addAttribute("item", item);
         model.addAttribute("ld",Arrays.asList(strArr).contains("0"));
         model.addAttribute("zf",Arrays.asList(strArr).contains("1"));
         model.addAttribute("sb",Arrays.asList(strArr).contains("3"));
