@@ -120,4 +120,7 @@ public class Company {
 
     @Transient
     private List<CompanyItem> companyItems;
+
+    @Transient
+    private String userName;
 }

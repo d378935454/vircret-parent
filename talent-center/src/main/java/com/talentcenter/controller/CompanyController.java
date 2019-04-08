@@ -124,6 +124,9 @@ public class CompanyController extends BaseController {
             condition.setCompanyId(c.getCompanyId());
             List<CompanyItem> companyItems = companyItemService.select(condition);
             c.setCompanyItems(companyItems);
+
+            User cUser = userService.selectByPrimaryKey(c.getUserId());
+            c.setUserName(cUser.getUserName());
         }
 
         PageInfo<Company> pageInfo = new PageInfo<>(companys);
@@ -202,6 +205,8 @@ public class CompanyController extends BaseController {
     @RequestMapping("edit.html")
     public String editUI(Model model, String companyId) {
         Company company = companyService.selectByPrimaryKey((long) Integer.parseInt(companyId));
+        User cUser = userService.selectByPrimaryKey(company.getUserId());
+        model.addAttribute("user",cUser);
         model.addAttribute("companyId", companyId);
         model.addAttribute("obj", company);
         List<CompanyNature> companyNatures = companyNatureService.selectAll();
@@ -817,7 +822,10 @@ public class CompanyController extends BaseController {
                 url = "/company/ajax_lanka.html";
             }
         }
-        map.put("streetId",sessionUser.getStreetId());
+        Company condition = new Company();
+        condition.setUserId(sessionUser.getUserId());
+        Company c = companyService.selectOne(condition);
+        map.put("companyId",c.getCompanyId());
 
         PageHelper.startPage(pageNum, pageSize);
         List<Map<String,Object>> census=streetService.census(map);
