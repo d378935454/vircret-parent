@@ -148,11 +148,17 @@ public class CompanyUserController extends BaseController {
         CompanyUserInfo companyUserInfo = new CompanyUserInfo();
         companyUserInfo.setUserId(user.getUserId());
         companyUserInfoService.insertSelective(companyUserInfo);
+
+        Company condition = new Company();
+        condition.setUserId(sessionUser.getUserId());
+        Company company = companyService.selectOne(condition);
+
         ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
         for (String item : itemId) {
             CompanyUserItem companyUserItem = new CompanyUserItem();
             companyUserItem.setItemId((long) Integer.parseInt(item));
             companyUserItem.setUserId(user.getUserId());
+            companyUserItem.setCompanyId(company.getCompanyId());
             Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
             ItemConfig itemConfig = new ItemConfig();
             itemConfig.setItemId(i.getItemId());
@@ -221,11 +227,16 @@ public class CompanyUserController extends BaseController {
 
         int del  = companyUserItemService.delByUserId(user.getUserId());
 
+        Company condition = new Company();
+        condition.setUserId(sessionUser.getUserId());
+        Company company = companyService.selectOne(condition);
+
         ArrayList<CompanyUserItem> companyUserItems = new ArrayList<>();
         for (String item : itemId) {
             CompanyUserItem companyUserItem = new CompanyUserItem();
             companyUserItem.setItemId((long) Integer.parseInt(item));
             companyUserItem.setUserId(user.getUserId());
+            companyUserItem.setCompanyId(company.getCompanyId());
             Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
             ItemConfig itemConfig = new ItemConfig();
             itemConfig.setItemId(i.getItemId());
@@ -312,9 +323,9 @@ public class CompanyUserController extends BaseController {
                                  @RequestParam(required = false, value = "companyUserFamilyCard[]") String[] companyUserFamilyCard,
                                  @RequestParam(required = false, value = "companyUserFamilySex[]") String[] companyUserFamilySex
                                  ) {
-        String[] contractTimes = userContractTime.split("至");
+        /*String[] contractTimes = userContractTime.split("至");
         companyUserInfo.setCompanyUserContractTimeBegin(getDate4StrDate(contractTimes[0].trim(), "yyyy-MM-dd"));
-        companyUserInfo.setCompanyUserContractTimeEnd(getDate4StrDate(contractTimes[1].trim(), "yyyy-MM-dd"));
+        companyUserInfo.setCompanyUserContractTimeEnd(getDate4StrDate(contractTimes[1].trim(), "yyyy-MM-dd"));*/
         companyUserInfo.setUpdateTimes(companyUserInfo.getUpdateTimes()+1);
 
         if(userHouseContractTime!= null){
@@ -513,9 +524,14 @@ public class CompanyUserController extends BaseController {
 
         Item item = itemService.selectByPrimaryKey(itemId);
 
+        Company company = new Company();
+        company.setUserId(sessionUser.getCompanyId());
+        Company c = companyService.selectOne(company);
+
         model.addAttribute("companyUserFamilies",companyUserFamilies.size()==0? null:companyUserFamilies);
         model.addAttribute("certificates",itemCertificates);
-//        model.addAttribute("monthes",monthes);
+        model.addAttribute("user",sessionUser);
+        model.addAttribute("company",c);
         model.addAttribute("itemId",itemId);
         model.addAttribute("item",item);
         model.addAttribute("ic",ic);
@@ -547,6 +563,7 @@ public class CompanyUserController extends BaseController {
                              @RequestParam(required = false) String userHouseContractTime,
                              @RequestParam(required = false) String userSocietySaveTime1,
                              @RequestParam(required = false) String userSocietySaveTime2,
+                             @RequestParam(required = false) String userContractTime,
                              @RequestParam(required = false) String userIitTime,
                              @RequestParam(required = false, value = "companyUserFamilyType[]") String[] companyUserFamilyType,
                              @RequestParam(required = false, value = "companyUserFamilyName[]") String[] companyUserFamilyName,
@@ -590,7 +607,12 @@ public class CompanyUserController extends BaseController {
             companyUserInfo.setCompanyUserIitEnd(getDate4StrDate(userIitTimes[1].trim(), "yyyy-MM-dd"));
         }
 
-
+        //劳动合同
+        if(userContractTime!=null){
+            String[] userContractTimes = userContractTime.split("至");
+            companyUserInfo.setCompanyUserContractTimeBegin(getDate4StrDate(userContractTimes[0].trim(), "yyyy-MM-dd"));
+            companyUserInfo.setCompanyUserContractTimeEnd(getDate4StrDate(userContractTimes[1].trim(), "yyyy-MM-dd"));
+        }
 
         CompanyUserItem cui = new CompanyUserItem();
         cui.setItemId(itemId);
@@ -631,8 +653,8 @@ public class CompanyUserController extends BaseController {
         ItemTalentContent itc = itemTalentContentService.selectOne(citc);
 
         //关联时间计算该期起始时间 0:劳动合同 1:租房合同 3:社保记录 4:缴税记录
-        Date startCUI = null;
-        Date endCUI = null;
+        Date startCUI = getDate4StrDate(ic.getItemNeedYear()+"-01-01","yyy-MM-dd");
+        Date endCUI = getDate4StrDate(ic.getItemNeedYear()+"-12-31","yyy-MM-dd");
         if(ic.getItemConfigContactTime()!=null && ic.getItemConfigContactTime().length()!=0 && ic.getItemConfigType()==1){
             String[] strArr = ic.getItemConfigContactTime().split(",");
             ArrayList<Long> startDateList = new ArrayList<>();
@@ -662,17 +684,17 @@ public class CompanyUserController extends BaseController {
                 error +="缴税记录 ";
             }
 
-            startDateList.add(getDate4StrDate(ic.getItemNeedYear()+"01-01","yyy-MM-dd").getTime());
-            endDateList.add(getDate4StrDate(ic.getItemNeedYear()+"12-31","yyy-MM-dd").getTime());
+            startDateList.add(getDate4StrDate(ic.getItemNeedYear()+"-01-01","yyy-MM-dd").getTime());
+            endDateList.add(getDate4StrDate(ic.getItemNeedYear()+"-12-31","yyy-MM-dd").getTime());
 
-            if(itemId==1){
+            /*if(itemId==1){
                 startDateList.add(getYearFirst(getCurrentYear()+1).getTime());
                 endDateList.add(getYearLast(getCurrentYear()+1).getTime());
             }else{
                 startDateList.add(getYearFirst(getCurrentYear()-1).getTime());
                 endDateList.add(getYearLast(getCurrentYear()-1).getTime());
             }
-
+*/
             Long s = Collections.max(startDateList); //该期第一天
             Long e = Collections.min(endDateList); //该期最后一天
 
@@ -696,15 +718,17 @@ public class CompanyUserController extends BaseController {
 
             int count = sendLogService.selectCount(conditionSL);
             //该期申请月数+已申请月数 大于 总月数时
-            if(count+monthes>item.getItemLength()){
-                int differ = count+monthes - item.getItemLength();
+            if(item.getItemLength()!=null && item.getItemLength()>0){
+                if(count+monthes>item.getItemLength()){
+                    int differ = count+monthes - item.getItemLength();
 
-                int differ1 = monthes - differ;
-                if(differ1<=0) {
-                    rstFulBody.fail("不能申请！");
-                    return rstFulBody;
-                }else {
-                    monthes = monthes-differ;
+                    int differ1 = monthes - differ;
+                    if(differ1<=0) {
+                        rstFulBody.fail("不能申请！");
+                        return rstFulBody;
+                    }else {
+                        monthes = monthes-differ;
+                    }
                 }
             }
 
@@ -723,7 +747,7 @@ public class CompanyUserController extends BaseController {
                 sl.setMonth(getAfterCustomMonth(getFirstDayOfCustomMonth(ss),i));
                 sl.setCompanyUserItmeId(rcui.getCompanyUserItemId());
                 sl.setItemConfigId(rcui.getConfigId());
-                sl.setAmount(itc.getItemTalentContent());
+                if(itc!=null)sl.setAmount(itc.getItemTalentContent());
                 sl.setUserId(userId);
                 insertList.add(sl);
             }
@@ -798,7 +822,7 @@ public class CompanyUserController extends BaseController {
         map.put("type",type);
         map.put("haveSubmit",1);
         map.put("talentType",talentType);
-        map.put("talentTypeContent",itc.getItemTalentContent());
+        if(itc!=null) map.put("talentTypeContent",itc.getItemTalentContent());
         map.put("submitTime",getCurDateTime());
         map.put("start",startCUI);
         map.put("end",endCUI);

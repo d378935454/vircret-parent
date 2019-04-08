@@ -72,6 +72,16 @@ public class ItemController extends BaseController {
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<Item> items = itemService.select(item);
+        for (Item i : items) {
+            ItemConfig ic = new ItemConfig();
+            ic.setItemId(i.getItemId());
+            ic.setItemConfigState(true);
+
+            ItemConfig itemConfig = itemConfigService.selectOne(ic);
+
+            if(itemConfig!=null) i.setStatus(true);
+            else i.setStatus(false);
+        }
 
         PageInfo<Item> pageInfo = new PageInfo<>(items);
         String pageStr = makePageHtml(pageInfo);

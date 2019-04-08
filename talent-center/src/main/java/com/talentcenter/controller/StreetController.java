@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /*import javax.jws.WebParam;*/
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +80,9 @@ public class StreetController extends BaseController{
 
     @Autowired
     private CompanyItemService companyItemService;
+
+    @Autowired
+    private ItemCertificateService itemCertificateService;
     /**
      * 证书列表页
      * @param model
@@ -399,7 +403,9 @@ public class StreetController extends BaseController{
     @RequestMapping("check_item.html")
     public String checkItem(Model model){
         List<Item> items = itemService.selectAll();
+        User u = getSessionUser();
         model.addAttribute("items",items);
+        model.addAttribute("user",u);
        /* Street street = new Street();
         street.setDel(true);
         List<Street> streets = streetService.select(street);
@@ -445,6 +451,7 @@ public class StreetController extends BaseController{
         String pageStr = makePageHtml(pageInfo);
         model.addAttribute("page_info",pageInfo);
         model.addAttribute("pages",pageStr);
+        model.addAttribute("user",sessionUser);
         return "/street/ajax_items.html";
     }
 
@@ -503,6 +510,41 @@ public class StreetController extends BaseController{
         ii.setItemCategory(0);
         List<Item> items = itemService.select(ii);
 
+        List<ItemCertificate> itemCertificates = itemCertificateService.selectByItemId(companyUserItem.getConfigId());
+        List<CompanyUserCertificate> companyUserCertificates=null;
+        if(itemCertificates!=null){
+            String ids = "";
+            for (ItemCertificate itemCertificate : itemCertificates) {
+                ids+=itemCertificate.getCertificateId()+",";
+            }
+            ids = ids.substring(0,ids.length() - 1);
+            Map<String,Object> cerficateMap = new HashMap<>();
+            cerficateMap.put("ids",ids);
+            cerficateMap.put("userId",companyUserItem.getUserId());
+
+            companyUserCertificates = companyUserCertificateService.selectByUserId(cerficateMap);
+        }
+
+        if(companyUserItem.getItemId()==3){
+            BigDecimal amount = null;
+            BigDecimal amountTemp = null;
+            BigDecimal compareNum = new BigDecimal(300000);
+            if(cui.getMonthSalary().compareTo(compareNum)==0) {
+                amount = new BigDecimal(5000);
+            }else {
+                amountTemp = cui.getTotalTax().multiply(ic.getItemConfigAmountPer());
+                BigDecimal compareNum1000 = new BigDecimal(1000);
+                if(amountTemp.compareTo(compareNum1000)==1){
+                    BigDecimal amountTemp1 = amountTemp.divide(compareNum1000);
+                    BigDecimal amountTemp2 = amountTemp1.setScale(0,BigDecimal.ROUND_UP);
+                    amount = amountTemp2.multiply(compareNum1000);
+                }
+            }
+            model.addAttribute("amount", amount);
+            model.addAttribute("amountTemp", amountTemp);
+        }
+
+        model.addAttribute("cucs", companyUserCertificates);
         model.addAttribute("user",user);
         model.addAttribute("cui",cui);
         model.addAttribute("company",c);
@@ -529,6 +571,59 @@ public class StreetController extends BaseController{
         return "/street/modal_content.html";
     }
 
+    @RequestMapping("/census.html")
+    public String census(Long itemId,Model model){
+        Item item = new Item();
+        item.setDel(true);
+
+        List<Item> items = itemService.select(item);
+
+        model.addAttribute("items",items);
+        return "/street/census.html";
+    }
+
+    @RequestMapping("ajax_census")
+    public String ajaxCensus(Model model, int pageNum, int pageSize, @RequestParam(required = false) Long itemId){
+
+        String url = "/street/ajax_census.html";
+
+        User sessionUser = getSessionUser();
+        Map<String,Object> map = new HashMap<>();
+        String title=null;
+        if(itemId!=null && itemId!=0) {
+            map.put("itemId",itemId);
+            Item item = itemService.selectByPrimaryKey(itemId);
+            title = item.getItemName();
+            if(itemId==3){
+                url = "/street/ajax_jintie.html";
+
+            }else if(itemId==4){
+                url = "/street/ajax_lanka.html";
+            }
+        }
+        map.put("streetId",sessionUser.getStreetId());
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<Map<String,Object>> census=streetService.census(map);
+        if(itemId==3) {
+            for (Map<String, Object> obj : census) {
+                BigDecimal amountTemp = null;
+                amountTemp = ((BigDecimal)obj.get("total_tax")).multiply((BigDecimal)obj.get("item_config_amount_per"));
+                obj.put("amountTemp",amountTemp);
+            }
+        }
+
+        PageInfo<Map<String,Object>> pageInfo= new PageInfo<>(census);
+        String pageStr = makePageHtml(pageInfo);
+
+        Street street = streetService.selectByPrimaryKey(sessionUser.getStreetId());
+        model.addAttribute("page_info",pageInfo);
+        model.addAttribute("pages",pageStr);
+        model.addAttribute("street",street);
+        model.addAttribute("title",title);
+        return url;
+    }
+
     @ResponseBody
     @RequestMapping("/pass")
     public Boolean pass(@RequestBody JSONObject jsonParam){
@@ -541,15 +636,21 @@ public class StreetController extends BaseController{
         companyUserItem.setType(passJson.getType());
         companyUserItem.setAmount(passJson.getAmount());
         companyUserItem.setMemo(passJson.getMemo());
-        companyUserItem.setTalentType((long)Integer.parseInt(passJson.getTalentType()));
-        companyUserItem.setTalentTypeContent(passJson.getTalentTypeContent());
+        if(passJson.getTalentType()!=null) {
+            companyUserItem.setTalentType((long) Integer.parseInt(passJson.getTalentType()));
+            companyUserItem.setTalentTypeContent(passJson.getTalentTypeContent());
+        }
         if(getSessionUser().getUserType()==2) {
             companyUserItem.setStreetChecked(2);
+            companyUserItem.setStreetCheckId1(sessionUser.getUserId());
+            companyUserItem.setStreetCheckName1(sessionUser.getRealName());
         }else if(getSessionUser().getUserType()==1){
             companyUserItem.setStreetChecked(4);
+            companyUserItem.setStreetCheckId2(sessionUser.getUserId());
+            companyUserItem.setStreetCheckName2(sessionUser.getRealName());
         }
 
-        if(passJson.getItemTime().length()>0){
+        if(passJson.getItemTime()!=null && passJson.getItemTime().length()>0){
             String[] houseContractTimes = passJson.getItemTime().split("至");
             companyUserItem.setStart(getDate4StrDate(houseContractTimes[0].trim(), "yyyy-MM-dd"));
             companyUserItem.setEnd(getDate4StrDate(houseContractTimes[1].trim(), "yyyy-MM-dd"));
@@ -593,8 +694,23 @@ public class StreetController extends BaseController{
         companyUserItem.setCompanyUserItemId(userItemId);
         companyUserItem.setStreetChecked(state);
         companyUserItem.setStreetReason(reason);
-        companyUserItem.setHaveSubmit(false);
+//        companyUserItem.setHaveSubmit(false);
         companyUserItemService.updateByPrimaryKeySelective(companyUserItem);
         return true;
+    }
+
+    @ResponseBody
+    @RequestMapping("all_check")
+    public RSTFulBody allCheck(@RequestParam(required = true) String ids){
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("ids",ids);
+        map.put("userId",getSessionUser().getUserId());
+        map.put("realName",getSessionUser().getRealName());
+        int res = streetService.checkAll(map);
+        RSTFulBody rstFulBody=new RSTFulBody();
+        if(res>0) rstFulBody.success(res);
+        else  rstFulBody.fail("删除失败！");
+        return rstFulBody;
     }
 }

@@ -152,6 +152,26 @@
             <if test="companyUserHuType != null">
                 company_user_hu_type = #{companyUserHuType},
             </if>
+
+            <if test="monthSalary != null">
+                month_salary = #{monthSalary},
+            </if>
+
+            <if test="companyUserPositionalSkill != null">
+                company_user_positional_skill = #{companyUserPositionalSkill},
+            </if>
+
+            <if test="positionaName != null">
+                positiona_name = #{positionaName},
+            </if>
+
+            <if test="positionaSkillName != null">
+                positiona_skill_name = #{positionaSkillName},
+            </if>
+
+            <if test="totalTax != null">
+                total_tax = #{totalTax},
+            </if>
         </set>
 
         where user_id = #{userId,jdbcType=INTEGER}

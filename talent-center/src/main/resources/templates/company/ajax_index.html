@@ -10,6 +10,7 @@
         <th>企业类型</th>
         <th>所属街道</th>
         <th>企业详细地址</th>
+        <th>享受政策</th>
         <th>备注</th>
         <th>添加人</th>
         <th>添加时间</th>
@@ -30,6 +31,12 @@
         <td>${list.companyTypeName}</td>
         <td>${list.streetName}</td>
         <td>${list.companyAddress}</td>
+        <td>
+            @for(item in list.companyItems){
+            ${item.itemName}
+            <br />
+            @}
+        </td>
         <td>${list.memo}</td>
         <td>${list.createName}</td>
         <td>${list.createTime,"yyyy-MM-dd"}</td>

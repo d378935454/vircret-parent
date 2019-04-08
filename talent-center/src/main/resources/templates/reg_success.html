@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    @include("/common/_head.html") {}
+<body class="gray-bg">
+<link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <div class="middle-box loginscreen  animated fadeInDown" style="width: 750px; max-width: 750px; text-align: left">
+        <div>
+            <div>
+                <h1 class="logo-name">
+                    <br />
+                </h1>
+            </div>
+            <!--<h3>欢迎使用 上海市奉贤区人才服务管理信息系统 </h3>-->
+
+            <h2 style="color:red;"> 注册成功，请携带相关原件到所属人才工作站进行审核开通。</h2>
+            <a class="btn btn-primary" href="${ctxPath}/login.html">确定</a>
+        </div>
+    </div>
+    @include("/common/_foot.html") {}
+    <script>if(window.top !== window.self){ window.top.location = window.location;}</script>
+</body>
+    <script src="/js/plugins/toastr/toastr.min.js"></script>
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "1800",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+</script>
+
+</html>

@@ -55,10 +55,12 @@
 	tcui.item_name,
 	tcui.company_user_item_id,
 	tu.real_name,
-	tcui.submit_time
+	tcui.submit_time,
+    tic.item_year
 FROM
 	talent_company_user_item tcui
 LEFT JOIN talent_user tu ON tcui.user_id=tu.user_id
+LEFT JOIN talent_item_config tic ON tcui.config_id = tic.item_config_id
 WHERE
  tcui.parent_id = 0
 AND tcui.have_submit = 1
@@ -67,11 +69,66 @@ AND tu.company_id IN (${companyIds})
         <if test="itemId !=null and itemId != ''">
             AND tcui.item_id = #{itemId,jdbcType=BIGINT}
         </if>
-        <if test="streetChecked !=null and streetChecked != '' and streetChecked !=2">
+        <if test="streetChecked !=null and streetChecked != ''">
             AND tcui.street_checked = #{streetChecked,jdbcType=INTEGER}
         </if>
-        <if test="streetChecked !=null and streetChecked != '' and streetChecked ==2">
-            AND tcui.street_checked = 2 OR tcui.street_checked = 4
+    </select>
+
+    <select id="census" parameterType="Map" resultType="java.util.HashMap">
+        SELECT
+        tcui.company_checked,
+        tcui.street_checked,
+        tcui.center_checked,
+        tcui.have_submit,
+        tcui.item_name,
+        tcui.company_user_item_id,
+        tcui.amount,
+        tu.real_name,
+        tcui.submit_time,
+        tc.company_name,
+        ui.company_user_sex,
+        ui.company_user_card,
+        ui.company_user_birthday,
+        ui.company_user_post,
+        ui.company_user_mobel,
+        ui.company_user_education,
+        ui.company_user_positional,
+        ui.positiona_name,
+        ui.company_user_positional_skill,
+        ui.positiona_skill_name,
+        ic.item_need_year,
+        ic.item_config_amount_per,
+        ui.company_user_bank,
+        ui.company_user_bank_no,
+        tcui.memo,
+        ui.total_tax
+        FROM
+        talent_company_user_item tcui
+        LEFT JOIN talent_user tu ON tcui.user_id=tu.user_id
+        LEFT JOIN talent_company tc ON tu.company_id=tc.user_id
+        LEFT JOIN talent_company_user_info ui ON tcui.user_id=ui.user_id
+        LEFT JOIN talent_item ti ON tcui.item_id = ti.item_id
+        left join talent_item_config ic ON tcui.config_id = ic.item_config_id
+        WHERE
+        tcui.parent_id = 0
+        AND tcui.have_submit = 1
+        AND tcui.street_checked = 4
+        <if test="itemId !=null and itemId != ''">
+            AND tcui.item_id = #{itemId,jdbcType=BIGINT}
+        </if>
+        <if test="streetId !=null and streetId != ''">
+            AND tc.street_id = #{streetId,jdbcType=INTEGER}
+        </if>
+        <if test="companyId !=null and companyId != ''">
+            AND tcui.company_id = #{companyId,jdbcType=INTEGER}
         </if>
     </select>
+    
+    <update id="checkAll" parameterType="Map">
+        update talent_company_user_item set
+        street_checked=4,
+        street_check_id2=#{userId,jdbcType=BIGINT},
+        street_check_name2=#{realName,jdbcType=VARCHAR}
+        where company_user_item_id IN (${ids})
+    </update>
 </mapper>

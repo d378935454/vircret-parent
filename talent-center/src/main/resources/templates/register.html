@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 @layout("/layout/_form_layout.html"){
+<link href="/css/plugins/webuploader/webuploader.css" rel="stylesheet" type="text/css">
 <body class="gray-bg">
 
 <div class="middle-box text-center loginscreen  animated fadeInDown">
@@ -15,14 +16,6 @@
             </div>
 
             <div class="form-group">
-                <input type="text" name="companyCode" id="company_code" class="form-control" value="${companyCode}" placeholder="请输入企业统一社会信用代码" required>
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="companyName" id="company_name" value="${companyName}" class="form-control" placeholder="请输入企业名称" required>
-            </div>
-
-            <div class="form-group">
                 <input type="password" id="password" name="password" class="form-control" placeholder="请输入密码" required="">
             </div>
 
@@ -30,6 +23,26 @@
                 <input type="password" id="comfirm_password" name="comfirmPassword" class="form-control" placeholder="请再次输入密码" required>
             </div>
 
+            <div class="form-group">
+                <input type="text" name="companyCode" id="company_code" class="form-control" value="${companyCode}" placeholder="请输入企业统一社会信用代码" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="companyName" id="company_name" value="${companyName}" class="form-control" placeholder="请输入企业名称" required>
+            </div>
+
+
+
+            <div class="form-group">
+                <input id="company_contactor" placeholder="请输入联系人" name="companyContactor" class="form-control" type="text" required>
+            </div>
+            <div class="form-group">
+                <input id="company_contactor_phone" placeholder="请输入联系人电话" name="companyContactorPhone" class="form-control" type="text" required>
+            </div>
+
+            <div class="form-group">
+                    <input id="company_address" placeholder="企业详细地址" name="companyAddress"  class="form-control" type="text" required>
+            </div>
             <div class="form-group">
                 <select  name="streetId" id="street_id" class="form-control" required>
                     <option selected="selected" value="">--请选择所属街道--</option>
@@ -40,12 +53,31 @@
             </div>
 
             <div class="form-group">
-                <select  name="companyNatureId" id="company_nature_id" class="form-control">
-                    <option selected="selected" value="">--请选择企业性质--</option>
+                <select  name="companyNatureId" id="company_nature_id" class="form-control" required>
+                    <option selected="selected" value="">--请选择单位性质--</option>
                     @for(list in companyNatures){
                     <option value="${list.companyNatureId}">${list.companyNatureName}</option>
                     @}
                 </select>
+            </div>
+
+            <div class="form-group">
+                    <select  name="companyTypeId" id="company_type_id" class="form-control" required>
+                        <option selected="selected" value="">--请选择--</option>
+                        @for(list in companyTypes){
+                        <option value="${list.companyTypeId}">${list.companyTypeName}</option>
+                        @}
+                    </select>
+            </div>
+
+            <div class="form-group">
+                <div class="uploader">
+                    <!--用来存放item-->
+                    <div id="fileList-1" c-id="1" class="uploader-list">
+
+                    </div>
+                    <div class="filePicker" c-id="1">上传营业执照</div>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary block full-width m-b">注 册</button>
@@ -60,6 +92,7 @@
 </div>
 @}
 </body>
+<script src="/js/plugins/webuploader/webuploader.js"></script>
 <script type="text/javascript">
     toastr.options = {
         "closeButton": true,
@@ -95,6 +128,210 @@
         }
         $('#company_code').on('input propertychange',function(){
             $('#company_code').next().remove();
+        });
+    });
+
+    jQuery(function() {
+
+
+        var $ = jQuery,
+            $list,
+            // 优化retina, 在retina下这个值是2
+            ratio = window.devicePixelRatio || 1,
+
+            // 缩略图大小
+            thumbnailWidth = 100 * ratio,
+            thumbnailHeight = 100 * ratio,
+
+            // Web Uploader实例
+            uploader;
+        $(".filePicker").click(function () {
+            $list = $("#fileList-"+$(this).attr('c-id'));
+        });
+
+        $('.upload-state-done').on( 'mouseenter', function() {
+            // console.log($(this).parent('.file-panel'));
+            $(this).children('.file-panel').stop().animate({height: 30});
+        });
+
+        $('.upload-state-done').on( 'mouseleave', function() {
+            // console.log($(this).parent('.file-panel'));
+            $(this).children('.file-panel').stop().animate({height: 0});
+        });
+
+        $('.cancel').on('click',function () {
+            removeFile( $(this) );
+        });
+        // 初始化Web Uploader
+        uploader = WebUploader.create({
+
+            // 自动上传。
+            auto: true,
+
+            // swf文件路径
+            swf: '/js/Uploader.swf',
+
+            // 文件接收服务端。
+            server: '/upload_img',
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '.filePicker',
+
+            fileNumLimit: 1,
+            // 只允许选择文件，可选。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            },
+            compress:{
+                width: 1000,
+                height: 1000,
+
+                // 图片质量，只有type为`image/jpeg`的时候才有效。
+                quality: 80,
+
+                // 是否允许放大，如果想要生成小图的时候不失真，此选项应该设置为false.
+                allowMagnify: false,
+
+                // 是否允许裁剪。
+                crop: false,
+
+                // 是否保留头部meta信息。
+                preserveHeaders: true,
+
+                // 如果发现压缩后文件大小比原来还大，则使用原来图片
+                // 此属性可能会影响图片自动纠正功能
+                noCompressIfLarger: false,
+
+                // 单位字节，如果图片大小小于此值，不会采用压缩。
+                compressSize: 1*1024*1024,
+
+                fileSingleSizeLimit:1*1024*1024
+            }
+        });
+
+        // 当有文件添加进来的时候
+        uploader.on( 'fileQueued', function( file ) {
+            var fileId = 'WU_FILE_'+$('.upload-state-done').length;
+            // var fileId = 'WU_FILE_'+$list.children('.upload-state-done').length;
+            var $li = $(
+                '<div id="' + fileId + '" class="file-item thumbnail">' +
+                '<img>' +
+                '</div>'
+                ),
+                $btns = $('<div class="file-panel">' +
+                    '<span class="cancel">删除</span>').appendTo( $li ),
+                $img = $li.find('img');
+
+            $li.on( 'mouseenter', function() {
+                $btns.stop().animate({height: 30});
+            });
+
+            $li.on( 'mouseleave', function() {
+                $btns.stop().animate({height: 0});
+            });
+
+            $btns.on( 'click', 'span', function() {
+                var index = $(this).index(),
+                    deg;
+                switch ( index ) {
+                    case 0:
+                        removeFile( $(this) );
+                        // removeFile( file );
+                        return;
+                }
+
+                if ( supportTransition ) {
+                    deg = 'rotate(' + file.rotation + 'deg)';
+                    $wrap.css({
+                        '-webkit-transform': deg,
+                        '-mos-transform': deg,
+                        '-o-transform': deg,
+                        'transform': deg
+                    });
+                } else {
+                    $wrap.css( 'filter', 'progid:DXImageTransform.Microsoft.BasicImage(rotation='+ (~~((file.rotation/90)%4 + 4)%4) +')');
+                }
+            });
+
+            $list.append( $li );
+
+            // 创建缩略图
+            uploader.makeThumb( file, function( error, src ) {
+                if ( error ) {
+                    $img.replaceWith('<span>不能预览</span>');
+                    return;
+                }
+
+                $img.attr( 'src', src );
+            }, thumbnailWidth, thumbnailHeight );
+        });
+
+        uploader.on('ready', function() {
+            window.uploader = uploader;
+        });
+
+        function removeFile( obj ) {
+            console.log(obj);
+            // var fileId = 'WU_FILE_'+$('.upload-state-done').length;
+            // var $li = $('#'+cui.id);
+            // $li.off().find('.file-panel').off().end().remove();
+            $(obj).parent().parent().parent().prev().val('1');
+            $(obj).parent().parent().remove();
+        }
+
+
+
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on( 'uploadProgress', function( file, percentage ) {
+            var $li = $( '#'+file.id ),
+                $percent = $li.find('.progress span');
+
+            // 避免重复创建
+            if ( !$percent.length ) {
+                $percent = $('<p class="progress"><span></span></p>')
+                    .appendTo( $li )
+                    .find('span');
+            }
+
+            $percent.css( 'width', percentage * 100 + '%' );
+        });
+
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on( 'uploadSuccess', function( file,data ) {
+            // var fileId = 'WU_FILE_'+$('.upload-state-done').length;
+            var fileId = 'WU_FILE_'+$list.children('.upload-state-done').length;
+            var $li = $( '#'+ fileId);
+            $li.prev('.upload-error').remove();
+            $('<input type="hidden" id="img_yy" name="img" value="'+data.fileInfo+'">').appendTo($li);
+            $li.addClass('upload-state-done');
+        });
+
+        // 文件上传失败，现实上传出错。
+        uploader.on( 'uploadError', function( file ) {
+            var $li = $( '#'+file.id ),
+                $error = $li.find('div.error');
+
+            // 避免重复创建
+            if ( !$error.length ) {
+                $error = $('<div class="error"></div>').appendTo( $li );
+            }
+
+            $error.text('上传失败');
+        });
+
+        uploader.on("error",function (type){
+            if(type == "Q_EXCEED_SIZE_LIMIT"){
+                alert("所选图片不能超过1M，请压缩后重新上传");
+            }
+
+        });
+
+        // 完成上传完了，成功或者失败，先删除进度条。
+        uploader.on( 'uploadComplete', function( file ) {
+            $( '#'+file.id ).find('.progress').remove();
         });
     });
 
@@ -145,6 +382,11 @@
                 }
             },
             submitHandler: function(form) {
+
+                if($('#img_yy').val()==undefined) {
+                    alert("请上传营业执照")
+                    return false;
+                };
                 form.submit();
             }
         });

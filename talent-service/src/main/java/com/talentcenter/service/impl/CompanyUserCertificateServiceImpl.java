@@ -83,4 +83,9 @@ public class CompanyUserCertificateServiceImpl implements CompanyUserCertificate
     public int deleteByUserId(Long userId) {
         return companyUserCertificateMapper.deleteByUserId(userId);
     }
+
+    @Override
+    public List<CompanyUserCertificate> selectByUserId(Map<String, Object> map) {
+        return companyUserCertificateMapper.selectByUserId(map);
+    }
 }

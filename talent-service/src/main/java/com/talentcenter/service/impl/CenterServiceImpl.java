@@ -84,4 +84,9 @@ public class CenterServiceImpl implements CenterService {
     public List<Map<String, Object>> selectCenterItemCheckedItem(Map<String, Object> map) {
         return centerMapper.selectCenterItemCheckedItem(map);
     }
+
+    @Override
+    public int checkAll(Map<String, Object> map) {
+        return centerMapper.checkAll(map);
+    }
 }

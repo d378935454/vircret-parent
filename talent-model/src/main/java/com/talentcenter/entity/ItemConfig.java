@@ -66,7 +66,6 @@ public class ItemConfig {
     /**
      * 每份补助金额
      */
-    @NumberFormat(pattern = "#,###,###,###.##")
     private BigDecimal  itemConfigAmountPer;
     /**
      * 补助发放方式

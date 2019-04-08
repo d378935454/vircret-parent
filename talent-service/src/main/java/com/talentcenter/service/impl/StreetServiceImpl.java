@@ -94,4 +94,14 @@ public class StreetServiceImpl implements StreetService {
     public List<Map<String,Object>>  selectStreetItems(Map<String, Object> map) {
         return streetMapper.selectStreetItems(map);
     }
+
+    @Override
+    public List<Map<String, Object>> census(Map<String, Object> map) {
+        return streetMapper.census(map);
+    }
+
+    @Override
+    public int checkAll(Map<String, Object> map) {
+        return streetMapper.checkAll(map);
+    }
 }

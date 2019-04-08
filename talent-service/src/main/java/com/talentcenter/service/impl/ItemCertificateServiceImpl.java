@@ -89,4 +89,9 @@ public class ItemCertificateServiceImpl implements ItemCertificateService {
     public int delByItemConfigId(Long itemConfigId) {
         return itemCertificateMapper.delByItemConfigId(itemConfigId);
     }
+
+    @Override
+    public List<ItemCertificate> selectByItemId(Long configId) {
+        return itemCertificateMapper.selectByConfigId(configId);
+    }
 }

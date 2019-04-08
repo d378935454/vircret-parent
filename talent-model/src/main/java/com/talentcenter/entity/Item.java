@@ -82,4 +82,7 @@ public class Item {
 
     @Transient
     private Boolean checked;
+
+    @Transient
+    private Boolean status;
 }

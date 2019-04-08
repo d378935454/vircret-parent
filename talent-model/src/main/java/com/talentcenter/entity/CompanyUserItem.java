@@ -90,4 +90,22 @@ public class CompanyUserItem {
     private Date end;
 
     private Long configId;
+
+    private Long streetCheckId1;
+
+    private String streetCheckName1;
+
+    private Long streetCheckId2;
+
+    private String streetCheckName2;
+
+    private Long centerCheckId1;
+
+    private String centerCheckName1;
+
+    private Long centerCheckId2;
+
+    private String centerCheckName2;
+
+    private Long companyId;
 }

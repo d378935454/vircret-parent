@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -203,4 +204,14 @@ public class CompanyUserInfo implements Serializable {
     private Float companyUserHouseArea;
 
     private Integer companyUserHuType;
+
+    private Integer companyUserPositionalSkill;
+
+    private BigDecimal monthSalary;
+
+    private String positionaName;
+
+    private String positionaSkillName;
+
+    private BigDecimal totalTax;
 }

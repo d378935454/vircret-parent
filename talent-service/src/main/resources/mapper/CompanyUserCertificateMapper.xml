@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.talentcenter.dao.CompanyUserCertificateMapper">
+    <resultMap id="BaseResultMap" type="com.talentcenter.entity.CompanyUserCertificate">
+        <id column="company_user_certificate_id" jdbcType="INTEGER" property="companyUserCertificateId" />
+        <result column="certificate_id" jdbcType="INTEGER" property="certificateId" />
+        <result column="certificate_name" jdbcType="VARCHAR" property="certificateName" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    company_user_certificate_id, certificate_id, certificate_name, user_id, img_url
+    </sql>
 
     <delete id="deleteByUserId" parameterType="java.lang.Long">
         DELETE FROM talent_company_user_certificate WHERE user_id = #{userId,jdbcType=BIGINT}
     </delete>
+    
+    <select id="selectByUserId" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from talent_company_user_certificate
+        where user_id = #{userId,jdbcType=BIGINT} and certificate_id IN (${ids}) group by certificate_id
+    </select>
 </mapper>

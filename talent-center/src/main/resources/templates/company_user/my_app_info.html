@@ -94,9 +94,9 @@
 
             if($(".error").attr("state")==0){
                 $('#resubmit').show();
-                htmlStr += '不通过</div>';
-            }else if($(".error").attr("state")==1){
                 htmlStr += '退回</div>';
+            }else if($(".error").attr("state")==1){
+                htmlStr += '不通过</div>';
             }
             $.ajax({
                 type:'POST',

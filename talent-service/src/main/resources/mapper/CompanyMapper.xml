@@ -5,6 +5,7 @@
 	<resultMap id="BaseResultMap" type="com.talentcenter.entity.Company">
 		<id column="company_id" jdbcType="INTEGER" property="companyId" />
 		<result column="company_name" jdbcType="VARCHAR" property="companyName" />
+		<result column="user_id" jdbcType="VARCHAR" property="userId" />
 		<result column="company_code" jdbcType="VARCHAR" property="companyCode" />
 		<result column="company_contactor" jdbcType="VARCHAR" property="companyContactor" />
 		<result column="company_contactor_phone" jdbcType="VARCHAR" property="companyContactorPhone" />
@@ -44,10 +45,12 @@
 	tcui.item_name,
 	tcui.company_user_item_id,
 	tu.real_name,
-	tcui.submit_time
+	tcui.submit_time,
+	tic.item_year
 FROM
 	talent_company_user_item tcui
 LEFT JOIN talent_user tu ON tcui.user_id=tu.user_id
+LEFT JOIN talent_item_config tic ON tcui.config_id = tic.item_config_id
 WHERE
 	tcui.company_checked = #{companyChecked,jdbcType=INTEGER}
 AND tcui.parent_id = 0
@@ -81,6 +84,9 @@ AND tu.company_id = #{companyId,jdbcType=BIGINT}
 		<if test="companyName!=null and companyName!=''">
 			AND company_name LIKE concat(concat('%',#{companyName}),'%')
 		</if>
+			<if test="del!=null and del!=''">
+				AND del = #{del}
+			</if>
 		</where>
 	</select>
 </mapper>

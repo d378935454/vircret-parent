@@ -13,4 +13,6 @@ public interface CenterMapper extends BaseMapper<CompanyUserItem> {
     int batchDel(Map<String, Object> map);
 
     List<Map<String,Object>> selectCenterItemCheckedItem(Map<String, Object> map);
+
+    int checkAll(Map<String,Object> map);
 }

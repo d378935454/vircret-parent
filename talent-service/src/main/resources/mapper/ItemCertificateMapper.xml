@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.talentcenter.dao.ItemCertificateMapper">
+  <resultMap id="BaseResultMap" type="com.talentcenter.entity.ItemCertificate">
+    <id column="item_certificate_id" jdbcType="INTEGER" property="itemCertificateId" />
+    <result column="item_config_id" jdbcType="INTEGER" property="itemConfigId" />
+    <result column="certificate_id" jdbcType="INTEGER" property="certificateId" />
+    <result column="certificate_name" jdbcType="VARCHAR" property="certificateName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    item_certificate_id, item_config_id, certificate_id, certificate_name
+  </sql>
 
   <delete id="delByItemConfigId" parameterType="java.lang.Long">
     DELETE from talent_item_certificate  WHERE item_config_id = #{itemConfigId,jdbcType=BIGINT};
   </delete>
+
+  <select id="selectByConfigId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from talent_item_certificate
+    where item_config_id = #{configId,jdbcType=BIGINT} and certificate_id>=14
+  </select>
 </mapper>

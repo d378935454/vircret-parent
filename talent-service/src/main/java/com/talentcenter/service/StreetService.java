@@ -16,4 +16,8 @@ public interface StreetService extends BaseService<Street> {
 
     List<Map<String,Object>> selectStreetItems(Map<String,Object> map);
 
+    List<Map<String,Object>> census(Map<String,Object> map);
+
+    int checkAll(Map<String,Object> map);
+
 }

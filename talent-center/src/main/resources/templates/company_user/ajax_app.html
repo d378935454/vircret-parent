@@ -17,7 +17,7 @@
                 @if(list.centerChecked==4){
                     审核完成
                 @}else if(list.centerChecked==3){
-                    人才中心 窗口已审核 等待 管理员审核
+                    人才中心 已初审 等待 人才中心复审
                 @}else if(list.centerChecked==0){
                     人才中心 不通过
                 @}else{
@@ -26,9 +26,9 @@
             @}else{
                 @if(list.streetChecked!=3 && list.streetChecked!=null){
                     @if(list.streetChecked==4){
-                    人才工作站 管理员已审核 等待 人才中心审核
+                    人才工作站 已复审 等待 人才中心审核
                     @}else if(list.streetChecked==3){
-                    人才工作站 窗口已审核 等待 管理员审核
+                    人才工作站已初审通过 请在规定时间内提交原件查验
                     @}else if(list.streetChecked==0){
                     人才工作站 不通过
                     @}else{

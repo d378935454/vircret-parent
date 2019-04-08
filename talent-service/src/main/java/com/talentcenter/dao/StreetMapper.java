@@ -14,4 +14,8 @@ public interface StreetMapper extends BaseMapper<Street> {
     int delStreetUser(Map<String,Object> map);
 
     List<Map<String,Object>>  selectStreetItems(Map<String,Object> map);
+
+    List<Map<String,Object>> census(Map<String,Object> map);
+
+    int checkAll(Map<String,Object> map);
 }

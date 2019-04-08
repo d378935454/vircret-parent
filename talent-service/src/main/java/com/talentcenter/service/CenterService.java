@@ -12,4 +12,6 @@ import java.util.Map;
 public interface CenterService extends BaseService<CompanyUserItem> {
 
     List<Map<String,Object>> selectCenterItemCheckedItem(Map<String, Object> map);
+
+    int checkAll(Map<String,Object> map);
 }

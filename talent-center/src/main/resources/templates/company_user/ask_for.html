@@ -7,6 +7,9 @@
     .upload-error{
         color:#a94442;;
     }
+    .red{
+        color: red;
+    }
 </style>
 <div class="row">
     <div class="col-sm-12">
@@ -18,30 +21,175 @@
                     </h2>
                 </div>
                 <form class="form-horizontal m-t" id="viladate_form">
-                    @for(certificate in certificates){
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">${certificate.certificateName}：</label>
-                        <div class="col-sm-10">
-                            <div class="uploader">
-                                <!--用来存放item-->
-                                <input type="hidden" class="change_flag" name="change_${certificate.certificateId}" value="0" />
-                                <div id="fileList-${certificate.certificateId}" c-id="${certificate.certificateId}" class="uploader-list">
-                                @if(certificate.companyUserCertificates!=null){
-                                    @for(img in certificate.companyUserCertificates){
-                                    <div id="WU_F_${img.companyUserCertificateId}" class="file-item thumbnail upload-state-done">
-                                        <img src="${ctxPath}/talent${img.imgUrl}">
-                                        <div class="file-panel" style="height: 0px;"><span class="cancel">删除</span></div>
-                                        <input type="hidden" name="certificateId[]" value="${img.certificateId}">
-                                        <input type="hidden" name="imgUrl[]" value="${img.imgUrl}">
+                    <div class="col-sm-12">
+                        <div class="col-sm-4">
+                            @for(certificate in certificates){
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">${certificate.certificateName}：</label>
+                                <div class="col-sm-7">
+                                    <div class="uploader">
+                                        <!--用来存放item-->
+                                        <input type="hidden" class="change_flag" name="change_${certificate.certificateId}" value="0" />
+                                        <div id="fileList-${certificate.certificateId}" c-id="${certificate.certificateId}" class="uploader-list">
+                                            @if(certificate.companyUserCertificates!=null){
+                                            @for(img in certificate.companyUserCertificates){
+                                            <div id="WU_F_${img.companyUserCertificateId}" class="file-item thumbnail upload-state-done">
+                                                <img src="${ctxPath}/talent${img.imgUrl}">
+                                                <div class="file-panel" style="height: 0px;"><span class="cancel">删除</span></div>
+                                                <input type="hidden" name="certificateId[]" value="${img.certificateId}">
+                                                <input type="hidden" name="imgUrl[]" value="${img.imgUrl}">
+                                            </div>
+                                            @}
+                                            @}
+                                        </div>
+                                        <div class="filePicker" c-id="${certificate.certificateId}">选择图片</div>
                                     </div>
-                                    @}
-                                @}
                                 </div>
-                                <div class="filePicker" c-id="${certificate.certificateId}">选择图片</div>
                             </div>
+                            @}
                         </div>
+
+                        <div class="col-sm-8">
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                <tr>
+                                    <th width="160">姓名</th>
+                                    <td>${user.realName}</td>
+                                    <th>性别：</th>
+                                    <td width="210">
+                                        @if(cui.companyUserSex==0){
+                                        女
+                                        @}else{
+                                        男
+                                        @}
+                                    </td>
+                                    <th>出生日期</th>
+                                    <td>${cui.companyUserBirthday,"yyyy-MM-dd"}</td>
+                                </tr>
+                                <tr>
+                                    <th>在申请单位开始工作时间</th>
+                                    <td>${cui.companyUserWorkStart,"yyyy-MM-dd"}</td>
+                                    <th>婚姻状况</th>
+                                    <td>
+                                        @if(cui.companyUserMarriage){
+                                        是
+                                        @}else{
+                                        否
+                                        @}
+                                    </td>
+                                    <th>身份证号</th>
+                                    <td>${cui.companyUserCard}</td>
+                                </tr>
+                                <tr>
+                                    <th>户籍地址</th>
+                                    <td colspan="2">${cui.companyUserHomeProvince} ${cui.companyUserHomeCity} ${cui.companyUserHomeDistrict} ${cui.companyUserHomeAddress}</td>
+                                    <th>在沪居住地址</th>
+                                    <td colspan="2">${cui.companyUserHuAddress}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>单位全称</th>
+                                    <td colspan="2">${company.companyName}</td>
+                                    <th>现任职务</th>
+                                    <td colspan="2"
+                                    >${cui.companyUserPost}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>最高职称</th>
+                                    <td colspan="2">
+                                        @if(cui.companyUserPositional==0){
+                                        初级——${cui.positionaName}
+                                        @}else if(cui.companyUserPositional==1){
+                                        中级——${cui.positionaName}
+                                        @}else if(cui.companyUserPositional==2){
+                                        高级——${cui.positionaName}
+                                        @}else{
+                                        无
+                                        @}
+
+                                    </td>
+                                    <th>最高职业技能职称</th>
+                                    <td colspan="2">
+                                        @if(cui.companyUserPositionalSkill==0){
+                                        初级——${cui.positionaSkillName}
+                                        @}else if(cui.companyUserPositionalSkill==1){
+                                        中级——${cui.positionaSkillName}
+                                        @}else if(cui.companyUserPositionalSkill==2){
+                                        高级——${cui.positionaSkillName}
+                                        @}else{
+                                        无
+                                        @}
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>毕业院校</th>
+                                    <td colspan="2">${cui.companyUserSchool}</a>
+                                    </td>
+                                    <th>毕业时间</th>
+                                    <td colspan="2">${cui.companyUserGraduation,"yyyy-MM-dd"}</td>
+                                </tr>
+                                <tr>
+                                    <th>学历</th>
+                                    <td colspan="2"
+                                    >
+                                        @if(cui.companyUserEducation==0){
+                                        中专
+                                        @}else if(cui.companyUserEducation==1){
+                                        本科
+                                        @}else if(cui.companyUserEducation==2){
+                                        研究生
+                                        @}else if(cui.companyUserEducation==3){
+                                        博士
+                                        @}else if(cui.companyUserEducation==4){
+                                        博士后
+                                        @}
+                                    </td>
+                                    <th>学位</th>
+                                    <td colspan="2"
+                                    >
+                                        @if(cui.companyUserDegree==0){
+                                        学士
+                                        @}else if(cui.companyUserDegree==1){
+                                        硕士
+                                        @}else if(cui.companyUserDegree==2){
+                                        博士
+                                        @}
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th>银行卡号</th>
+                                    <td @if(ics.company_user_bank_no==1){
+                                        class="have-change"
+                                        @}
+                                        colspan="2"
+                                    >${cui.companyUserBankNo}
+                                    </td>
+                                    <th>开户行地址</th>
+                                    <td @if(ics.company_user_bank==1){
+                                        class="have-change"
+                                        @}
+                                        colspan="2">${cui.companyUserBank}
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th>工作年限</th>
+                                    <td colspan="2"
+                                    >${cui.companyUserWorkLength}</td>
+                                </tr>
+
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
                     </div>
-                    @}
+
 
                     @if(talentTypes!=null){
                     <div class="form-group">
@@ -61,6 +209,41 @@
                         </div>
                     </div>
                     @}
+
+                    @if(ic.itemId==3){
+                    <div class="form-group">
+                        <label for="month_salary" class="col-sm-2 control-label">税前工资薪金和劳务所得总额：</label>
+                        <div class="col-sm-4">
+                            <input id="month_salary" placeholder="税前工资薪金和劳务所得总额" name="monthSalary"
+                                   class="form-control" type="text" value="${cui.monthSalary}" required>
+                            <div class="help-block red m-b-none"><i class="fa fa-info-circle"></i> 请填写${ic.itemNeedYear}年度的在本单位的税前工资薪金和劳务所得总额</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="total_tax" class="col-sm-2 control-label">在现单位期间缴纳个人所得税总额：</label>
+                        <div class="col-sm-4">
+                            <input id="total_tax" placeholder="在现单位期间缴纳个人所得税总额" name="totalTax"
+                                   class="form-control" type="text" value="${cui.totalTax}" required>
+                            <div class="help-block red m-b-none"><i class="fa fa-info-circle"></i> 请填写${ic.itemNeedYear}年度的在本单位的缴税总额</div>
+                        </div>
+                    </div>
+                    @}
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">本次劳动合同起始时间：</label>
+                        <div class="col-sm-4">
+                            <input id="user_contract_time" placeholder="请选择合同起始时间" name="userContractTime"
+                                   class="form-control" type="text"
+                                   @if(cui.companyUserContractTimeBegin!=null && cui.companyUserContractTimeEnd!=null){
+                                   value='${cui.companyUserContractTimeBegin,"yyyy-MM-dd"} 至 ${cui.companyUserContractTimeEnd,"yyyy-MM-dd"}'
+                                   @}else{
+                                   value=""
+                                   @}
+                                   required>
+                            <div class="help-block m-b-none"><i class="fa fa-info-circle"></i> 如自${ic.itemNeedYear}-01-01至现在有多分劳动合同,请上传多分劳动合同扫描件</div>
+                        </div>
+                    </div>
+
                     @if(ic.ifHouse){
                     <div style="width: 1200px;">
                         <HR align=center width=1200 color=#696969 SIZE=10 style="margin-bottom: 5px;">
@@ -169,6 +352,7 @@
                         <div class="col-sm-3">
                             <input placeholder="缴费基数" name="companyUserSocietySave1"
                                    class="form-control nx" type="text" value="${cui.companyUserSocietySave1}" required>
+                            <div class="m-t3 red help-block m-b-none"><i class="fa fa-info-circle"></i> 以${ic.itemNeedYear}年4月份后缴费标准为准</div>
                         </div>
 
                         <!--<div class="col-sm-4 col-sm-offset-3" style="margin-top: 10px;">
@@ -208,10 +392,6 @@
                                    @}
                                    required>
                             <div class="m-t3 help-block m-b-none"><i class="fa fa-info-circle"></i> 请填写${ic.itemNeedYear}年度的个税缴费基数</div>
-                        </div>
-                        <div class="col-sm-3">
-                            <input placeholder="缴费基数" name="companyUserIit"
-                                   class="form-control nx" type="text" value="${cui.companyUserIit}" required>
                         </div>
                     </div>
                     @}
@@ -435,6 +615,13 @@
         min: '${ic.itemNeedYear}-1-1'
         ,max: '${ic.itemNeedYear}-12-31'
     });
+
+    laydate.render({
+        elem: '#user_contract_time',
+        range: '至',
+        format: 'yyyy-MM-dd'
+    });
+
     laydate.render({
         elem: '#user-society-save-time1',
         range: '至',
@@ -555,7 +742,6 @@
     });
     <span id="company_user_bank-error" class="help-block m-b-none"><i class="fa fa-times-circle"></i>  必填</span>
 */
-    // 图片上传demo
     jQuery(function() {
 
 
@@ -610,8 +796,8 @@
                 mimeTypes: 'image/*'
             },
             compress:{
-                width: 1600,
-                height: 1600,
+                width: 1000,
+                height: 1000,
 
                 // 图片质量，只有type为`image/jpeg`的时候才有效。
                 quality: 80,

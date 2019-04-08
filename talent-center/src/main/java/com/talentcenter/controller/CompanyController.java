@@ -77,6 +77,9 @@ public class CompanyController extends BaseController {
     @Autowired
     private SendLogService sendLogService;
 
+    @Autowired
+    private ItemCertificateService itemCertificateService;
+
     /* @Autowired
     private ItemUserTimeService itemUserTimeService;
    @Autowired
@@ -90,12 +93,18 @@ public class CompanyController extends BaseController {
      */
     @RequestMapping("/index.html")
     public String index(Model model) {
+        Street condition = new Street();
+        condition.setDel(true);
+        List<Street> streets = streetService.select(condition);
+        model.addAttribute("streets", streets);
         return "/company/index.html";
     }
 
     @RequestMapping("/ajax_index")
     public String ajaxIndex(Model model, int pageNum, int pageSize,
-                            @RequestParam(required = false) String companyName
+                            @RequestParam(required = false) String companyName,
+                            @RequestParam(required = false) Long streetId
+
     ) {
         //组装搜索条件
         /*Map<String,Object> map=new HashMap<>();
@@ -105,10 +114,17 @@ public class CompanyController extends BaseController {
         Company company = new Company();
         company.setDel(true);
         if (companyName != null && companyName != "") company.setCompanyName(companyName);
+        if (streetId != null && streetId != 0) company.setStreetId(streetId);
 
         //分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<Company> companys = companyService.selectByName(company);
+        for (Company c : companys) {
+            CompanyItem condition = new CompanyItem();
+            condition.setCompanyId(c.getCompanyId());
+            List<CompanyItem> companyItems = companyItemService.select(condition);
+            c.setCompanyItems(companyItems);
+        }
 
         PageInfo<Company> pageInfo = new PageInfo<>(companys);
         String pageStr = makePageHtml(pageInfo);
@@ -137,12 +153,19 @@ public class CompanyController extends BaseController {
         User sessionUser = getSessionUser();
         company.setCreateName(sessionUser.getUserName());
         company.setCreateId(sessionUser.getUserId());
-        CompanyNature companyNature = companyNatureService.selectByPrimaryKey(company.getCompanyNatureId());
-        company.setCompanyNatureName(companyNature.getCompanyNatureName());
-        CompanyType companyType = companyTypeService.selectByPrimaryKey(company.getCompanyTypeId());
-        company.setCompanyTypeName(companyType.getCompanyTypeName());
-        Street street = streetService.selectByPrimaryKey(company.getStreetId());
-        company.setStreetName(street.getStreetName());
+        if(company.getCompanyNatureId()!=null){
+            CompanyNature companyNature = companyNatureService.selectByPrimaryKey(company.getCompanyNatureId());
+            company.setCompanyNatureName(companyNature.getCompanyNatureName());
+        }
+        if(company.getCompanyTypeId()!=null) {
+            CompanyType companyType = companyTypeService.selectByPrimaryKey(company.getCompanyTypeId());
+            company.setCompanyTypeName(companyType.getCompanyTypeName());
+        }
+
+        if(company.getStreetId()!=null) {
+            Street street = streetService.selectByPrimaryKey(company.getStreetId());
+            company.setStreetName(street.getStreetName());
+        }
 
         Company checkCompany = new Company();
         checkCompany.setCompanyCode(company.getCompanyCode());
@@ -210,34 +233,44 @@ public class CompanyController extends BaseController {
     @ResponseBody
     @RequestMapping("edit")
     public RSTFulBody edit(Company company,
-                           @RequestParam(value = "itemId[]") String[] itemId,
+                           @RequestParam(required = false,value = "itemId[]") String[] itemId,
                            String password) {
         User sessionUser = getSessionUser();
         company.setUpdateId(sessionUser.getUserId());
         company.setUpdateName(sessionUser.getUserName());
         company.setUpdateTime(DateHelper.getCurrentDate());
 
-        CompanyNature companyNature = companyNatureService.selectByPrimaryKey(company.getCompanyNatureId());
-        company.setCompanyNatureName(companyNature.getCompanyNatureName());
-        CompanyType companyType = companyTypeService.selectByPrimaryKey(company.getCompanyTypeId());
-        company.setCompanyTypeName(companyType.getCompanyTypeName());
-        Street street = streetService.selectByPrimaryKey(company.getStreetId());
-        company.setStreetName(street.getStreetName());
+        if(company.getCompanyNatureId()!=0 ){
+            CompanyNature companyNature = companyNatureService.selectByPrimaryKey(company.getCompanyNatureId());
+            company.setCompanyNatureName(companyNature.getCompanyNatureName());
+        }
+        if(company.getCompanyTypeId()!=0) {
+            CompanyType companyType = companyTypeService.selectByPrimaryKey(company.getCompanyTypeId());
+            company.setCompanyTypeName(companyType.getCompanyTypeName());
+        }
+
+        if(company.getStreetId()!=0) {
+            Street street = streetService.selectByPrimaryKey(company.getStreetId());
+            company.setStreetName(street.getStreetName());
+        }
 
         int del = companyItemService.delByCompanyId(company.getCompanyId());
         /**
          * 政策编辑
          */
         ArrayList<CompanyItem> companyItems = new ArrayList<>();
-        for (String item : itemId) {
-            CompanyItem companyItem = new CompanyItem();
-            companyItem.setItemId((long) Integer.parseInt(item));
-            companyItem.setCompanyId(company.getCompanyId());
-            Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
-            companyItem.setItemName(i.getItemName());
-            companyItems.add(companyItem);
+        if(itemId!=null && itemId.length>0){
+            for (String item : itemId) {
+                CompanyItem companyItem = new CompanyItem();
+                companyItem.setItemId((long) Integer.parseInt(item));
+                companyItem.setCompanyId(company.getCompanyId());
+                Item i = itemService.selectByPrimaryKey((long) Integer.parseInt(item));
+                companyItem.setItemName(i.getItemName());
+                companyItems.add(companyItem);
+            }
+            companyItemService.insertList(companyItems);
         }
-        companyItemService.insertList(companyItems);
+
         int res = companyService.updateByPrimaryKeySelective(company);
 
         if(password!=null && password!=""){
@@ -255,8 +288,12 @@ public class CompanyController extends BaseController {
 
     @RequestMapping("del.html")
     public String delUser(Company company) {
-        company.setDel(false);
-        int res = companyService.updateByPrimaryKeySelective(company);
+        /*company.setDel(false);
+        int res = companyService.updateByPrimaryKeySelective(company);*/
+        Company c = companyService.selectByPrimaryKey(company.getCompanyId());
+        userService.deleteByPrimaryKey(c.getUserId());
+//        userService.d
+        companyService.deleteByPrimaryKey(company.getCompanyId());
         return "redirect:/company/index.html";
     }
 
@@ -433,6 +470,8 @@ public class CompanyController extends BaseController {
     public String register(Model model) {
         List<Street> streets = streetService.selectAll();
         List<CompanyNature> companyNatures = companyNatureService.selectAll();
+        List<CompanyType> companyTypes = companyTypeService.selectAll();
+        model.addAttribute("companyTypes", companyTypes);
         model.addAttribute("companyNatures", companyNatures);
         model.addAttribute("streets", streets);
         model.addAttribute("user", "");
@@ -446,13 +485,13 @@ public class CompanyController extends BaseController {
     }
 
     @RequestMapping("reg")
-    public String reg(String userName, String password, String companyCode, Long streetId, String companyName, Model model) {
+    public String reg(String userName, String password, Company company, Model model) {
         User user = new User();
         user.setUserName(userName);
         User u = userService.selectOne(user);
 
         Company cCode = new Company();
-        cCode.setCompanyCode(companyCode);
+        cCode.setCompanyCode(company.getCompanyCode());
         cCode.setState(2);
         Company checkCode = companyService.selectOne(cCode);
 
@@ -465,10 +504,14 @@ public class CompanyController extends BaseController {
             model.addAttribute("uError", uError);
             model.addAttribute("cError", cError);
             model.addAttribute("userName", userName);
-            model.addAttribute("companyName", companyName);
-            model.addAttribute("streetId", streetId);
+            model.addAttribute("company", company);
             model.addAttribute("password", password);
-            model.addAttribute("companyCode", companyCode);
+            model.addAttribute("companyCode", "");
+            model.addAttribute("companyName", "");
+            List<CompanyNature> companyNatures = companyNatureService.selectAll();
+            List<CompanyType> companyTypes = companyTypeService.selectAll();
+            model.addAttribute("companyTypes", companyTypes);
+            model.addAttribute("companyNatures", companyNatures);
             return "/register.html";
         }
 
@@ -489,28 +532,32 @@ public class CompanyController extends BaseController {
         }*/
 
 
-        Company company = new Company();
-        company.setCompanyCode(companyCode);
-        Company c = companyService.selectOne(company);
+        Company cCompany = new Company();
+        cCompany.setCompanyCode(company.getCompanyCode());
+        Company c = companyService.selectOne(cCompany);
         User uu = new User();
         uu.setUserName(userName);
         uu.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
         uu.setUserNature(1);
         int res = userService.insertSelective(uu);
-        Company cc = new Company();
-        cc.setCompanyName(companyName);
-        cc.setStreetId(streetId);
-        cc.setUserId(uu.getUserId());
+
+        CompanyNature companyNature = companyNatureService.selectByPrimaryKey(company.getCompanyNatureId());
+        company.setCompanyNatureName(companyNature.getCompanyNatureName());
+        CompanyType companyType = companyTypeService.selectByPrimaryKey(company.getCompanyTypeId());
+        company.setCompanyTypeName(companyType.getCompanyTypeName());
+        Street street = streetService.selectByPrimaryKey(company.getStreetId());
+        company.setStreetName(street.getStreetName());
+
+        company.setUserId(uu.getUserId());
         if (c != null) {
-            cc.setCompanyId(c.getCompanyId());
-            cc.setState(1);
-            companyService.updateByPrimaryKeySelective(cc);
+            company.setCompanyId(c.getCompanyId());
+            company.setState(1);
+            companyService.updateByPrimaryKeySelective(company);
         } else {
-            cc.setCompanyCode(companyCode);
-            cc.setState(1);
-            companyService.insertSelective(cc);
+            company.setState(1);
+            companyService.insertSelective(company);
         }
-        return "/login.html";
+        return "/reg_success.html";
 }
 
     @RequestMapping("check_item.html")
@@ -598,6 +645,40 @@ public class CompanyController extends BaseController {
         ii.setItemCategory(0);
         List<Item> items = itemService.select(ii);
 
+        List<ItemCertificate> itemCertificates = itemCertificateService.selectByItemId(companyUserItem.getConfigId());
+        List<CompanyUserCertificate> companyUserCertificates=null;
+        if(itemCertificates!=null){
+            String ids = "";
+            for (ItemCertificate itemCertificate : itemCertificates) {
+                ids+=itemCertificate.getCertificateId()+",";
+            }
+            ids = ids.substring(0,ids.length() - 1);
+            Map<String,Object> cerficateMap = new HashMap<>();
+            cerficateMap.put("ids",ids);
+            cerficateMap.put("userId",companyUserItem.getUserId());
+
+            companyUserCertificates = companyUserCertificateService.selectByUserId(cerficateMap);
+        }
+
+        if(companyUserItem.getItemId()==3){
+            BigDecimal amount = null;
+            BigDecimal amountTemp = null;
+            BigDecimal compareNum = new BigDecimal(300000);
+            if(cui.getMonthSalary().compareTo(compareNum)==0) {
+                amount = new BigDecimal(5000);
+            }else {
+               amountTemp = cui.getTotalTax().multiply(ic.getItemConfigAmountPer());
+               BigDecimal compareNum1000 = new BigDecimal(1000);
+               if(amountTemp.compareTo(compareNum1000)==1){
+                    BigDecimal amountTemp1 = amountTemp.divide(compareNum1000);
+                    BigDecimal amountTemp2 = amountTemp1.setScale(0,BigDecimal.ROUND_UP);
+                    amount = amountTemp2.multiply(compareNum1000);
+               }
+            }
+            model.addAttribute("amount", amount);
+            model.addAttribute("amountTemp", amountTemp);
+        }
+        model.addAttribute("cucs", companyUserCertificates);
         model.addAttribute("user", user);
         model.addAttribute("cui", cui);
         model.addAttribute("company", c);
@@ -647,8 +728,10 @@ public class CompanyController extends BaseController {
         companyUserItem.setType(passJson.getType());
         companyUserItem.setAmount(passJson.getAmount());
         companyUserItem.setMemo(passJson.getMemo());
-        companyUserItem.setTalentType((long)Integer.parseInt(passJson.getTalentType()));
-        companyUserItem.setTalentTypeContent(passJson.getTalentTypeContent());
+        if(passJson.getTalentType()!=null){
+            companyUserItem.setTalentType((long)Integer.parseInt(passJson.getTalentType()));
+            companyUserItem.setTalentTypeContent(passJson.getTalentTypeContent());
+        }
         companyUserItem.setCompanyChecked(2);
 
         if(passJson.getItemTime().length()>0){
@@ -696,5 +779,62 @@ public class CompanyController extends BaseController {
         companyUserItem.setCompanyReason(reason);
         companyUserItemService.updateByPrimaryKeySelective(companyUserItem);
         return true;
+    }
+
+
+    @RequestMapping("/census.html")
+    public String census(Long itemId,Model model){
+        User sessionUser = getSessionUser();
+        Company condition = new Company();
+        condition.setUserId(sessionUser.getUserId());
+        Company company = companyService.selectOne(condition);
+
+        CompanyItem item = new CompanyItem();
+        item.setCompanyId(company.getCompanyId());
+
+        List<CompanyItem> items = companyItemService.select(item);
+
+        model.addAttribute("items",items);
+        return "/company/census.html";
+    }
+
+    @RequestMapping("ajax_census")
+    public String ajaxCensus(Model model, int pageNum, int pageSize, @RequestParam(required = false) Long itemId){
+
+        String url = "/company/ajax_census.html";
+
+        User sessionUser = getSessionUser();
+        Map<String,Object> map = new HashMap<>();
+        String title=null;
+        if(itemId!=null && itemId!=0) {
+            map.put("itemId",itemId);
+            Item item = itemService.selectByPrimaryKey(itemId);
+            title = item.getItemName();
+            if(itemId==3){
+                url = "/company/ajax_jintie.html";
+
+            }else if(itemId==4){
+                url = "/company/ajax_lanka.html";
+            }
+        }
+        map.put("streetId",sessionUser.getStreetId());
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<Map<String,Object>> census=streetService.census(map);
+        if(itemId==3) {
+            for (Map<String, Object> obj : census) {
+                BigDecimal amountTemp = null;
+                amountTemp = ((BigDecimal)obj.get("total_tax")).multiply((BigDecimal)obj.get("item_config_amount_per"));
+                obj.put("amountTemp",amountTemp);
+            }
+        }
+
+        PageInfo<Map<String,Object>> pageInfo= new PageInfo<>(census);
+        String pageStr = makePageHtml(pageInfo);
+
+        model.addAttribute("page_info",pageInfo);
+        model.addAttribute("pages",pageStr);
+        model.addAttribute("title",title);
+        return url;
     }
 }

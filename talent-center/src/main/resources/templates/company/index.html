@@ -15,6 +15,16 @@
                                 </div>
 
                             </div>
+                            <div class="pull-left" style="padding:5px 15px;">
+                                <div class="input-group">
+                                    <select name="streetId" class="input-sm">
+                                        <option value="0">全部</option>
+                                        @for(street in streets){
+                                        <option value="${street.streetId}">${street.streetName}</option>
+                                        @}
+                                    </select>
+                                </div>
+                            </div>
                             <a onclick="ajax_get_table('search-form',1)" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> 搜索</a>
 
 

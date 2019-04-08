@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * talent_company
@@ -114,4 +115,9 @@ public class Company {
 
     @Transient
     private Boolean checked;
+
+    private String img;
+
+    @Transient
+    private List<CompanyItem> companyItems;
 }

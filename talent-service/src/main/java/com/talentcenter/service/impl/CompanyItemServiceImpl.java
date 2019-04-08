@@ -72,7 +72,7 @@ public class CompanyItemServiceImpl implements CompanyItemService {
 
     @Override
     public int deleteByPrimaryKey(Long id) {
-        return 0;
+        return companyItemMapper.deleteByPrimaryKey(id);
     }
 
     @Override

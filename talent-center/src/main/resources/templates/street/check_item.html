@@ -28,16 +28,26 @@
                             <div class="pull-left" style="padding:5px 15px;">
                                 <div class="input-group">
                                     <select name="streetChecked" class="input-sm">
+                                        <option value="3">已提交</option>
+                                        <option @if(user.userType==1){
+                                                selected
+                                                @}
+                                                value="2">已初审</option>
+                                        <option value="4">已通过</option>
                                         <option value="0">不通过</option>
                                         <option value="1">退回</option>
-                                        <option value="2">通过</option>
-                                        <option value="3" selected>已提交</option>
+
                                     </select>
                                 </div>
 
                             </div>
 
                             <a onclick="ajax_get_table('search-form',1)" class="btn btn-sm btn-primary" style="margin-top: 5px;"><i class="fa fa-search"></i> 搜索</a>
+                            @if(user.userType==1){
+                            <div class="col-lg-2 pull-right text-right">
+                                <a id="check_all_button" class="btn btn-sm btn-primary">批量审核</a>
+                            </div>
+                            @}
 
                         </div>
                         <div class="table-responsive" id="ajax_return">
@@ -78,5 +88,48 @@
             }
         });
     }
+
+    $("#check_all_button").click(function () {
+        var num = $("input[class='i-checks']:checked").length;
+        if(num==0){
+            swal({type: "warning", title: "", text: "请正确选择要删除的项目。"})
+        }else {
+            swal({
+                title: "您确定要审核这 "+num+" 条申请么？",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                closeOnConfirm: false
+            }, function () {
+                var delIds = "";
+                $("input[class='i-checks']:checked").each(function(i){
+                    if(0==i){
+                        delIds = $(this).val();
+                    }else{
+                        delIds += (","+$(this).val());
+                    }
+                });
+
+                $.ajax({
+                    type : "POST",
+                    url:"${ctxPath}/street/all_check",//+tab,
+                    data : {
+                        ids: delIds
+                    },
+                    success: function(data){
+                        if(data['status']==1){
+                            swal("成功审核"+data['body']+"条申请", "", "success")
+                            setTimeout('window.location.href="/street/check_item.html"',900);
+                            ajax_get_table('search-form',cur_page);
+                        }else{
+                            swal({type: "warning", title: "", text: data['body']})
+                        }
+                    }
+                });
+            })
+        }
+    });
 </script>
 </html>

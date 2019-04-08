@@ -72,7 +72,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public int deleteByPrimaryKey(Long id) {
-        return 0;
+        return companyMapper.deleteByPrimaryKey(id);
     }
 
     @Override
